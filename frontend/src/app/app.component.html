@@ -1,0 +1,159 @@
+<!-- =============================================
+  APP ROOT LAYOUT
+  Navbar + Router Outlet + Footer
+============================================= -->
+
+<!-- ---- NAVBAR ---- -->
+@if (!isDashboardOrAuthOrStore) {
+<nav class="navbar" [class.scrolled]="true">
+  <div class="nav-container">
+
+    <!-- Logo -->
+    <a class="nav-logo" routerLink="/" (click)="closeMobileMenu()">
+      <div class="logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12C2 13.85 2.5 15.58 3.37 17.07L2 22L6.93 20.63C8.42 21.5 10.15 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z"
+            fill="currentColor" opacity="0.2" />
+          <path
+            d="M12 2C6.48 2 2 6.48 2 12C2 13.85 2.5 15.58 3.37 17.07L2 22L6.93 20.63C8.42 21.5 10.15 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.5 15.5C16.3 16.1 15.3 16.6 14.7 16.7C14.1 16.8 13.3 16.8 11.3 16C9.1 15.1 7.7 12.9 7.6 12.8C7.5 12.7 6.7 11.6 6.7 10.5C6.7 9.4 7.3 8.8 7.5 8.6C7.7 8.4 7.9 8.3 8.1 8.3C8.3 8.3 8.5 8.3 8.6 8.3C8.8 8.3 9 8.3 9.2 8.8C9.4 9.3 9.9 10.4 9.9 10.5C10 10.6 10 10.7 9.9 10.8C10 11 10 11.1 9.9 11.2C9.8 11.3 9.7 11.5 9.6 11.6C9.5 11.7 9.3 11.9 9.4 12.1C9.5 12.3 10 13.1 10.8 13.8C11.8 14.7 12.6 15 12.9 15.1C13.1 15.2 13.3 15.2 13.5 15C13.7 14.8 13.9 14.5 14.2 14.2C14.4 14 14.6 14 14.8 14.1C15 14.2 16.1 14.7 16.3 14.9C16.5 15.1 16.6 15.2 16.7 15.3C16.7 15.4 16.7 15.5 16.5 15.5Z"
+            fill="currentColor" />
+        </svg>
+      </div>
+      <span class="logo-text">SiteFlow</span>
+    </a>
+
+    <!-- Desktop Nav Links -->
+    <ul class="nav-links" id="desktop-nav">
+      @for (link of navLinks; track link.label) {
+      <li>
+        <a class="nav-link" [routerLink]="link.path">{{ link.label }}</a>
+      </li>
+      }
+    </ul>
+
+    <!-- CTA Buttons -->
+    <div class="nav-actions">
+      <a routerLink="/auth/login" class="btn btn-ghost btn-sm" id="nav-login-btn">Log In</a>
+      <a routerLink="/auth/register" class="btn btn-primary btn-sm" id="nav-signup-btn">
+        Get Started Free
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+
+    <!-- Mobile Hamburger -->
+    <button class="hamburger" id="mobile-menu-toggle" [class.open]="mobileMenuOpen" (click)="toggleMobileMenu()"
+      aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <!-- Mobile Menu Drawer -->
+  <div class="mobile-menu" [class.open]="mobileMenuOpen" id="mobile-menu">
+    <ul class="mobile-nav-links">
+      @for (link of navLinks; track link.label) {
+      <li>
+        <a class="mobile-nav-link" [routerLink]="link.path" (click)="closeMobileMenu()">
+          {{ link.label }}
+        </a>
+      </li>
+      }
+    </ul>
+    <div class="mobile-actions">
+      <a routerLink="/auth/login" class="btn btn-ghost" (click)="closeMobileMenu()">Log In</a>
+      <a routerLink="/auth/register" class="btn btn-primary" (click)="closeMobileMenu()">Get Started Free</a>
+    </div>
+  </div>
+</nav>
+}
+
+<!-- ---- MAIN CONTENT ---- -->
+<main class="main-content" id="main-content">
+  <router-outlet></router-outlet>
+</main>
+
+<!-- ---- FOOTER ---- -->
+@if (!isDashboardOrAuthOrStore) {
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+
+      <!-- Brand Column -->
+      <div class="footer-brand">
+        <a class="nav-logo" routerLink="/">
+          <div class="logo-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12C2 13.85 2.5 15.58 3.37 17.07L2 22L6.93 20.63C8.42 21.5 10.15 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z"
+                fill="currentColor" opacity="0.2" />
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12C2 13.85 2.5 15.58 3.37 17.07L2 22L6.93 20.63C8.42 21.5 10.15 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.5 15.5C16.3 16.1 15.3 16.6 14.7 16.7C14.1 16.8 13.3 16.8 11.3 16C9.1 15.1 7.7 12.9 7.6 12.8C7.5 12.7 6.7 11.6 6.7 10.5C6.7 9.4 7.3 8.8 7.5 8.6C7.7 8.4 7.9 8.3 8.1 8.3C8.3 8.3 8.5 8.3 8.6 8.3C8.8 8.3 9 8.3 9.2 8.8C9.4 9.3 9.9 10.4 9.9 10.5C10 10.6 10 10.7 9.9 10.8C10 11 10 11.1 9.9 11.2C9.8 11.3 9.7 11.5 9.6 11.6C9.5 11.7 9.3 11.9 9.4 12.1C9.5 12.3 10 13.1 10.8 13.8C11.8 14.7 12.6 15 12.9 15.1C13.1 15.2 13.3 15.2 13.5 15C13.7 14.8 13.9 14.5 14.2 14.2C14.4 14 14.6 14 14.8 14.1C15 14.2 16.1 14.7 16.3 14.9C16.5 15.1 16.6 15.2 16.7 15.3C16.7 15.4 16.7 15.5 16.5 15.5Z"
+                fill="currentColor" />
+            </svg>
+          </div>
+          <span class="logo-text">SiteFlow</span>
+        </a>
+        <p class="footer-tagline">Build stunning websites through WhatsApp. No code required. Just chat and go live.</p>
+        <div class="social-links">
+          <a href="#" class="social-btn" aria-label="Twitter">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="GitHub">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Product Links -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Product</h4>
+        <ul class="footer-links">
+          <li><a routerLink="/features">Features</a></li>
+          <li><a routerLink="/pricing">Pricing</a></li>
+          <li><a routerLink="/how-it-works">How It Works</a></li>
+        </ul>
+      </div>
+
+      <!-- Company Links -->
+      <div class="footer-col">
+        <h4 class="footer-heading">Company</h4>
+        <ul class="footer-links">
+          <li><a routerLink="/about">About</a></li>
+          <li><a routerLink="/blog">Blog</a></li>
+          <li><a routerLink="/contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Promo Column -->
+      <div class="footer-col footer-promo-col">
+        <h4 class="footer-heading">Try SiteFlow</h4>
+        <div class="footer-promo-card">
+          <h5>10-Day Free Trial</h5>
+          <p>Explore all features of our premium subscription plans with zero risk. No credit card required.</p>
+          <a routerLink="/auth/register" class="btn btn-primary btn-sm promo-btn">Start Trial Now</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2025 SiteFlow. All rights reserved.</p>
+      <div class="footer-legal">
+        <a routerLink="/privacy">Privacy Policy</a>
+        <a routerLink="/terms">Terms of Service</a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+}
