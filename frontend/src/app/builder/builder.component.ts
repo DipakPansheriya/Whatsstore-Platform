@@ -118,7 +118,7 @@ interface LayoutConfig {
           <div class="preview-sticky">
             <div class="preview-header">
               <span class="preview-tag">📱 Interactive Live Preview</span>
-              <span class="preview-url">siteflow.com/store/{{ slug }}</span>
+              <span class="preview-url">whatsstore.com/store/{{ slug }}</span>
             </div>
             
             <!-- Simulated Mobile Device Frame -->
@@ -181,7 +181,7 @@ interface LayoutConfig {
                   
                   <!-- Footer -->
                   <footer class="mock-footer">
-                    <p>&copy; 2025 {{ storeName }}. Powered by SiteFlow</p>
+                    <p>&copy; 2025 {{ storeName }}. Powered by WhatsStore</p>
                   </footer>
                   
                 </div>

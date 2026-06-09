@@ -21,12 +21,12 @@ import { Component } from '@angular/core';
 
             <section class="legal-section">
               <h2>2. WhatsApp Integration & Customer Data</h2>
-              <p>SiteFlow acts as a facilitator for checkout chats. When a buyer places an order, their name, contact details, and product choices are compiled into a WhatsApp link. Customer data entered during checkout is stored securely in our database to help merchants track orders, and is not shared with third-party tracking networks.</p>
+              <p>WhatsStore acts as a facilitator for checkout chats. When a buyer places an order, their name, contact details, and product choices are compiled into a WhatsApp link. Customer data entered during checkout is stored securely in our database to help merchants track orders, and is not shared with third-party tracking networks.</p>
             </section>
 
             <section class="legal-section">
               <h2>3. How We Use Information</h2>
-              <p>We use the collected information to operate, maintain, and personalize the SiteFlow platform. This includes processing billing subscriptions, resolving bugs, and providing analytics charts for merchants.</p>
+              <p>We use the collected information to operate, maintain, and personalize the WhatsStore platform. This includes processing billing subscriptions, resolving bugs, and providing analytics charts for merchants.</p>
             </section>
 
             <section class="legal-section">

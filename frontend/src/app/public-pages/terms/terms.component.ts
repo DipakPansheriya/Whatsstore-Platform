@@ -16,7 +16,7 @@ import { Component } from '@angular/core';
           <main class="legal-content">
             <section class="legal-section">
               <h2>1. Acceptance of Terms</h2>
-              <p>By creating a merchant account on SiteFlow, you agree to comply with and be bound by these Terms and Conditions. If you do not agree, please do not use the application.</p>
+              <p>By creating a merchant account on WhatsStore, you agree to comply with and be bound by these Terms and Conditions. If you do not agree, please do not use the application.</p>
             </section>
 
             <section class="legal-section">
@@ -31,7 +31,7 @@ import { Component } from '@angular/core';
 
             <section class="legal-section">
               <h2>4. Transaction Disclaimer</h2>
-              <p>SiteFlow does not act as a payment gateway or processing intermediary. All client orders are forwarded to WhatsApp. Merchants are solely responsible for coordinating deliveries, managing inventory availability, and collecting payments directly from customers.</p>
+              <p>WhatsStore does not act as a payment gateway or processing intermediary. All client orders are forwarded to WhatsApp. Merchants are solely responsible for coordinating deliveries, managing inventory availability, and collecting payments directly from customers.</p>
             </section>
 
             <section class="legal-section">

@@ -12,14 +12,14 @@ import { RouterLink } from '@angular/router';
           <!-- Docs Header -->
           <header class="docs-header text-center">
             <span class="badge">User Guide</span>
-            <h1>SiteFlow Documentation</h1>
+            <h1>WhatsStore Documentation</h1>
             <p class="lead">Learn how to create no-code storefront websites and accept customer orders via WhatsApp.</p>
           </header>
 
           <!-- Introduction Section -->
           <section id="intro" class="docs-section">
             <h2>✨ Introduction</h2>
-            <p>SiteFlow is a WhatsApp-First Website Builder designed to help merchants, small retail shops, salons, restaurants, and freelancers set up a digital catalog in minutes. Instead of complex, multi-page cart checkout procedures, customer selections are pre-formatted and forwarded directly to your personal WhatsApp chat.</p>
+            <p>WhatsStore is a WhatsApp-First Website Builder designed to help merchants, small retail shops, salons, restaurants, and freelancers set up a digital catalog in minutes. Instead of complex, multi-page cart checkout procedures, customer selections are pre-formatted and forwarded directly to your personal WhatsApp chat.</p>
           </section>
 
           <!-- Quickstart Section -->
@@ -30,7 +30,7 @@ import { RouterLink } from '@angular/router';
               <div class="step-card glass-card">
                 <span class="step-badge">01</span>
                 <strong>Create Account</strong>
-                <p>Sign up with your business details at <a routerLink="/auth/register" class="docs-link">SiteFlow Registration</a>.</p>
+                <p>Sign up with your business details at <a routerLink="/auth/register" class="docs-link">WhatsStore Registration</a>.</p>
               </div>
               <div class="step-card glass-card">
                 <span class="step-badge">02</span>
@@ -76,7 +76,7 @@ import { RouterLink } from '@angular/router';
           <!-- Checkout Flow Section -->
           <section id="checkout-flow" class="docs-section">
             <h2>💬 How Orders Work</h2>
-            <p>When a client visits your storefront and clicks "Order on WhatsApp", SiteFlow prompts them for name and contact info. It then creates a database order and builds a WhatsApp URL. Clicking it redirects the buyer to WhatsApp, pre-populating your chat with details like:</p>
+            <p>When a client visits your storefront and clicks "Order on WhatsApp", WhatsStore prompts them for name and contact info. It then creates a database order and builds a WhatsApp URL. Clicking it redirects the buyer to WhatsApp, pre-populating your chat with details like:</p>
             <pre class="code-block">
 Hello! I want to place an order:
 

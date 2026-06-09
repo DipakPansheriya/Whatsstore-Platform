@@ -13,7 +13,7 @@ import { AsyncPipe, CommonModule } from '@angular/common';
       <aside class="sidebar" [class.open]="sidebarOpen">
         <div class="sidebar-brand">
           <div class="logo-glow">⚡</div>
-          <span class="logo-text">SiteFlow</span>
+          <span class="logo-text">WhatsStore</span>
         </div>
         <nav class="sidebar-nav">
           @for (item of navItems; track item.path) {

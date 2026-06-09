@@ -31,7 +31,7 @@ import { Component } from '@angular/core';
           <div class="glass-card value-card">
             <div class="icon">✨</div>
             <h3>Premium Aesthetics</h3>
-            <p>Every store built with SiteFlow inherits curated typography, modern grid collections, and harmonious responsive templates tailored for Salons, Restaurants, Freelancers, and Retail Shops.</p>
+            <p>Every store built with WhatsStore inherits curated typography, modern grid collections, and harmonious responsive templates tailored for Salons, Restaurants, Freelancers, and Retail Shops.</p>
           </div>
         </div>
 

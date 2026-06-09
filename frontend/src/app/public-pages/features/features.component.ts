@@ -12,7 +12,7 @@ import { RouterLink } from '@angular/router';
         <header class="features-header text-center">
           <span class="badge">Platform Highlights</span>
           <h1>Engineered to Convert<br><span class="highlight">Clicks into Customers</span></h1>
-          <p class="subtitle">Discover the powerful features that make SiteFlow the ultimate WhatsApp commerce builder.</p>
+          <p class="subtitle">Discover the powerful features that make WhatsStore the ultimate WhatsApp commerce builder.</p>
         </header>
 
         <!-- Feature Grid -->

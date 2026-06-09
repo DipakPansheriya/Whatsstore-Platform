@@ -22,7 +22,7 @@ interface BlogPost {
         <!-- Header -->
         <header class="blog-header text-center">
           <span class="badge">SaaS & Growth Tips</span>
-          <h1>SiteFlow Insights</h1>
+          <h1>WhatsStore Insights</h1>
           <p class="subtitle">Actionable advice on e-commerce design, catalog management, and WhatsApp conversions.</p>
         </header>
 

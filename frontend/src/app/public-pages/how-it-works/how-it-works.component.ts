@@ -12,7 +12,7 @@ import { RouterLink } from '@angular/router';
         <header class="how-header text-center">
           <span class="badge">Workflow Overview</span>
           <h1>Go Live in 4 Simple Steps<br><span class="highlight">No Coding Needed.</span></h1>
-          <p class="subtitle">SiteFlow takes the complexity out of e-commerce. Here's a brief look at how it works.</p>
+          <p class="subtitle">WhatsStore takes the complexity out of e-commerce. Here's a brief look at how it works.</p>
         </header>
 
         <!-- Timeline Steps -->
@@ -25,7 +25,7 @@ import { RouterLink } from '@angular/router';
             <div class="step-content glass-card">
               <span class="step-label">Step 1 — Setup Account</span>
               <h3>Register & Auto Create Profile</h3>
-              <p>Register your merchant account using your email and contact phone number. SiteFlow automatically generates a unique website storefront URL slug (e.g. <code>siteflow.com/store/your-shop-name</code>) mapped to your profile.</p>
+              <p>Register your merchant account using your email and contact phone number. WhatsStore automatically generates a unique website storefront URL slug (e.g. <code>whatsstore.com/store/your-shop-name</code>) mapped to your profile.</p>
             </div>
           </div>
 
@@ -61,7 +61,7 @@ import { RouterLink } from '@angular/router';
             <div class="step-content glass-card">
               <span class="step-label">Step 4 — Go Live</span>
               <h3>Collect Orders on WhatsApp</h3>
-              <p>Share your storefront link on social media or search pages. Customers browse your catalog, write review stars, and checkout via WhatsApp. SiteFlow generates and copies a pre-filled transaction message and forwards them directly to your WhatsApp inbox.</p>
+              <p>Share your storefront link on social media or search pages. Customers browse your catalog, write review stars, and checkout via WhatsApp. WhatsStore generates and copies a pre-filled transaction message and forwards them directly to your WhatsApp inbox.</p>
             </div>
           </div>
         </div>
@@ -69,7 +69,7 @@ import { RouterLink } from '@angular/router';
         <!-- Call to Action Banner -->
         <div class="cta-banner glass-card accent-glow-hover text-center">
           <h2>Ready to Build Your Website?</h2>
-          <p>Get complete access to SiteFlow storefront customization with a 10-day free trial on the Mandatory Upgrade Plan.</p>
+          <p>Get complete access to WhatsStore storefront customization with a 10-day free trial. Start free, upgrade anytime.</p>
           <div class="cta-actions">
             <a routerLink="/auth/register" class="btn btn-primary">Start My Free Trial</a>
             <a routerLink="/features" class="btn btn-ghost">Learn More Features</a>

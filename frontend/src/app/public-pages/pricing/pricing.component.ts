@@ -12,7 +12,7 @@ import { RouterLink } from '@angular/router';
         <header class="pricing-header text-center">
           <span class="badge">Simple Pricing</span>
           <h1>One Plan. All Features.<br><span class="highlight">10-Day Free Trial.</span></h1>
-          <p class="subtitle">Get complete access to SiteFlow storefront builder. No credit card required to start.</p>
+          <p class="subtitle">Get complete access to WhatsStore storefront builder. No credit card required to start.</p>
         </header>
 
         <!-- Pricing Card -->
@@ -95,7 +95,7 @@ import { RouterLink } from '@angular/router';
           <div class="faq-grid">
             <div class="faq-item glass-card">
               <h4>How does the 10-day free trial work?</h4>
-              <p>You get complete access to all SiteFlow features for 10 days after registering. Your storefront will be live immediately. At the end of the 10 days, you can choose to subscribe to the Mandatory Upgrade Plan to keep your store active.</p>
+              <p>You get complete access to all WhatsStore features for 10 days after registering. Your storefront will be live immediately. At the end of the 10 days, you can choose to subscribe to the Mandatory Upgrade Plan to keep your store active.</p>
             </div>
             <div class="faq-item glass-card">
               <h4>Are there any setup fees or hidden transaction costs?</h4>

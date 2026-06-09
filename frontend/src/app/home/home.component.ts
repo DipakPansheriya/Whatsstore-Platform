@@ -10,21 +10,20 @@ import { RouterLink } from '@angular/router';
     <section class="hero animate-fade-in-up">
       <div class="container">
         <div class="hero-badge">
-          <span class="badge">🟢 10-Day Free Trial - No Card Required</span>
+          <span class="badge">⚡ No credit card required — launch in minutes</span>
         </div>
-        <h1 class="hero-title">Build Websites<br>and Sell <span class="highlight">via WhatsApp</span></h1>
+        <h1 class="hero-title">Build Your Website and Start<br>Selling Instantly <span class="highlight">on WhatsApp</span></h1>
         <p class="hero-desc">
-          SiteFlow lets you design, publish, and manage your e-commerce storefront entirely without coding.
-          Get started instantly and accept customer orders directly in your WhatsApp chat.
+          WhatsStore helps small businesses create beautiful websites, showcase products, and receive customer orders directly on WhatsApp — no coding, no checkout setup, no complexity.
         </p>
         <div class="hero-actions">
           <a routerLink="/auth/register" class="btn btn-primary" id="hero-cta-primary">
-            Start Your 10-Day Free Trial
+            Start Free Trial
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
           </a>
-          <a routerLink="/how-it-works" class="btn btn-ghost" id="hero-cta-secondary">How It Works</a>
+          <a routerLink="/how-it-works" class="btn btn-ghost" id="hero-cta-secondary">See How It Works</a>
         </div>
       </div>
     </section>
@@ -34,24 +33,24 @@ import { RouterLink } from '@angular/router';
       <div class="container">
         <div class="section-header text-center">
           <span class="badge">Highlights</span>
-          <h2>A Storefront Built for Growth</h2>
+          <h2>Everything You Need to Sell Online with WhatsStore</h2>
           <p>Everything you need to turn visitors into buyers via direct chat messaging.</p>
         </div>
         <div class="feature-grid">
           <div class="feature-card glass-card">
             <div class="feature-icon-wrapper">💬</div>
             <h3>WhatsApp Checkout</h3>
-            <p>Customer choices are formatted into a simple message and sent straight to your chat automatically.</p>
+            <p>Turn visitors into customers instantly. Every order is sent directly to WhatsApp with pre-filled product details, quantity, and pricing.</p>
           </div>
           <div class="feature-card glass-card">
             <div class="feature-icon-wrapper">🎨</div>
             <h3>No-Code Builder</h3>
-            <p>Customize layouts, theme colors, banners, and descriptions with real-time mockup feedback.</p>
+            <p>Build your website using ready-made templates. Customize layout, images, colors, and content without writing a single line of code.</p>
           </div>
           <div class="feature-card glass-card">
             <div class="feature-icon-wrapper">⭐</div>
             <h3>Customer Reviews</h3>
-            <p>Integrate direct star ratings and feedback systems to establish instant store trust.</p>
+            <p>Build trust with real customer reviews and ratings that help increase conversions and sales.</p>
           </div>
         </div>
         <div class="text-center view-all-link">
@@ -65,29 +64,29 @@ import { RouterLink } from '@angular/router';
       <div class="container">
         <div class="section-header text-center">
           <span class="badge">Workflow</span>
-          <h2>Launch in Minutes</h2>
+          <h2>Start Selling in 4 Simple Steps</h2>
           <p>Four quick actions to bring your catalog directly onto the web.</p>
         </div>
         <div class="workflow-steps">
           <div class="workflow-card glass-card">
             <span class="workflow-num">01</span>
-            <h4>Sign Up</h4>
-            <p>Register your account and claim your unique shop web slug.</p>
+            <h4>Create Account</h4>
+            <p>Sign up and set up your business profile in seconds.</p>
           </div>
           <div class="workflow-card glass-card">
             <span class="workflow-num">02</span>
-            <h4>Add Inventory</h4>
-            <p>Upload your catalog items with pricing, categories, and photos.</p>
+            <h4>Add Your Products</h4>
+            <p>Upload product images, descriptions, and pricing.</p>
           </div>
           <div class="workflow-card glass-card">
             <span class="workflow-num">03</span>
-            <h4>Design Layout</h4>
-            <p>Pick color presets and toggle your storefront theme template.</p>
+            <h4>Customize Your Store</h4>
+            <p>Choose a template and personalize your website design.</p>
           </div>
           <div class="workflow-card glass-card">
             <span class="workflow-num">04</span>
-            <h4>Get Orders</h4>
-            <p>Share your shop URL and receive clean checkouts on WhatsApp.</p>
+            <h4>Start Receiving Orders on WhatsApp</h4>
+            <p>Share your store link and receive customer orders instantly.</p>
           </div>
         </div>
       </div>
@@ -98,9 +97,9 @@ import { RouterLink } from '@angular/router';
       <div class="container">
         <div class="upgrade-banner glass-card accent-glow-hover text-center">
           <span class="badge">Plan Access</span>
-          <h2>10-Day Free Trial on Mandatory Upgrade</h2>
-          <p>Get complete, unrestricted access to all SiteFlow storefront builder tools for 10 days. Subscription pricing starts at just ₹499/mo ($9.99/mo) thereafter. Cancel anytime.</p>
-          <a routerLink="/auth/register" class="btn btn-primary">Start My 10-Day Trial</a>
+          <h2>Start Free. Upgrade Anytime.</h2>
+          <p>Try WhatsStore free for 10 days. Upgrade anytime to unlock advanced features like custom domain, analytics, and premium templates.</p>
+          <a routerLink="/auth/register" class="btn btn-primary">Start Free Trial</a>
         </div>
       </div>
     </section>
@@ -242,4 +241,4 @@ import { RouterLink } from '@angular/router';
     }
   `]
 })
-export class HomeComponent {}
+export class HomeComponent { }

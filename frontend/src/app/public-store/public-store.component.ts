@@ -51,7 +51,7 @@ interface ProductItem {
       <div class="empty-icon">🏪</div>
       <h2>Storefront Not Found</h2>
       <p>The storefront slug you requested does not exist or has not been published yet.</p>
-      <a routerLink="/" class="btn btn-primary">Return to SiteFlow</a>
+      <a routerLink="/" class="btn btn-primary">Return to WhatsStore</a>
     </div>
 
     <!-- Active Storefront -->
@@ -159,7 +159,7 @@ interface ProductItem {
       <footer class="public-footer">
         <div class="section-container text-center">
           <p>&copy; 2025 {{ business.name }}. All rights reserved.</p>
-          <p class="branding">Powered by <a routerLink="/">SiteFlow</a></p>
+          <p class="branding">Powered by <a routerLink="/">WhatsStore</a></p>
         </div>
       </footer>
     </div>
