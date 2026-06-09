@@ -11,8 +11,8 @@ import { RouterLink } from '@angular/router';
         <!-- Hero Header -->
         <header class="features-header text-center">
           <span class="badge">Platform Highlights</span>
-          <h1>Engineered to Convert<br><span class="highlight">Clicks into Customers</span></h1>
-          <p class="subtitle">Discover the powerful features that make WhatsStore the ultimate WhatsApp commerce builder.</p>
+          <h1>Built to Turn Website Visitors into<br><span class="highlight">WhatsApp Customers</span></h1>
+          <p class="subtitle">WhatsStore helps small businesses convert traffic into real orders using a WhatsApp-first selling system. No checkout forms. No complexity. Just instant customer chats.</p>
         </header>
 
         <!-- Feature Grid -->
@@ -21,52 +21,52 @@ import { RouterLink } from '@angular/router';
           <div class="feature-card glass-card">
             <div class="feature-icon-wrapper">💬</div>
             <h3>WhatsApp-First Ordering</h3>
-            <p>Skip the cart abandonments. Customers browse products, select quantities, and click checkout to instantly send a fully formatted order description directly to your WhatsApp number.</p>
+            <p>Let customers browse products and place orders instantly on WhatsApp with pre-filled order details, reducing drop-offs and increasing conversions.</p>
           </div>
 
           <!-- Feature 2 -->
           <div class="feature-card glass-card">
             <div class="feature-icon-wrapper">🎨</div>
-            <h3>No-Code Interactive Customizer</h3>
-            <p>Customize your hero banner, about bio, and calls-to-action in real-time. Toggle between Salon, Restaurant, Shop, and Freelancer layouts with our live phone mock preview.</p>
+            <h3>No-Code Store Builder</h3>
+            <p>Create a professional business website using ready-made templates. Customize layout, branding, products, and content without coding.</p>
           </div>
 
           <!-- Feature 3 -->
           <div class="feature-card glass-card">
             <div class="feature-icon-wrapper">⭐</div>
             <h3>Built-in Customer Reviews</h3>
-            <p>Build instant trust. Storefront pages allow visitors to read and submit star ratings and detailed feedback for individual products directly on the page.</p>
+            <p>Build trust with product reviews and ratings that help increase customer confidence and boost sales.</p>
           </div>
 
           <!-- Feature 4 -->
           <div class="feature-card glass-card">
             <div class="feature-icon-wrapper">📈</div>
             <h3>Merchant Analytics</h3>
-            <p>Understand your traffic patterns. Track total storefront page views, catalog clicks, WhatsApp checkouts, and compute conversion rates without any tracking scripts.</p>
+            <p>Track store performance including product views, clicks, and WhatsApp order conversions to understand your business growth.</p>
           </div>
 
           <!-- Feature 5 -->
           <div class="feature-card glass-card">
             <div class="feature-icon-wrapper">📱</div>
-            <h3>Ultra-fast Mobile Storefronts</h3>
-            <p>Fully optimized for mobile checkout. Features lazy loading, high accessibility, optimized assets, and a persistent WhatsApp call-to-action button.</p>
+            <h3>Ultra-Fast Mobile Storefronts</h3>
+            <p>Fully optimized mobile experience designed for fast browsing and instant WhatsApp ordering on any device.</p>
           </div>
 
           <!-- Feature 6 -->
           <div class="feature-card glass-card">
             <div class="feature-icon-wrapper">🔒</div>
-            <h3>Secure Account & Data</h3>
-            <p>Keep your customer relationships private. Rest assured that order histories and business configurations are stored securely in our database.</p>
+            <h3>Secure Business Data</h3>
+            <p>Your store data, orders, and customer information are securely stored and accessible only to you.</p>
           </div>
         </div>
 
         <!-- CTA Section -->
         <div class="cta-banner glass-card accent-glow-hover text-center">
-          <h2>Ready to Launch Your Storefront?</h2>
-          <p>Get started today with our 10-day free trial on the Mandatory Upgrade Plan.</p>
+          <h2>Ready to Launch Your WhatsStore?</h2>
+          <p>Start building your store today and begin receiving customer orders directly on WhatsApp within minutes.</p>
           <div class="cta-actions">
-            <a routerLink="/auth/register" class="btn btn-primary">Create Your Storefront Now</a>
-            <a routerLink="/pricing" class="btn btn-ghost">View Pricing Details</a>
+            <a routerLink="/auth/register" class="btn btn-primary">Create My Store Now</a>
+            <a routerLink="/pricing" class="btn btn-ghost">View Pricing</a>
           </div>
         </div>
       </div>
