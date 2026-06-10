@@ -754,7 +754,7 @@ export class RegisterComponent {
       businessName: this.businessName,
       slug: this.slug
     }).subscribe({
-      next: () => this.router.navigate(['/dashboard']),
+      next: () => this.router.navigate(['/admin/dashboard']),
       error: (err) => { this.error = err.message; this.loading = false; },
     });
   }

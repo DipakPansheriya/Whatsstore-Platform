@@ -11,8 +11,8 @@ import { RouterLink } from '@angular/router';
         <!-- Header -->
         <header class="how-header text-center">
           <span class="badge">Workflow Overview</span>
-          <h1>Go Live in 4 Simple Steps<br><span class="highlight">No Coding Needed.</span></h1>
-          <p class="subtitle">WhatsStore takes the complexity out of e-commerce. Here's a brief look at how it works.</p>
+          <h1>Launch Your WhatsStore in 4 Simple Steps<br><span class="highlight">No Coding Required</span></h1>
+          <p class="subtitle">Set up your store, add products, customize your design, and start receiving orders directly on WhatsApp.</p>
         </header>
 
         <!-- Timeline Steps -->
@@ -24,8 +24,8 @@ import { RouterLink } from '@angular/router';
             </div>
             <div class="step-content glass-card">
               <span class="step-label">Step 1 — Setup Account</span>
-              <h3>Register & Auto Create Profile</h3>
-              <p>Register your merchant account using your email and contact phone number. WhatsStore automatically generates a unique website storefront URL slug (e.g. <code>whatsstore.com/store/your-shop-name</code>) mapped to your profile.</p>
+              <h3>Create Your Store Account</h3>
+              <p>Sign up using your email and phone number. WhatsStore automatically generates your store profile and unique URL.</p>
             </div>
           </div>
 
@@ -36,8 +36,8 @@ import { RouterLink } from '@angular/router';
             </div>
             <div class="step-content glass-card">
               <span class="step-label">Step 2 — Catalog Upload</span>
-              <h3>Upload Product Inventory</h3>
-              <p>Add products to your catalog from the catalog manager dashboard. Specify titles, descriptions, pricing, product categories, and upload up to three high-resolution catalog images. You can also label premium items as "Featured".</p>
+              <h3>Add Your Products</h3>
+              <p>Upload product images, titles, pricing, and descriptions. Organize items into categories to make browsing easy for customers.</p>
             </div>
           </div>
 
@@ -48,8 +48,8 @@ import { RouterLink } from '@angular/router';
             </div>
             <div class="step-content glass-card">
               <span class="step-label">Step 3 — Personalize Layout</span>
-              <h3>Customize Website Style</h3>
-              <p>Access our live no-code website builder. Select a design layout preset customized for your business category (Salon, Restaurant, Shop, or Freelancer), pick your accent theme colors, and customize headers. Updates appear instantly in our interactive mobile preview tool.</p>
+              <h3>Customize Your Store Design</h3>
+              <p>Choose a template based on your business type (shop, salon, restaurant, freelancer). Customize colors, layout, and branding instantly with live preview.</p>
             </div>
           </div>
 
@@ -60,18 +60,18 @@ import { RouterLink } from '@angular/router';
             </div>
             <div class="step-content glass-card">
               <span class="step-label">Step 4 — Go Live</span>
-              <h3>Collect Orders on WhatsApp</h3>
-              <p>Share your storefront link on social media or search pages. Customers browse your catalog, write review stars, and checkout via WhatsApp. WhatsStore generates and copies a pre-filled transaction message and forwards them directly to your WhatsApp inbox.</p>
+              <h3>Receive Orders on WhatsApp</h3>
+              <p>Share your store link on social media. Customers browse products and place orders that are automatically sent to your WhatsApp inbox.</p>
             </div>
           </div>
         </div>
 
         <!-- Call to Action Banner -->
         <div class="cta-banner glass-card accent-glow-hover text-center">
-          <h2>Ready to Build Your Website?</h2>
-          <p>Get complete access to WhatsStore storefront customization with a 10-day free trial. Start free, upgrade anytime.</p>
+          <h2>Ready to Launch Your WhatsStore?</h2>
+          <p>Start your store today and begin receiving real customer orders instantly via WhatsApp.</p>
           <div class="cta-actions">
-            <a routerLink="/auth/register" class="btn btn-primary">Start My Free Trial</a>
+            <a routerLink="/auth/register" class="btn btn-primary">Launch My Store Free</a>
             <a routerLink="/features" class="btn btn-ghost">Learn More Features</a>
           </div>
         </div>
@@ -229,4 +229,4 @@ import { RouterLink } from '@angular/router';
     }
   `]
 })
-export class HowItWorksComponent {}
+export class HowItWorksComponent { }

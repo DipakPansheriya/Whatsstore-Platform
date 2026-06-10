@@ -20,6 +20,6 @@ export const guestGuard: CanActivateFn = () => {
 
   if (!auth.isLoggedIn()) return true;
 
-  router.navigate(['/dashboard']);
+  router.navigate(['/admin/dashboard']);
   return false;
 };

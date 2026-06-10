@@ -275,11 +275,11 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 export class DashboardLayoutComponent {
   sidebarOpen = false;
   navItems = [
-    { label: 'Overview', path: '/dashboard', icon: '📊', exact: true },
-    { label: 'Products', path: '/products', icon: '📦', exact: false },
-    { label: 'Orders', path: '/orders', icon: '🛒', exact: false },
-    { label: 'Website Builder', path: '/builder', icon: '🎨', exact: false },
-    { label: 'Settings', path: '/settings', icon: '⚙️', exact: false },
+    { label: 'Overview', path: '/admin/dashboard', icon: '📊', exact: true },
+    { label: 'Products', path: '/admin/products', icon: '📦', exact: false },
+    { label: 'Orders', path: '/admin/orders', icon: '🛒', exact: false },
+    { label: 'Website Builder', path: '/admin/builder', icon: '🎨', exact: false },
+    { label: 'Settings', path: '/admin/settings', icon: '⚙️', exact: false },
   ];
 
   constructor(public auth: AuthService) {}

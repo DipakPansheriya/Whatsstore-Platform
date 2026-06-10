@@ -55,7 +55,7 @@ export const routes: Routes = [
 
   // Protected feature modules sharing DashboardLayout
   {
-    path: '',
+    path: 'admin',
     component: DashboardLayoutComponent,
     canActivate: [authGuard],
     children: [

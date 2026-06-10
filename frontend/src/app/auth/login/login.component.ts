@@ -597,7 +597,7 @@ export class LoginComponent {
     this.error = '';
     this.loading = true;
     this.auth.login({ email: this.email, password: this.password }).subscribe({
-      next: () => this.router.navigate(['/dashboard']),
+      next: () => this.router.navigate(['/admin/dashboard']),
       error: (err) => { this.error = err.message; this.loading = false; },
     });
   }

@@ -11,8 +11,8 @@ import { RouterLink } from '@angular/router';
         <!-- Header -->
         <header class="pricing-header text-center">
           <span class="badge">Simple Pricing</span>
-          <h1>One Plan. All Features.<br><span class="highlight">10-Day Free Trial.</span></h1>
-          <p class="subtitle">Get complete access to WhatsStore storefront builder. No credit card required to start.</p>
+          <h1>One Simple Plan.<br><span class="highlight">Everything Included.</span></h1>
+          <p class="subtitle">Start free for 10 days. Build your WhatsStore, add products, and start receiving WhatsApp orders instantly. No credit card required.</p>
         </header>
 
         <!-- Pricing Card -->
@@ -21,8 +21,8 @@ import { RouterLink } from '@angular/router';
             <div class="badge-trial">✨ 10-Day Free Trial Included</div>
             
             <div class="card-header text-center">
-              <h3>Mandatory Upgrade Plan</h3>
-              <p class="plan-desc">Perfect for small businesses, shops, salons, and freelancers ready to sell via WhatsApp.</p>
+              <h3>WhatsStore Pro Plan</h3>
+              <p class="plan-desc">Designed for small businesses, shops, salons, restaurants, and freelancers ready to sell via WhatsApp.</p>
               
               <div class="price-wrapper">
                 <span class="currency">₹</span>
@@ -41,49 +41,49 @@ import { RouterLink } from '@angular/router';
                   <span class="check-icon">✓</span>
                   <div>
                     <strong>Unlimited Product Listings</strong>
-                    <p>Add and display as many items, descriptions, and galleries as you like.</p>
+                    <p>Add unlimited products with images, pricing, and descriptions — no restrictions.</p>
                   </div>
                 </li>
                 <li>
                   <span class="check-icon">✓</span>
                   <div>
                     <strong>WhatsApp Order Direct Forwarding</strong>
-                    <p>Orders are formatted and sent straight to your chat automatically.</p>
+                    <p>Customer orders are automatically formatted and sent directly to your WhatsApp inbox.</p>
                   </div>
                 </li>
                 <li>
                   <span class="check-icon">✓</span>
                   <div>
                     <strong>4 Theme Layout Presets</strong>
-                    <p>Switch between custom Shop, Restaurant, Salon, and Freelancer layouts.</p>
+                    <p>Choose from professional templates for Shop, Restaurant, Salon, and Freelancer businesses.</p>
                   </div>
                 </li>
                 <li>
                   <span class="check-icon">✓</span>
                   <div>
                     <strong>Interactive Store Customizer</strong>
-                    <p>Tweak titles, descriptions, banner layouts, and color themes in real-time.</p>
+                    <p>Customize colors, layout, banners, and content in real-time with live preview.</p>
                   </div>
                 </li>
                 <li>
                   <span class="check-icon">✓</span>
                   <div>
-                    <strong>Customer Review Logs</strong>
-                    <p>Enable star ratings and comment sections to build credibility.</p>
+                    <strong>Customer Review System</strong>
+                    <p>Collect and display customer ratings and reviews to build trust and increase sales.</p>
                   </div>
                 </li>
                 <li>
                   <span class="check-icon">✓</span>
                   <div>
-                    <strong>SEO & Social Share Optimization</strong>
-                    <p>Configured meta descriptions, unique storefront slugs, and fast-loading pages.</p>
+                    <strong>SEO & Social Sharing Optimization</strong>
+                    <p>Optimize your store for search engines and social media sharing with meta tags and clean URLs.</p>
                   </div>
                 </li>
               </ul>
             </div>
 
             <div class="card-footer text-center">
-              <a routerLink="/auth/register" class="btn btn-primary btn-block">Start Your 10-Day Free Trial</a>
+              <a routerLink="/auth/register" class="btn btn-primary btn-block">🚀 Launch My Store Now</a>
               <p class="footer-note">No credit card required. Cancel anytime during the trial period.</p>
             </div>
           </div>
@@ -95,19 +95,19 @@ import { RouterLink } from '@angular/router';
           <div class="faq-grid">
             <div class="faq-item glass-card">
               <h4>How does the 10-day free trial work?</h4>
-              <p>You get complete access to all WhatsStore features for 10 days after registering. Your storefront will be live immediately. At the end of the 10 days, you can choose to subscribe to the Mandatory Upgrade Plan to keep your store active.</p>
+              <p>You get full access to all WhatsStore features for 10 days. After the trial ends, you can choose to subscribe to continue using your store.</p>
             </div>
             <div class="faq-item glass-card">
               <h4>Are there any setup fees or hidden transaction costs?</h4>
-              <p>No setup fees or transaction charges. We do not take commission on your orders. All customer communication and checkout payments happen directly on your WhatsApp.</p>
+              <p>No setup fees or hidden charges. WhatsStore charges only a simple monthly subscription. All customer communication happens directly via WhatsApp.</p>
             </div>
             <div class="faq-item glass-card">
               <h4>Can I cancel my subscription?</h4>
-              <p>Yes, you can cancel your subscription at any time directly through your merchant account settings panel. Your storefront will remain active until the end of the billing period.</p>
+              <p>Yes, you can cancel anytime from your account settings. Your store will remain active until the end of the billing cycle.</p>
             </div>
             <div class="faq-item glass-card">
               <h4>Do I need a separate WhatsApp Business account?</h4>
-              <p>No, you can use any regular WhatsApp number. When checkouts trigger, they open standard WhatsApp chats with pre-filled messages addressed to your number.</p>
+              <p>No WhatsApp Business account is required. Orders are sent directly to your normal WhatsApp number.</p>
             </div>
           </div>
         </section>

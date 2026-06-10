@@ -25,23 +25,19 @@ export class AppComponent {
     ).subscribe((event: any) => {
       const url = event.urlAfterRedirects || event.url || '';
       this.isDashboardOrAuthOrStore = 
-        url.startsWith('/dashboard') || 
+        url.startsWith('/admin') || 
         url.startsWith('/auth') || 
-        url.startsWith('/builder') || 
-        url.startsWith('/products') || 
-        url.startsWith('/orders') || 
-        url.startsWith('/settings') || 
         url.startsWith('/store');
 
-      if (url.startsWith('/dashboard')) {
+      if (url.startsWith('/admin/dashboard')) {
         this.titleService.setTitle('Merchant Dashboard - WhatsStore');
-      } else if (url.startsWith('/settings')) {
+      } else if (url.startsWith('/admin/settings')) {
         this.titleService.setTitle('Store Settings - WhatsStore');
-      } else if (url.startsWith('/products')) {
+      } else if (url.startsWith('/admin/products')) {
         this.titleService.setTitle('Catalog Manager - WhatsStore');
-      } else if (url.startsWith('/orders')) {
+      } else if (url.startsWith('/admin/orders')) {
         this.titleService.setTitle('Orders Dashboard - WhatsStore');
-      } else if (url.startsWith('/builder')) {
+      } else if (url.startsWith('/admin/builder')) {
         this.titleService.setTitle('Website Builder - WhatsStore');
       } else if (url.startsWith('/auth')) {
         this.titleService.setTitle('Account Access - WhatsStore');
