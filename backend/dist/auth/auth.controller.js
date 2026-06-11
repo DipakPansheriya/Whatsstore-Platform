@@ -1,12 +1,72 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMe = exports.login = exports.register = void 0;
+exports.getMe = exports.login = exports.register = exports.registerSuperAdmin = void 0;
 const auth_model_1 = __importDefault(require("./auth.model"));
 const business_model_1 = __importDefault(require("../business/business.model"));
 const jwt_1 = require("../config/jwt");
+/** POST /api/auth/setup-superadmin (Hidden route for Postman) */
+const registerSuperAdmin = async (req, res) => {
+    try {
+        const { name, email, phone, password } = req.body;
+        if (!name || !email || !phone || !password) {
+            res.status(400).json({ success: false, message: 'All fields are required' });
+            return;
+        }
+        const existingUser = await auth_model_1.default.findOne({ $or: [{ email }, { phone }] });
+        if (existingUser) {
+            res.status(409).json({ success: false, message: 'Email or phone already registered' });
+            return;
+        }
+        const user = await auth_model_1.default.create({ name, email, phone, passwordHash: password, role: 'SUPERADMIN', isVerified: true });
+        const token = (0, jwt_1.signToken)({ userId: user.id, email: user.email, role: user.role });
+        res.status(201).json({
+            success: true,
+            message: 'SuperAdmin created successfully',
+            token,
+            user: { id: user.id, name: user.name, email: user.email, role: user.role },
+        });
+    }
+    catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+exports.registerSuperAdmin = registerSuperAdmin;
 /** POST /api/auth/register */
 const register = async (req, res) => {
     try {
@@ -25,15 +85,25 @@ const register = async (req, res) => {
             res.status(409).json({ success: false, message: 'Store URL slug is already taken' });
             return;
         }
-        const user = await auth_model_1.default.create({ name, email, phone, passwordHash: password, role: 'business' });
+        const user = await auth_model_1.default.create({ name, email, phone, passwordHash: password, role: 'ADMIN' });
         // Automatically create business profile
-        await business_model_1.default.create({
+        const business = await business_model_1.default.create({
             owner: user.id,
             name: businessName,
             email,
             phone,
             whatsappNumber: phone,
             websiteSlug: slug,
+        });
+        // Automatically start 10-day free trial
+        const { default: Subscription } = await Promise.resolve().then(() => __importStar(require('../subscriptions/subscription.model')));
+        await Subscription.create({
+            user: user.id,
+            store: business.id,
+            status: 'TRIAL_ACTIVE',
+            trialStartDate: new Date(),
+            // TEMPORARY: Set to 5 minutes for testing. Change back to 10 days (10 * 24 * 60 * 60 * 1000) after testing.
+            trialEndDate: new Date(Date.now() + 5 * 60 * 1000)
         });
         const token = (0, jwt_1.signToken)({ userId: user.id, email: user.email, role: user.role });
         res.status(201).json({

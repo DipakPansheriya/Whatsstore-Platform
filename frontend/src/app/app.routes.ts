@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { DashboardLayoutComponent } from './shared/dashboard-layout.component';
-import { authGuard, guestGuard } from './shared/guards/auth.guard';
+import { SuperAdminLayoutComponent } from './shared/superadmin-layout.component';
+import { authGuard, guestGuard, adminGuard, superAdminGuard } from './shared/guards/auth.guard';
 
 export const routes: Routes = [
   // Public pages
@@ -53,11 +54,48 @@ export const routes: Routes = [
     loadChildren: () => import('./auth/auth.routes').then(m => m.authRoutes),
   },
 
+  // SuperAdmin modules
+  {
+    path: 'superadmin',
+    component: SuperAdminLayoutComponent,
+    canActivate: [authGuard, superAdminGuard],
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./superadmin/dashboard.component').then(m => m.SuperAdminDashboardComponent),
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./superadmin/users.component').then(m => m.UsersComponent),
+      },
+      {
+        path: 'stores',
+        loadComponent: () => import('./superadmin/stores.component').then(m => m.StoresComponent),
+      },
+      {
+        path: 'plans',
+        loadComponent: () => import('./superadmin/plans.component').then(m => m.PlansComponent),
+      },
+      {
+        path: 'subscriptions',
+        loadComponent: () => import('./superadmin/subscriptions.component').then(m => m.SubscriptionsComponent),
+      },
+      {
+        path: 'trials',
+        loadComponent: () => import('./superadmin/trials.component').then(m => m.TrialsComponent),
+      },
+      {
+        path: 'logs',
+        loadComponent: () => import('./superadmin/logs.component').then(m => m.LogsComponent),
+      },
+    ],
+  },
+
   // Protected feature modules sharing DashboardLayout
   {
     path: 'admin',
     component: DashboardLayoutComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard, adminGuard],
     children: [
       {
         path: 'dashboard',

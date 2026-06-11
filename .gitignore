@@ -8,6 +8,7 @@ package-lock.json
 # Build / Dist Output
 # ========================
 dist/
+**/dist/
 build/
 tmp/
 out-tsc/

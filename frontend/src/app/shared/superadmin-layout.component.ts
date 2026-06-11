@@ -1,12 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment.development';
 
 @Component({
-  selector: 'app-dashboard-layout',
+  selector: 'app-superadmin-layout',
   standalone: true,
   imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe, CommonModule],
   template: `
@@ -36,13 +34,10 @@ import { environment } from '../../environments/environment.development';
       <!-- Main Container -->
       <div class="dash-container">
         <!-- Top Navbar -->
-        <header class="dash-navbar">
+        <header class="dash-navbar glass-header">
           <button class="mobile-toggle" (click)="toggleSidebar()">☰</button>
           <div class="navbar-left">
-            <span class="shop-badge">🏪 Merchant Portal</span>
-            <span class="trial-badge ml-md" *ngIf="subscriptionStatus === 'TRIAL_ACTIVE'">
-              {{ getTrialDaysRemaining() }} Days Trial Remaining
-            </span>
+            <span class="shop-badge">👑 System Owner Portal</span>
           </div>
 
           <div class="navbar-center">
@@ -63,66 +58,14 @@ import { environment } from '../../environments/environment.development';
               <span class="user-name">{{ user.name }}</span>
               <span class="user-role">{{ user.role }}</span>
             </div>
-            <img class="user-avatar" [src]="'https://ui-avatars.com/api/?name=' + user.name + '&background=25d366&color=fff'" alt="User Avatar">
+              <img class="user-avatar" [src]="'https://ui-avatars.com/api/?name=' + user.name + '&background=8b5cf6&color=fff'" alt="User Avatar">
             </div>
           </div>
         </header>
 
         <!-- Main Content Area -->
         <main class="dash-content">
-          <ng-container *ngIf="!loadingSubscription; else loadingTpl">
-            <ng-container *ngIf="subscriptionStatus === 'ACTIVE' || subscriptionStatus === 'TRIAL_ACTIVE' || subscriptionStatus === 'TRIAL_EXPIRED' || subscriptionStatus === 'EXPIRED'">
-              
-              <div class="upgrade-banner" *ngIf="subscriptionStatus === 'TRIAL_EXPIRED' || subscriptionStatus === 'EXPIRED'">
-                <div class="banner-content">
-                  <span class="banner-icon">⚠️</span>
-                  <span class="banner-text">Your {{ subscriptionStatus === 'TRIAL_EXPIRED' ? 'trial' : 'subscription' }} has expired. Store features have been locked.</span>
-                </div>
-                <a routerLink="/pricing" class="btn-upgrade">Upgrade Now</a>
-              </div>
-
-              <div [class.locked-features]="subscriptionStatus === 'TRIAL_EXPIRED' || subscriptionStatus === 'EXPIRED'">
-                <router-outlet></router-outlet>
-              </div>
-            </ng-container>
-            <ng-container *ngIf="subscriptionStatus === 'PENDING' || subscriptionStatus === 'PAYMENT_PENDING'">
-              <ng-container *ngTemplateOutlet="pendingTpl"></ng-container>
-            </ng-container>
-            <ng-container *ngIf="subscriptionStatus === 'NONE' || subscriptionStatus === 'CANCELLED' || subscriptionStatus === 'SUSPENDED'">
-              <ng-container *ngTemplateOutlet="noneTpl"></ng-container>
-            </ng-container>
-          </ng-container>
-
-          <ng-template #loadingTpl>
-            <div class="loading-state">
-              <div class="spinner"></div>
-              <p>Loading your dashboard...</p>
-            </div>
-          </ng-template>
-
-          <ng-template #pendingTpl>
-            <div class="pending-state">
-              <div class="pending-card text-center">
-                <div class="icon-pulse">⏳</div>
-                <h2>Waiting for Approval</h2>
-                <p>Your subscription is currently pending. Please complete your payment or wait for activation.</p>
-                <div class="status-badge mt-4">Status: <span class="text-warning">PENDING</span></div>
-              </div>
-            </div>
-          </ng-template>
-
-          <ng-template #noneTpl>
-            <div class="pending-state">
-              <div class="pending-card text-center">
-                <div class="icon-pulse">🛍️</div>
-                <h2>Select a Subscription Plan</h2>
-                <p>You need an active subscription to access the dashboard. Please choose a plan to get started.</p>
-                <div class="mt-4">
-                  <a routerLink="/pricing" class="btn-primary" style="display: inline-block; text-decoration: none; padding: 12px 24px;">View Plans & Pricing</a>
-                </div>
-              </div>
-            </div>
-          </ng-template>
+          <router-outlet></router-outlet>
         </main>
 
         <!-- Footer -->
@@ -175,9 +118,9 @@ import { environment } from '../../environments/environment.development';
     .logo-glow {
       width: 34px;
       height: 34px;
-      background: linear-gradient(135deg, var(--color-accent) 0%, #00b4d8 100%);
+      background: linear-gradient(135deg, #8b5cf6 0%, #c084fc 100%);
       border-radius: 50%;
-      box-shadow: 0 0 18px rgba(37, 211, 102, 0.45);
+      box-shadow: 0 0 18px rgba(139, 92, 246, 0.45);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -221,10 +164,10 @@ import { environment } from '../../environments/environment.development';
       }
       &.active {
         color: #fff;
-        background: linear-gradient(90deg, rgba(37, 211, 102, 0.15) 0%, rgba(37, 211, 102, 0.02) 100%);
-        border: 1px solid rgba(37, 211, 102, 0.15);
-        border-left: 4px solid var(--color-accent);
-        box-shadow: inset 4px 0 15px rgba(37, 211, 102, 0.05);
+        background: linear-gradient(90deg, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0.02) 100%);
+        border: 1px solid rgba(139, 92, 246, 0.15);
+        border-left: 4px solid #8b5cf6;
+        box-shadow: inset 4px 0 15px rgba(139, 92, 246, 0.05);
       }
     }
     .nav-icon {
@@ -294,10 +237,10 @@ import { environment } from '../../environments/environment.development';
       align-items: center;
       gap: 6px;
       padding: 6px 14px;
-      background: var(--color-accent-dim);
-      border: 1px solid rgba(37, 211, 102, 0.2);
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.2);
       border-radius: var(--radius-pill);
-      color: var(--color-accent);
+      color: #a78bfa;
       font-size: 0.85rem;
       font-weight: 700;
       letter-spacing: 0.02em;
@@ -326,135 +269,15 @@ import { environment } from '../../environments/environment.development';
       width: 42px;
       height: 42px;
       border-radius: var(--radius-pill);
-      border: 2px solid var(--color-accent);
+      border: 2px solid #8b5cf6;
       object-fit: cover;
-      box-shadow: 0 0 15px rgba(37, 211, 102, 0.25);
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.25);
     }
     .dash-content {
       flex: 1;
       padding: var(--space-xl);
       overflow-y: auto;
-      position: relative;
     }
-    
-    .loading-state {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      color: var(--color-text-secondary);
-    }
-    .spinner {
-      width: 40px; height: 40px;
-      border: 3px solid rgba(37,211,102,0.2);
-      border-top-color: var(--color-accent);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 1rem;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    
-    .pending-state {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 60vh;
-    }
-    .pending-card {
-      background: rgba(17, 19, 25, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 3rem;
-      max-width: 500px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-    }
-    .icon-pulse {
-      font-size: 4rem;
-      margin-bottom: 1rem;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.1); opacity: 0.7; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .pending-card h2 {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-      color: #fff;
-    }
-    .pending-card p {
-      color: var(--color-text-secondary);
-      line-height: 1.6;
-    }
-    .status-badge {
-      display: inline-block;
-      background: rgba(234, 179, 8, 0.15);
-      border: 1px solid rgba(234, 179, 8, 0.3);
-      padding: 8px 16px;
-      border-radius: 50px;
-      font-weight: 700;
-      font-size: 0.9rem;
-    }
-    .text-warning { color: #facc15; }
-    .mt-4 { margin-top: 1.5rem; }
-    .text-center { text-align: center; }
-    
-    .trial-badge {
-      background: rgba(168, 85, 247, 0.15);
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      color: #c084fc;
-      padding: 4px 10px;
-      border-radius: var(--radius-sm);
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-    .ml-md { margin-left: 1rem; }
-    
-    .upgrade-banner {
-      background: linear-gradient(90deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.02) 100%);
-      border: 1px solid rgba(239, 68, 68, 0.2);
-      border-left: 4px solid var(--color-danger);
-      border-radius: var(--radius-md);
-      padding: 1rem 1.5rem;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.05);
-    }
-    .banner-content {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .banner-icon { font-size: 1.25rem; }
-    .banner-text { color: #fca5a5; font-weight: 500; font-size: 0.95rem; }
-    .btn-upgrade {
-      background: var(--color-danger);
-      color: #fff;
-      text-decoration: none;
-      padding: 8px 16px;
-      border-radius: var(--radius-sm);
-      font-weight: 600;
-      font-size: 0.85rem;
-      transition: all 0.2s;
-    }
-    .btn-upgrade:hover {
-      background: #dc2626;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-    }
-    .locked-features {
-      pointer-events: none;
-      opacity: 0.5;
-      filter: grayscale(100%);
-      user-select: none;
-    }
-
     
     .glass-header {
       background: rgba(17, 19, 25, 0.7) !important;
@@ -543,54 +366,21 @@ import { environment } from '../../environments/environment.development';
     }
   `]
 })
-export class DashboardLayoutComponent implements OnInit {
+export class SuperAdminLayoutComponent {
   currentYear = new Date().getFullYear();
 
   sidebarOpen = false;
   navItems = [
-    { label: 'Overview', path: '/admin/dashboard', icon: '📊', exact: true },
-    { label: 'Products', path: '/admin/products', icon: '📦', exact: false },
-    { label: 'Orders', path: '/admin/orders', icon: '🛒', exact: false },
-    { label: 'Website Builder', path: '/admin/builder', icon: '🎨', exact: false },
-    { label: 'Settings', path: '/admin/settings', icon: '⚙️', exact: false },
+    { label: 'Platform Overview', path: '/superadmin/dashboard', icon: '🌍', exact: true },
+    { label: 'Users', path: '/superadmin/users', icon: '👥', exact: false },
+    { label: 'Stores', path: '/superadmin/stores', icon: '🏪', exact: false },
+    { label: 'Subscriptions', path: '/superadmin/subscriptions', icon: '💳', exact: false },
+    { label: 'Trials', path: '/superadmin/trials', icon: '⏳', exact: false },
+    { label: 'Plans & Pricing', path: '/superadmin/plans', icon: '📈', exact: false },
+    { label: 'System Logs', path: '/superadmin/logs', icon: '📝', exact: false },
   ];
 
-  subscriptionStatus: string | null = null;
-  subscription: any = null;
-  loadingSubscription = true;
-
-  constructor(public auth: AuthService, private http: HttpClient, private router: Router) { }
-
-  ngOnInit() {
-    this.checkSubscriptionStatus();
-  }
-
-  checkSubscriptionStatus() {
-    const headers = { Authorization: `Bearer ${localStorage.getItem('sf_token')}` };
-    this.http.get(`${environment.apiUrl}/subscriptions/me`, { headers }).subscribe({
-      next: (res: any) => {
-        this.subscription = res.subscription;
-        this.subscriptionStatus = res.subscription?.status || 'NONE';
-        this.loadingSubscription = false;
-      },
-      error: (err) => {
-        if (err.status === 404 && err.error?.status === 'NONE') {
-          this.subscriptionStatus = 'NONE';
-        } else {
-          this.subscriptionStatus = 'PENDING';
-        }
-        this.loadingSubscription = false;
-      }
-    });
-  }
-
-  getTrialDaysRemaining(): number {
-    if (!this.subscription || !this.subscription.trialEndDate) return 0;
-    const end = new Date(this.subscription.trialEndDate).getTime();
-    const now = new Date().getTime();
-    const diff = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
-    return diff > 0 ? diff : 0;
-  }
+  constructor(public auth: AuthService) {}
 
   toggleSidebar() {
     this.sidebarOpen = !this.sidebarOpen;

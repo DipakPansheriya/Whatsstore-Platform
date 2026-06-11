@@ -46,6 +46,14 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
+  isAdmin(): boolean {
+    return this.currentUser?.role === 'ADMIN' || this.currentUser?.role === 'SUPERADMIN';
+  }
+
+  isSuperAdmin(): boolean {
+    return this.currentUser?.role === 'SUPERADMIN';
+  }
+
   register(data: { name: string; email: string; phone: string; password: string; businessName: string; slug: string }): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/register`, data).pipe(
       tap(res => this.setSession(res))

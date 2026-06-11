@@ -43,7 +43,7 @@ const UserSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     phone: { type: String, required: true, unique: true, trim: true },
     passwordHash: { type: String, required: true },
-    role: { type: String, enum: ['admin', 'business', 'customer'], default: 'business' },
+    role: { type: String, enum: ['ADMIN', 'SUPERADMIN', 'CUSTOMER'], default: 'ADMIN' },
     isVerified: { type: Boolean, default: false },
 }, { timestamps: true });
 // Hash password before saving

@@ -10,6 +10,10 @@ import productRoutes from './products/products.routes';
 import orderRoutes from './orders/orders.routes';
 import reviewRoutes from './reviews/reviews.routes';
 import analyticsRoutes from './analytics/analytics.routes';
+import superAdminRoutes from './superadmin/superadmin.routes';
+import planRoutes from './plans/plan.routes';
+import subscriptionRoutes from './subscriptions/subscription.routes';
+import logRoutes from './logs/activity-log.routes';
 
 dotenv.config();
 
@@ -54,6 +58,10 @@ app.use('/api/products',  productRoutes);
 app.use('/api/orders',    orderRoutes);
 app.use('/api/reviews',   reviewRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/superadmin', superAdminRoutes);
+app.use('/api/plans', planRoutes);
+app.use('/api/subscriptions', subscriptionRoutes);
+app.use('/api/logs', logRoutes);
 
 // ── 404 Handler ─────────────────────────────────────
 app.use((_req, res) => {

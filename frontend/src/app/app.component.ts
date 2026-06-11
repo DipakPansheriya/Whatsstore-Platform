@@ -26,6 +26,7 @@ export class AppComponent {
       const url = event.urlAfterRedirects || event.url || '';
       this.isDashboardOrAuthOrStore = 
         url.startsWith('/admin') || 
+        url.startsWith('/superadmin') ||
         url.startsWith('/auth') || 
         url.startsWith('/store');
 

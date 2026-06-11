@@ -28,12 +28,23 @@ interface ProductItem {
           <h1>Store Products</h1>
           <p>Add, edit, or delete items in your catalog. They will sync instantly to your storefront.</p>
         </div>
-        <button *ngIf="!showForm" (click)="openAddForm()" class="btn btn-primary" id="add-product-btn">
-          ✨ Add Product
-        </button>
-        <button *ngIf="showForm" (click)="closeForm()" class="btn btn-ghost" id="back-list-btn">
-          ⬅ Back to Catalog
-        </button>
+        
+        <div class="header-actions">
+          <div class="view-toggle" *ngIf="!showForm">
+            <button (click)="viewMode = 'grid'" [class.active]="viewMode === 'grid'" class="toggle-btn" title="Grid View">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            </button>
+            <button (click)="viewMode = 'list'" [class.active]="viewMode === 'list'" class="toggle-btn" title="List View">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            </button>
+          </div>
+          <button *ngIf="!showForm" (click)="openAddForm()" class="btn btn-primary" id="add-product-btn">
+            ✨ Add Product
+          </button>
+          <button *ngIf="showForm" (click)="closeForm()" class="btn btn-ghost" id="back-list-btn">
+            ⬅ Back to Catalog
+          </button>
+        </div>
       </header>
 
       <!-- Message notifications -->
@@ -60,7 +71,7 @@ interface ProductItem {
           </div>
 
           <!-- Product Grid -->
-          <div *ngIf="products.length > 0" class="product-grid">
+          <div *ngIf="products.length > 0" [class]="viewMode === 'grid' ? 'product-grid' : 'product-list-view'">
             @for (product of products; track product._id) {
               <div class="product-card glass-card" [class.dimmed]="!product.isAvailable">
                 <div class="image-wrapper">
@@ -552,6 +563,123 @@ interface ProductItem {
       font-size: 0.75rem;
       color: var(--color-text-secondary);
     }
+   
+    .header-actions {
+      display: flex;
+      gap: var(--space-md);
+      align-items: center;
+    }
+    .view-toggle {
+      display: flex;
+      background: rgba(8, 9, 13, 0.4);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+    }
+    .toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--color-text-secondary);
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      &:hover { color: #fff; }
+      &.active {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--color-accent);
+      }
+    }
+
+    /* List View Specific Styles */
+    .product-list-view {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .product-list-view .product-card {
+      flex-direction: row;
+      height: 120px;
+      align-items: stretch;
+    }
+    .product-list-view .image-wrapper {
+      width: 120px;
+      height: 100%;
+      flex-shrink: 0;
+    }
+    .product-list-view .card-details {
+      flex-direction: row;
+      align-items: center;
+      padding: var(--space-md) var(--space-lg);
+      gap: var(--space-lg);
+    }
+    .product-list-view .card-title {
+      width: 250px;
+      margin-bottom: 0;
+    }
+    .product-list-view .card-desc {
+      display: none;
+    }
+    .product-list-view .card-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 0;
+      gap: 4px;
+      flex: 1;
+    }
+    .product-list-view .card-status {
+      width: 100px;
+    }
+    .product-list-view .card-actions {
+      border-top: none;
+      border-left: 1px solid var(--color-border);
+      flex-direction: column;
+      width: 120px;
+    }
+    .product-list-view .btn-action.btn-delete {
+      border-left: none;
+      border-top: 1px solid var(--color-border);
+    }
+
+    @media (max-width: 768px) {
+      .product-list-view .product-card {
+        height: auto;
+        flex-direction: column;
+      }
+      .product-list-view .image-wrapper {
+        width: 100%;
+        height: 200px;
+      }
+      .product-list-view .card-details {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-sm);
+      }
+      .product-list-view .card-title {
+        width: 100%;
+      }
+      .product-list-view .card-meta {
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+      }
+      .product-list-view .card-actions {
+        width: 100%;
+        flex-direction: row;
+        border-left: none;
+        border-top: 1px solid var(--color-border);
+      }
+      .product-list-view .btn-action.btn-delete {
+        border-top: none;
+        border-left: 1px solid var(--color-border);
+      }
+    }
+
     /* Toggle switch CSS */
     .switch {
       position: relative;
@@ -602,6 +730,7 @@ interface ProductItem {
 })
 export class ProductsComponent implements OnInit {
   products: ProductItem[] = [];
+  viewMode: 'grid' | 'list' = 'grid';
   loading = true;
   saving = false;
   showForm = false;

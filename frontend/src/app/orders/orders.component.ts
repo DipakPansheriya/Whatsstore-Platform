@@ -50,14 +50,25 @@ interface OrderRecord {
       <div class="content-wrapper" *ngIf="!loading">
         
         <!-- Status Tabs Filtering -->
-        <div class="filter-tabs">
-          <button (click)="setFilter('all')" [class.active]="currentFilter === 'all'" class="tab-btn">All Orders</button>
-          <button (click)="setFilter('pending')" [class.active]="currentFilter === 'pending'" class="tab-btn pending">Pending</button>
-          <button (click)="setFilter('confirmed')" [class.active]="currentFilter === 'confirmed'" class="tab-btn confirmed">Confirmed</button>
-          <button (click)="setFilter('processing')" [class.active]="currentFilter === 'processing'" class="tab-btn processing">Processing</button>
-          <button (click)="setFilter('shipped')" [class.active]="currentFilter === 'shipped'" class="tab-btn shipped">Shipped</button>
-          <button (click)="setFilter('delivered')" [class.active]="currentFilter === 'delivered'" class="tab-btn delivered">Delivered</button>
-          <button (click)="setFilter('cancelled')" [class.active]="currentFilter === 'cancelled'" class="tab-btn cancelled">Cancelled</button>
+        
+        <div class="filters-header">
+          <div class="filter-tabs">
+            <button (click)="setFilter('all')" [class.active]="currentFilter === 'all'" class="tab-btn">All Orders</button>
+            <button (click)="setFilter('pending')" [class.active]="currentFilter === 'pending'" class="tab-btn pending">Pending</button>
+            <button (click)="setFilter('confirmed')" [class.active]="currentFilter === 'confirmed'" class="tab-btn confirmed">Confirmed</button>
+            <button (click)="setFilter('processing')" [class.active]="currentFilter === 'processing'" class="tab-btn processing">Processing</button>
+            <button (click)="setFilter('shipped')" [class.active]="currentFilter === 'shipped'" class="tab-btn shipped">Shipped</button>
+            <button (click)="setFilter('delivered')" [class.active]="currentFilter === 'delivered'" class="tab-btn delivered">Delivered</button>
+            <button (click)="setFilter('cancelled')" [class.active]="currentFilter === 'cancelled'" class="tab-btn cancelled">Cancelled</button>
+          </div>
+          <div class="view-toggle">
+            <button (click)="viewMode = 'grid'" [class.active]="viewMode === 'grid'" class="toggle-btn" title="Grid View">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            </button>
+            <button (click)="viewMode = 'list'" [class.active]="viewMode === 'list'" class="toggle-btn" title="List View">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            </button>
+          </div>
         </div>
 
         <!-- Orders View -->
@@ -70,7 +81,7 @@ interface OrderRecord {
 
         <!-- Orders Table Grid -->
         <div *ngIf="getFilteredOrders().length > 0" class="orders-list">
-          <div class="orders-grid">
+          <div [class]="viewMode === 'grid' ? 'orders-grid' : 'orders-list-view'">
             @for (order of getFilteredOrders(); track order._id) {
               <div class="order-card card">
                 <div class="order-card-header">
@@ -229,16 +240,130 @@ interface OrderRecord {
       margin-bottom: var(--space-md);
     }
     
-    /* Filtering navigation */
+    
+    .filters-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-xl);
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: var(--space-sm);
+    }
     .filter-tabs {
       display: flex;
       gap: 6px;
       overflow-x: auto;
-      padding-bottom: var(--space-sm);
-      margin-bottom: var(--space-xl);
-      border-bottom: 1px solid var(--color-border);
       &::-webkit-scrollbar { height: 4px; }
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
     }
+    .view-toggle {
+      display: flex;
+      background: rgba(8, 9, 13, 0.4);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      margin-left: var(--space-md);
+    }
+    .toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--color-text-secondary);
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      &:hover { color: #fff; }
+      &.active {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--color-accent);
+      }
+    }
+
+    /* List View Specific Styles */
+    .orders-list-view {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .orders-list-view .order-card {
+      flex-direction: row;
+      align-items: center;
+      padding: var(--space-md) var(--space-lg);
+      gap: var(--space-xl);
+    }
+    .orders-list-view .order-card-header {
+      border-bottom: none;
+      padding-bottom: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      width: 150px;
+      flex-shrink: 0;
+    }
+    .orders-list-view .order-card-body {
+      flex-direction: row;
+      flex: 1;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .orders-list-view .info-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .orders-list-view .order-card-actions {
+      border-top: none;
+      padding-top: 0;
+      margin-top: 0;
+      width: 300px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 1024px) {
+      .filters-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-md);
+      }
+      .orders-list-view .order-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-md);
+      }
+      .orders-list-view .order-card-header {
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--color-border);
+        padding-bottom: var(--space-sm);
+      }
+      .orders-list-view .order-card-body {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .orders-list-view .info-row {
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+      }
+      .orders-list-view .order-card-actions {
+        width: 100%;
+        margin-top: var(--space-md);
+        border-top: 1px solid var(--color-border);
+        padding-top: var(--space-md);
+      }
+    }
+
+
+
+    /* Cards Grid */
     .tab-btn {
       padding: 8px 16px;
       background: transparent;
@@ -266,8 +391,6 @@ interface OrderRecord {
         &.cancelled { border-color: var(--color-danger); color: var(--color-danger); background: rgba(239, 68, 68, 0.05); }
       }
     }
-
-    /* Cards Grid */
     .orders-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -532,6 +655,7 @@ interface OrderRecord {
 })
 export class OrdersComponent implements OnInit {
   orders: OrderRecord[] = [];
+  viewMode: 'grid' | 'list' = 'grid';
   loading = true;
   currentFilter = 'all';
   selectedOrder: OrderRecord | null = null;

@@ -59,6 +59,16 @@ export const getPublicStore = async (req: Request, res: Response): Promise<void>
       res.status(404).json({ success: false, message: 'Store not found' });
       return;
     }
+
+    // Check if store owner's subscription is active
+    const { default: Subscription } = await import('../subscriptions/subscription.model');
+    const sub = await Subscription.findOne({ user: business.owner });
+    
+    if (!sub || sub.status === 'CANCELLED' || sub.status === 'SUSPENDED') {
+      res.status(403).json({ success: false, message: 'Store is currently unavailable' });
+      return;
+    }
+
     res.json({ success: true, business });
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });

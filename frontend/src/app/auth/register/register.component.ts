@@ -191,7 +191,6 @@ import { Router } from '@angular/router';
     .auth-page {
       height: 100vh;
       max-height: 100vh;
-      margin-top: calc(-1 * var(--navbar-height, 72px));
       display: flex;
       align-items: center;
       justify-content: center;
@@ -754,7 +753,14 @@ export class RegisterComponent {
       businessName: this.businessName,
       slug: this.slug
     }).subscribe({
-      next: () => this.router.navigate(['/admin/dashboard']),
+      next: (res) => {
+        if (res.user.role === 'SUPERADMIN') {
+          this.router.navigate(['/superadmin/dashboard']);
+        } else {
+          // Redirect to admin dashboard where they can see their trial status
+          this.router.navigate(['/admin/dashboard']);
+        }
+      },
       error: (err) => { this.error = err.message; this.loading = false; },
     });
   }
