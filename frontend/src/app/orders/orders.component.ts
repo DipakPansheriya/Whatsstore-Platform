@@ -22,9 +22,11 @@ interface OrderRecord {
   customerWhatsapp: string;
   items: OrderItem[];
   totalAmount: number;
-  status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  status: 'NEW' | 'CONFIRMED' | 'PROCESSING' | 'COMPLETED' | 'CANCELLED';
   notes: string;
   createdAt: string;
+  couponCode?: string;
+  discountAmount?: number;
 }
 
 @Component({
@@ -50,16 +52,14 @@ interface OrderRecord {
       <div class="content-wrapper" *ngIf="!loading">
         
         <!-- Status Tabs Filtering -->
-        
         <div class="filters-header">
           <div class="filter-tabs">
             <button (click)="setFilter('all')" [class.active]="currentFilter === 'all'" class="tab-btn">All Orders</button>
-            <button (click)="setFilter('pending')" [class.active]="currentFilter === 'pending'" class="tab-btn pending">Pending</button>
-            <button (click)="setFilter('confirmed')" [class.active]="currentFilter === 'confirmed'" class="tab-btn confirmed">Confirmed</button>
-            <button (click)="setFilter('processing')" [class.active]="currentFilter === 'processing'" class="tab-btn processing">Processing</button>
-            <button (click)="setFilter('shipped')" [class.active]="currentFilter === 'shipped'" class="tab-btn shipped">Shipped</button>
-            <button (click)="setFilter('delivered')" [class.active]="currentFilter === 'delivered'" class="tab-btn delivered">Delivered</button>
-            <button (click)="setFilter('cancelled')" [class.active]="currentFilter === 'cancelled'" class="tab-btn cancelled">Cancelled</button>
+            <button (click)="setFilter('NEW')" [class.active]="currentFilter === 'NEW'" class="tab-btn pending">New</button>
+            <button (click)="setFilter('CONFIRMED')" [class.active]="currentFilter === 'CONFIRMED'" class="tab-btn confirmed">Confirmed</button>
+            <button (click)="setFilter('PROCESSING')" [class.active]="currentFilter === 'PROCESSING'" class="tab-btn processing">Processing</button>
+            <button (click)="setFilter('COMPLETED')" [class.active]="currentFilter === 'COMPLETED'" class="tab-btn delivered">Completed</button>
+            <button (click)="setFilter('CANCELLED')" [class.active]="currentFilter === 'CANCELLED'" class="tab-btn cancelled">Cancelled</button>
           </div>
           <div class="view-toggle">
             <button (click)="viewMode = 'grid'" [class.active]="viewMode === 'grid'" class="toggle-btn" title="Grid View">
@@ -113,7 +113,7 @@ interface OrderRecord {
 
                 <div class="order-card-actions">
                   <button (click)="openDetailModal(order)" class="btn btn-ghost btn-sm">👁️ View Details</button>
-                  <button (click)="sendWhatsAppNotification(order)" class="btn btn-whatsapp btn-sm">🟢 Update WhatsApp</button>
+                  <button (click)="sendWhatsAppNotification(order)" class="btn btn-whatsapp btn-sm">🟢 Update Status</button>
                 </div>
               </div>
             }
@@ -161,10 +161,29 @@ interface OrderRecord {
                   </div>
                 }
               </div>
+
+              <!-- Coupon & Discount breakdown -->
+              <div class="discount-breakdown" *ngIf="selectedOrder.couponCode" style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                  <span>Coupon Applied:</span>
+                  <span style="font-weight: 700; color: #25d366;">{{ selectedOrder.couponCode }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span>Discount Applied:</span>
+                  <span style="font-weight: 700; color: #ef4444;">-₹{{ selectedOrder.discountAmount }}</span>
+                </div>
+              </div>
+
               <div class="modal-total">
                 <span>Total Amount:</span>
                 <span class="total-price">₹{{ selectedOrder.totalAmount }}</span>
               </div>
+            </div>
+
+            <!-- WhatsApp Message Preview -->
+            <div class="modal-section">
+              <h4>WhatsApp Summary Message</h4>
+              <textarea readonly style="width: 100%; min-height: 100px; padding: 8px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); color: #ccc; font-size: 0.8rem; font-family: monospace; border-radius: 4px; resize: none;" [value]="getWhatsAppSummaryText(selectedOrder)"></textarea>
             </div>
 
             <!-- Manage status -->
@@ -172,15 +191,14 @@ interface OrderRecord {
               <h4>Update Order Status</h4>
               <div class="status-updater">
                 <select name="status" [(ngModel)]="selectedOrder.status" (change)="onStatusChange(selectedOrder)">
-                  <option value="pending">Pending (Reviewing)</option>
-                  <option value="confirmed">Confirmed (Approved)</option>
-                  <option value="processing">Processing (Preparing)</option>
-                  <option value="shipped">Shipped (En route)</option>
-                  <option value="delivered">Delivered (Completed)</option>
-                  <option value="cancelled">Cancelled</option>
+                  <option value="NEW">New (Reviewing)</option>
+                  <option value="CONFIRMED">Confirmed (Approved)</option>
+                  <option value="PROCESSING">Processing (Preparing)</option>
+                  <option value="COMPLETED">Completed</option>
+                  <option value="CANCELLED">Cancelled</option>
                 </select>
                 <button (click)="sendWhatsAppNotification(selectedOrder)" class="btn btn-whatsapp">
-                  🟢 Notify via WhatsApp
+                  🟢 Notify Customer
                 </button>
               </div>
             </div>
@@ -663,6 +681,7 @@ export class OrdersComponent implements OnInit {
   successMsg = '';
   errorMsg = '';
   shopName = 'Our Shop';
+  slug = '';
 
   constructor(private api: ApiService) {}
 
@@ -672,10 +691,19 @@ export class OrdersComponent implements OnInit {
   }
 
   fetchOrders() {
-    this.api.get<{ success: boolean; orders: OrderRecord[] }>('orders').subscribe({
+    this.api.get<{ success: boolean; orders: any[] }>('orders').subscribe({
       next: (res) => {
         if (res.success) {
-          this.orders = res.orders;
+          // Map database records from old lowercase to new uppercase
+          this.orders = (res.orders || []).map((o: any) => {
+            let status = o.status;
+            if (status === 'pending') status = 'NEW';
+            if (status === 'confirmed') status = 'CONFIRMED';
+            if (status === 'processing') status = 'PROCESSING';
+            if (status === 'shipped' || status === 'delivered') status = 'COMPLETED';
+            if (status === 'cancelled') status = 'CANCELLED';
+            return { ...o, status };
+          });
         }
         this.loading = false;
       },
@@ -691,6 +719,7 @@ export class OrdersComponent implements OnInit {
       next: (res) => {
         if (res.success && res.business) {
           this.shopName = res.business.name;
+          this.slug = res.business.websiteSlug;
         }
       }
     });
@@ -719,7 +748,6 @@ export class OrdersComponent implements OnInit {
   }
 
   openDetailModal(order: OrderRecord) {
-    // Deep clone to avoid mutating local list before save
     this.selectedOrder = JSON.parse(JSON.stringify(order));
   }
 
@@ -744,14 +772,30 @@ export class OrdersComponent implements OnInit {
     });
   }
 
+  getWhatsAppSummaryText(order: OrderRecord | null): string {
+    if (!order) return '';
+    let productsText = '';
+    order.items.forEach((item, idx) => {
+      productsText += `${idx + 1}. ${item.name}\n   Qty: ${item.quantity}\n   Price: ₹${item.price}\n\n`;
+    });
+    
+    let breakdownText = `Subtotal: ₹${order.totalAmount + (order.discountAmount || 0)}\n`;
+    if (order.couponCode) {
+      breakdownText += `Discount (Code: ${order.couponCode}): -₹${order.discountAmount}\n`;
+    }
+    breakdownText += `Total Amount: ₹${order.totalAmount}`;
+    
+    const trackingUrl = `https://whatsstore.web.app/store/${this.slug || 'store'}/track/${order._id}`;
+    
+    return `Products:\n\n${productsText}${breakdownText}\n\nCustomer: ${order.customerName}\nPhone: ${order.customerPhone}\n\nTrack order: ${trackingUrl}`;
+  }
+
   sendWhatsAppNotification(order: OrderRecord) {
-    // Generate text message template
-    const itemsText = order.items.map(i => `- ${i.name} (Qty: ${i.quantity})`).join('\n');
-    const text = `Hello *${order.customerName}*,\n\nYour order from *${this.shopName}* has been updated!\n\nOrder Status: *${order.status.toUpperCase()}*\n\nItems:\n${itemsText}\n\nTotal amount: ₹${order.totalAmount}\n\nThank you for shopping with us!`;
+    const trackingUrl = `https://whatsstore.web.app/store/${this.slug || 'store'}/track/${order._id}`;
+    const text = `Hello *${order.customerName}*,\n\nYour order from *${this.shopName}* has been updated!\n\nOrder Status: *${order.status}*\n\nTrack your order in real-time here:\n${trackingUrl}\n\nThank you for shopping with us!`;
     const encoded = encodeURIComponent(text);
     
-    // Construct WhatsApp link
-    const whatsappUrl = `https://wa.me/${order.customerWhatsapp}?text=${encoded}`;
+    const whatsappUrl = `https://wa.me/${order.customerPhone}?text=${encoded}`;
     window.open(whatsappUrl, '_blank');
   }
 }

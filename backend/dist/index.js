@@ -22,6 +22,8 @@ const superadmin_routes_1 = __importDefault(require("./superadmin/superadmin.rou
 const plan_routes_1 = __importDefault(require("./plans/plan.routes"));
 const subscription_routes_1 = __importDefault(require("./subscriptions/subscription.routes"));
 const activity_log_routes_1 = __importDefault(require("./logs/activity-log.routes"));
+const cart_routes_1 = __importDefault(require("./cart/cart.routes"));
+const coupon_routes_1 = __importDefault(require("./coupons/coupon.routes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
@@ -40,7 +42,7 @@ const apiLimiter = (0, express_rate_limit_1.default)({
 app.use('/api/', apiLimiter);
 // ── Middlewares ─────────────────────────────────────
 app.use((0, cors_1.default)({
-    origin: [clientUrl, 'http://localhost:4200'],
+    origin: [clientUrl, 'http://localhost:4200', 'https://whatsstore.web.app'],
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -60,6 +62,8 @@ app.get('/', (_req, res) => {
             orders: '/api/orders',
             reviews: '/api/reviews',
             analytics: '/api/analytics',
+            cart: '/api/cart',
+            coupons: '/api/coupons',
         },
     });
 });
@@ -74,6 +78,8 @@ app.use('/api/superadmin', superadmin_routes_1.default);
 app.use('/api/plans', plan_routes_1.default);
 app.use('/api/subscriptions', subscription_routes_1.default);
 app.use('/api/logs', activity_log_routes_1.default);
+app.use('/api/cart', cart_routes_1.default);
+app.use('/api/coupons', coupon_routes_1.default);
 // ── 404 Handler ─────────────────────────────────────
 app.use((_req, res) => {
     res.status(404).json({ success: false, message: 'Route not found' });

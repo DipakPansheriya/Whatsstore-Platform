@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs';
 import { Title, Meta } from '@angular/platform-browser';
+import { ScrollService } from './shared/services/scroll.service';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +19,8 @@ export class AppComponent {
   constructor(
     private router: Router,
     private titleService: Title,
-    private metaService: Meta
+    private metaService: Meta,
+    private scrollService: ScrollService
   ) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)

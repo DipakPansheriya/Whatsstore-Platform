@@ -43,6 +43,7 @@ const ProductSchema = new mongoose_1.Schema({
     images: { type: [String], default: [] },
     category: { type: String, default: 'General' },
     stock: { type: Number, default: 0, min: 0 },
+    lowStockThreshold: { type: Number, default: 3, min: 0 },
     isAvailable: { type: Boolean, default: true },
     featured: { type: Boolean, default: false },
 }, { timestamps: true });

@@ -47,7 +47,10 @@ const OrderSchema = new mongoose_1.Schema({
     customerWhatsapp: { type: String, required: true },
     items: { type: [OrderItemSchema], required: true },
     totalAmount: { type: Number, required: true, min: 0 },
-    status: { type: String, enum: ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'], default: 'pending' },
+    status: { type: String, enum: ['NEW', 'PROCESSING', 'CONFIRMED', 'COMPLETED', 'CANCELLED'], default: 'NEW' },
+    couponCode: { type: String, default: '' },
+    discountAmount: { type: Number, default: 0 },
+    cartId: { type: String, default: '' },
     notes: { type: String, default: '' },
 }, { timestamps: true });
 exports.default = mongoose_1.default.model('Order', OrderSchema);
