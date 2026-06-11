@@ -7,6 +7,8 @@ export interface ICoupon extends Document {
   discountValue: number;
   expiryDate?: Date;
   isActive: boolean;
+  visibility: 'PUBLIC' | 'PRIVATE';
+  displayOnStore: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -19,6 +21,8 @@ const CouponSchema = new Schema<ICoupon>(
     discountValue: { type: Number, required: true, min: 0 },
     expiryDate:    { type: Date },
     isActive:      { type: Boolean, default: true },
+    visibility:     { type: String, enum: ['PUBLIC', 'PRIVATE'], default: 'PRIVATE' },
+    displayOnStore: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

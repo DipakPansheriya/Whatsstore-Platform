@@ -75,8 +75,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       store: business.id,
       status: 'TRIAL_ACTIVE',
       trialStartDate: new Date(),
-      // TEMPORARY: Set to 5 minutes for testing. Change back to 10 days (10 * 24 * 60 * 60 * 1000) after testing.
-      trialEndDate: new Date(Date.now() + 5 * 60 * 1000)
+      // TEMPORARY: Set to 10 minutes for testing. Change back to 10 days (10 * 24 * 60 * 60 * 1000) after testing.
+      trialEndDate: new Date(Date.now() + 10 * 60 * 1000)
     });
 
     const token = signToken({ userId: user.id, email: user.email, role: user.role });

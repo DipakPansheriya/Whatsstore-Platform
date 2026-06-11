@@ -130,6 +130,42 @@ import { environment } from '../../environments/environment.development';
 
         </div>
 
+        <!-- Coupon Performance Leaderboard Widget -->
+        <div class="widget-card glass-card" style="margin-top: var(--space-xl);" *ngIf="couponSummary.length > 0">
+          <h2 class="widget-title" style="margin-top: 0; margin-bottom: var(--space-lg); font-size: 1.35rem; font-weight: 800; color: #fff;">🎟️ Coupon Performance Leaderboard</h2>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+              <thead>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.08); color: var(--color-text-secondary);">
+                  <th style="padding: 12px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;">Coupon Code</th>
+                  <th style="padding: 12px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;">Times Used</th>
+                  <th style="padding: 12px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;">Direct Discounts</th>
+                  <th style="padding: 12px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;">Revenue Impact</th>
+                  <th style="padding: 12px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;">Conversion Rate</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (cp of couponSummary; track cp.code) {
+                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); color: #fff;">
+                    <td style="padding: 14px 12px;"><span style="background: rgba(37,211,102,0.1); border: 1px dashed rgba(37,211,102,0.3); color: #25d366; font-weight: 800; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; letter-spacing: 0.05em;">{{ cp.code }}</span></td>
+                    <td style="padding: 14px 12px; font-weight: 700;">{{ cp.useCount }} sales</td>
+                    <td style="padding: 14px 12px; color: #ef4444; font-weight: 700;">-₹{{ cp.discount }}</td>
+                    <td style="padding: 14px 12px; color: #25d366; font-weight: 800;">₹{{ cp.revenue }}</td>
+                    <td style="padding: 14px 12px;">
+                      <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-weight: 700; width: 45px;">{{ cp.conversionRate }}%</span>
+                        <div style="width: 70px; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden;">
+                          <div style="height: 100%; background: #25d366;" [style.width]="cp.conversionRate + '%'"></div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         <div class="subscription-card glass-card" *ngIf="subscription" style="margin-top: var(--space-xl);">
           <div class="sub-header">
             <h2>Subscription Details</h2>
@@ -293,6 +329,7 @@ export class DashboardComponent implements OnInit {
   subscription: any = null;
   lowStockProducts: any[] = [];
   topSellingProducts: any[] = [];
+  couponSummary: any[] = [];
 
   actions = [
     { icon: '➕', label: 'Add Product', path: '/admin/products' },
@@ -325,6 +362,7 @@ export class DashboardComponent implements OnInit {
         if (res.success) {
           this.dashboardStats = res.stats;
           this.topSellingProducts = res.topSellingProducts || [];
+          this.couponSummary = res.couponSummary || [];
         }
       },
       error: (err) => {

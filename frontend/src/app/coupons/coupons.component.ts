@@ -11,6 +11,8 @@ interface CouponItem {
   discountValue: number;
   expiryDate?: string;
   isActive: boolean;
+  visibility?: 'PUBLIC' | 'PRIVATE';
+  displayOnStore?: boolean;
 }
 
 @Component({
@@ -58,26 +60,38 @@ interface CouponItem {
 
           <div *ngIf="coupons.length > 0" class="coupons-grid">
             @for (coupon of coupons; track coupon._id) {
-              <div class="coupon-card glass-card" [class.inactive]="!coupon.isActive">
-                <div class="coupon-card-header">
-                  <span class="coupon-code">{{ coupon.code }}</span>
-                  <span class="status-badge" [class.active]="coupon.isActive">
-                    {{ coupon.isActive ? 'Active' : 'Paused' }}
+              <div class="coupon-card ticket-card" [class.inactive]="!coupon.isActive">
+                <div class="ticket-tab">
+                  <span class="discount-value">
+                    {{ coupon.discountType === 'percentage' ? coupon.discountValue + '%' : '₹' + coupon.discountValue }}
                   </span>
+                  <span class="discount-label">OFF</span>
                 </div>
-                
-                <div class="coupon-card-body">
-                  <div class="discount-value">
-                    {{ coupon.discountType === 'percentage' ? coupon.discountValue + '%' : '₹' + coupon.discountValue }} OFF
+                <div class="ticket-divider">
+                  <div class="notch top-notch"></div>
+                  <div class="notch bottom-notch"></div>
+                </div>
+                <div class="ticket-content">
+                  <div class="ticket-header">
+                    <span class="coupon-code">{{ coupon.code }}</span>
+                    <div class="coupon-meta-badges">
+                      <span class="status-badge" [class.active]="coupon.isActive">
+                        {{ coupon.isActive ? 'Active' : 'Paused' }}
+                      </span>
+                      <span class="visibility-badge" [class.public]="coupon.visibility === 'PUBLIC'">
+                        {{ coupon.visibility === 'PUBLIC' ? '🌐 Public' : '🔒 Private' }}
+                      </span>
+                    </div>
                   </div>
-                  <p class="expiry-text">
-                    📅 Expiry: {{ coupon.expiryDate ? (coupon.expiryDate | date:'mediumDate') : 'Never Expires' }}
-                  </p>
-                </div>
-
-                <div class="coupon-card-actions">
-                  <button (click)="openEditForm(coupon)" class="btn-action btn-edit">✏️ Edit</button>
-                  <button (click)="onDelete(coupon._id)" class="btn-action btn-delete">🗑️ Delete</button>
+                  <div class="ticket-body">
+                    <p class="expiry-text">
+                      📅 Expiry: {{ coupon.expiryDate ? (coupon.expiryDate | date:'mediumDate') : 'Never Expires' }}
+                    </p>
+                  </div>
+                  <div class="ticket-footer">
+                    <button (click)="openEditForm(coupon)" class="btn-action btn-edit">✏️ Edit</button>
+                    <button (click)="onDelete(coupon._id)" class="btn-action btn-delete">🗑️ Delete</button>
+                  </div>
                 </div>
               </div>
             }
@@ -117,7 +131,7 @@ interface CouponItem {
             </div>
 
             <!-- Settings Toggles -->
-            <div class="toggles-row">
+            <div class="toggles-row" style="display: flex; flex-direction: column; gap: var(--space-md);">
               <div class="toggle-control">
                 <label class="switch">
                   <input type="checkbox" name="isActive" [(ngModel)]="formCoupon.isActive">
@@ -126,6 +140,16 @@ interface CouponItem {
                 <div class="toggle-labels">
                   <span class="lbl-main">Status Active</span>
                   <span class="lbl-sub">Let customers apply this coupon immediately.</span>
+                </div>
+              </div>
+              <div class="toggle-control">
+                <label class="switch">
+                  <input type="checkbox" name="displayOnStore" [(ngModel)]="formCoupon.displayOnStore">
+                  <span class="slider round"></span>
+                </label>
+                <div class="toggle-labels">
+                  <span class="lbl-main">Public Coupon (Visible on Store)</span>
+                  <span class="lbl-sub">Show coupon code and discount details on your public storefront pages.</span>
                 </div>
               </div>
             </div>
@@ -158,31 +182,170 @@ interface CouponItem {
     }
 
     .coupons-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-lg);
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: var(--space-lg);
     }
     
     .coupon-card {
-      padding: var(--space-xl); border-radius: var(--radius-lg); border: 1px solid rgba(255,255,255,0.05);
-      background: rgba(17,19,25,0.45); backdrop-filter: blur(20px); transition: all 0.2s;
-      &.inactive { opacity: 0.6; filter: grayscale(40%); }
-      &:hover { border-color: var(--color-accent); transform: translateY(-2px); }
+      display: flex;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(17,19,25,0.45);
+      backdrop-filter: blur(20px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: visible;
+      
+      &.inactive {
+        opacity: 0.6;
+        filter: grayscale(40%);
+      }
+      
+      &:hover {
+        border-color: var(--color-accent);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(37, 211, 102, 0.15);
+      }
     }
-    .coupon-card-header {
-      display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);
-      .coupon-code { font-size: 1.25rem; font-weight: 900; color: #fff; letter-spacing: 0.05em; background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: var(--radius-sm); border: 1px dashed rgba(255,255,255,0.15); }
+    
+    .ticket-tab {
+      width: 110px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(37, 211, 102, 0.1) 0%, rgba(37, 211, 102, 0.02) 100%);
+      border-top-left-radius: var(--radius-lg);
+      border-bottom-left-radius: var(--radius-lg);
+      padding: var(--space-md);
+      box-sizing: border-box;
+      
+      .discount-value {
+        font-size: 1.8rem;
+        font-weight: 950;
+        color: var(--color-accent);
+        font-family: var(--font-heading);
+        text-shadow: 0 0 10px rgba(37, 211, 102, 0.2);
+        line-height: 1;
+        text-align: center;
+      }
+      .discount-label {
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: #fff;
+        letter-spacing: 0.1em;
+        margin-top: 4px;
+        opacity: 0.8;
+      }
     }
+    
+    .ticket-divider {
+      position: relative;
+      width: 2px;
+      border-left: 2px dashed rgba(255,255,255,0.12);
+      margin: 12px 0;
+      
+      .notch {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        background: #06070a;
+        border-radius: 50%;
+        left: -9px;
+        border: 1px solid rgba(255,255,255,0.06);
+        box-sizing: border-box;
+        
+        &.top-notch {
+          top: -21px;
+        }
+        &.bottom-notch {
+          bottom: -21px;
+        }
+      }
+    }
+    
+    .ticket-content {
+      flex: 1;
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-sizing: border-box;
+    }
+    
+    .ticket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      
+      .coupon-code {
+        font-size: 1.15rem;
+        font-weight: 900;
+        color: #fff;
+        letter-spacing: 0.05em;
+        background: rgba(255,255,255,0.05);
+        padding: 4px 8px;
+        border-radius: var(--radius-sm);
+        border: 1px solid rgba(255,255,255,0.08);
+      }
+    }
+    
+    .coupon-meta-badges {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    
     .status-badge {
-      font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; background: rgba(239, 68, 68, 0.1); color: #ef4444;
-      &.active { background: rgba(37, 211, 102, 0.1); color: #25d366; }
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.15);
+      white-space: nowrap;
+      
+      &.active {
+        background: rgba(37, 211, 102, 0.1);
+        color: #25d366;
+        border: 1px solid rgba(37, 211, 102, 0.15);
+      }
     }
-    .coupon-card-body {
-      margin-bottom: var(--space-lg);
-      .discount-value { font-size: 2rem; font-weight: 900; color: var(--color-accent); font-family: var(--font-heading); }
-      .expiry-text { font-size: 0.85rem; color: var(--color-text-secondary); margin-top: 4px; }
+    
+    .visibility-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      white-space: nowrap;
+      
+      &.public {
+        background: rgba(59, 130, 246, 0.12);
+        color: #3b82f6;
+        border: 1px solid rgba(59, 130, 246, 0.18);
+      }
     }
-    .coupon-card-actions {
-      display: flex; gap: 8px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: var(--space-md);
+    
+    .ticket-body {
+      .expiry-text {
+        font-size: 0.8rem;
+        color: var(--color-text-secondary);
+        margin: 0;
+      }
     }
+    
+    .ticket-footer {
+      display: flex;
+      gap: 8px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: var(--space-md);
+      margin-top: auto;
+    }
+    
     .btn-action {
       flex: 1; padding: 8px; border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 700; cursor: pointer; text-align: center; border: 1px solid transparent; background: transparent;
       &.btn-edit { border-color: rgba(255,255,255,0.08); color: #fff; &:hover { background: rgba(255,255,255,0.05); } }
@@ -241,7 +404,9 @@ export class CouponsComponent implements OnInit {
     discountType: 'percentage',
     discountValue: 10,
     expiryDate: '',
-    isActive: true
+    isActive: true,
+    visibility: 'PRIVATE',
+    displayOnStore: false
   };
 
   successMsg = '';
@@ -277,7 +442,9 @@ export class CouponsComponent implements OnInit {
       discountType: 'percentage',
       discountValue: 10,
       expiryDate: '',
-      isActive: true
+      isActive: true,
+      visibility: 'PRIVATE',
+      displayOnStore: false
     };
     this.errorMsg = '';
     this.successMsg = '';
@@ -295,7 +462,9 @@ export class CouponsComponent implements OnInit {
       discountType: coupon.discountType,
       discountValue: coupon.discountValue,
       expiryDate: expDate,
-      isActive: coupon.isActive
+      isActive: coupon.isActive,
+      visibility: coupon.visibility || 'PRIVATE',
+      displayOnStore: coupon.displayOnStore || false
     };
     this.errorMsg = '';
     this.successMsg = '';
@@ -322,7 +491,9 @@ export class CouponsComponent implements OnInit {
       discountType: this.formCoupon.discountType,
       discountValue: this.formCoupon.discountValue,
       expiryDate: this.formCoupon.expiryDate || undefined,
-      isActive: this.formCoupon.isActive
+      isActive: this.formCoupon.isActive,
+      visibility: this.formCoupon.displayOnStore ? 'PUBLIC' : 'PRIVATE',
+      displayOnStore: this.formCoupon.displayOnStore
     };
 
     if (this.editingCoupon) {

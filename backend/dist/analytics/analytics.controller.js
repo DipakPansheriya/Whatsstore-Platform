@@ -12,7 +12,7 @@ const cart_model_1 = __importDefault(require("../cart/cart.model"));
 /** POST /api/analytics/track — Public track page view or click event */
 const trackEvent = async (req, res) => {
     try {
-        const { businessId, event, productId } = req.body;
+        const { businessId, event, productId, couponCode } = req.body;
         if (!businessId || !event) {
             res.status(400).json({ success: false, message: 'businessId and event type are required' });
             return;
@@ -20,7 +20,8 @@ const trackEvent = async (req, res) => {
         const analytics = await analytics_model_1.default.create({
             business: businessId,
             event,
-            product: productId || undefined
+            product: productId || undefined,
+            couponCode: couponCode || undefined
         });
         res.status(201).json({ success: true, analytics });
     }
@@ -100,6 +101,29 @@ const getAnalyticsDashboard = async (req, res) => {
                 revenue: item.revenue
             };
         }));
+        // 10. Coupon Performance Leaderboard (Most Used, Conversions, Revenue Impact)
+        const couponStats = await orders_model_1.default.aggregate([
+            { $match: { business: businessId, couponCode: { $ne: '' }, status: { $ne: 'CANCELLED' } } },
+            { $group: {
+                    _id: '$couponCode',
+                    useCount: { $sum: 1 },
+                    totalRevenue: { $sum: '$totalAmount' },
+                    totalDiscount: { $sum: '$discountAmount' }
+                }
+            },
+            { $sort: { useCount: -1 } }
+        ]);
+        const couponSummary = await Promise.all(couponStats.map(async (stat) => {
+            const applies = await analytics_model_1.default.countDocuments({ business: businessId, event: 'coupon_apply', couponCode: stat._id });
+            const conversionRate = applies > 0 ? Number(((stat.useCount / applies) * 100).toFixed(1)) : 100.0;
+            return {
+                code: stat._id,
+                useCount: stat.useCount,
+                revenue: stat.totalRevenue,
+                discount: stat.totalDiscount,
+                conversionRate: Math.min(conversionRate, 100.0)
+            };
+        }));
         res.json({
             success: true,
             stats: {
@@ -112,7 +136,8 @@ const getAnalyticsDashboard = async (req, res) => {
                 cartAbandonmentRate,
                 monthlyGrowth
             },
-            topSellingProducts
+            topSellingProducts,
+            couponSummary
         });
     }
     catch (err) {
