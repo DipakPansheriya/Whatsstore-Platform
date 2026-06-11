@@ -1,6 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import helmet from 'helmet';
+import compression from 'compression';
+import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
 import connectDB from './config/db';
 
 // Routes
@@ -24,15 +28,27 @@ const clientUrl = process.env.CLIENT_URL || 'http://localhost:4200';
 // ── Connect to MongoDB ──────────────────────────────
 connectDB();
 
+// ── Security & Optimization Middlewares ─────────────
+app.use(helmet());
+app.use(compression());
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000, // Limit each IP to 1000 requests per `window` (here, per 15 minutes)
+  message: { success: false, message: 'Too many requests, please try again later.' }
+});
+app.use('/api/', apiLimiter);
+
 // ── Middlewares ─────────────────────────────────────
 app.use(cors({
-  origin: [clientUrl, 'http://localhost:4200'],
+  origin: [clientUrl, 'http://localhost:4200', 'https://whatsstore.web.app'],
   credentials: true,
   methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ── Health Check ────────────────────────────────────
 app.get('/', (_req, res) => {
@@ -66,6 +82,15 @@ app.use('/api/logs', logRoutes);
 // ── 404 Handler ─────────────────────────────────────
 app.use((_req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });
+});
+
+// ── Global Error Handler ────────────────────────────
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error('Unhandled Error:', err);
+  res.status(err.status || 500).json({
+    success: false,
+    message: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message || 'Internal server error'
+  });
 });
 
 // ── Start Server ────────────────────────────────────

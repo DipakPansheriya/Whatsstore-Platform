@@ -1,0 +1,16 @@
+name: Deploy Backend to Render
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - 'render.yaml'
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render Deploy Hook
+        # To get the RENDER_DEPLOY_HOOK, go to your Render Dashboard -> Service -> Settings -> Deploy Hook
+        # Copy the URL and add it as a GitHub Repository Secret named RENDER_DEPLOY_HOOK
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
