@@ -117,6 +117,10 @@ export const routes: Routes = [
         path: 'settings',
         loadChildren: () => import('./settings/settings.routes').then(m => m.settingsRoutes),
       },
+      {
+        path: 'coupons',
+        loadComponent: () => import('./coupons/coupons.component').then(m => m.CouponsComponent),
+      },
     ],
   },
 

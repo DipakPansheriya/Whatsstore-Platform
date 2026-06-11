@@ -21,29 +21,116 @@ import { environment } from '../../environments/environment.development';
         </header>
 
         <div class="stats-grid">
+          <!-- 1. Store Views -->
           <div class="stat-card glass-card">
             <div class="stat-icon-wrapper">👁️</div>
             <div class="stat-value">{{ dashboardStats?.pageViews || 0 }}</div>
             <div class="stat-label">Store Views</div>
           </div>
+          <!-- 2. WhatsApp Clicks -->
           <div class="stat-card glass-card">
             <div class="stat-icon-wrapper">💬</div>
             <div class="stat-value">{{ dashboardStats?.whatsappClicks || 0 }}</div>
             <div class="stat-label">WhatsApp Clicks</div>
           </div>
+          <!-- 3. Total Products -->
+          <div class="stat-card glass-card">
+            <div class="stat-icon-wrapper">📦</div>
+            <div class="stat-value">{{ dashboardStats?.totalProducts || 0 }}</div>
+            <div class="stat-label">Total Products</div>
+          </div>
+          <!-- 4. Total Orders -->
           <div class="stat-card glass-card">
             <div class="stat-icon-wrapper">🛒</div>
             <div class="stat-value">{{ dashboardStats?.totalOrders || 0 }}</div>
             <div class="stat-label">Total Orders</div>
           </div>
+          <!-- 5. Total Revenue -->
           <div class="stat-card glass-card">
             <div class="stat-icon-wrapper">📈</div>
             <div class="stat-value">₹{{ dashboardStats?.totalSales || 0 }}</div>
             <div class="stat-label">Total Revenue</div>
           </div>
+          <!-- 6. Cart Abandonment Rate -->
+          <div class="stat-card glass-card">
+            <div class="stat-icon-wrapper">💔</div>
+            <div class="stat-value">{{ dashboardStats?.cartAbandonmentRate || 0 }}%</div>
+            <div class="stat-label">Cart Abandonment</div>
+          </div>
+          <!-- 7. Monthly Growth -->
+          <div class="stat-card glass-card">
+            <div class="stat-icon-wrapper">🚀</div>
+            <div class="stat-value" [style.color]="(dashboardStats?.monthlyGrowth || 0) < 0 ? '#ef4444' : '#25d366'">
+              {{ (dashboardStats?.monthlyGrowth || 0) >= 0 ? '+' : '' }}{{ dashboardStats?.monthlyGrowth || 0 }}%
+            </div>
+            <div class="stat-label">Monthly Growth</div>
+          </div>
+          <!-- 8. Conversion Rate -->
+          <div class="stat-card glass-card">
+            <div class="stat-icon-wrapper">🎯</div>
+            <div class="stat-value">{{ dashboardStats?.conversionRate || 0 }}%</div>
+            <div class="stat-label">Conversion Rate</div>
+          </div>
         </div>
 
-        <div class="subscription-card glass-card" *ngIf="subscription">
+        <!-- Top Selling Products & Low Stock Warnings Widgets -->
+        <div class="dashboard-widgets-grid">
+          
+          <!-- Top Selling Products -->
+          <div class="widget-card glass-card">
+            <h2 class="widget-title">🔥 Top Selling Products</h2>
+            <div class="top-products-list" *ngIf="topSellingProducts.length > 0">
+              @for (prod of topSellingProducts; track prod.id) {
+                <div class="top-product-item">
+                  <div class="product-info-block">
+                    <img *ngIf="prod.image" [src]="prod.image" alt="Product Thumbnail" class="mini-prod-img">
+                    <div>
+                      <strong class="prod-title-text">{{ prod.title }}</strong>
+                      <span class="prod-price-text">Price: ₹{{ prod.price }}</span>
+                    </div>
+                  </div>
+                  <div class="sales-info-block">
+                    <span class="sales-count-badge">{{ prod.totalQty }} Sold</span>
+                    <span class="sales-rev-text">₹{{ prod.revenue }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+            <div *ngIf="topSellingProducts.length === 0" class="empty-widget-state">
+              No product sales registered yet.
+            </div>
+          </div>
+
+          <!-- Inventory Alerts -->
+          <div class="widget-card glass-card">
+            <h2 class="widget-title">⚠️ Inventory Alerts</h2>
+            
+            <div class="stock-alerts-list" *ngIf="lowStockProducts.length > 0">
+              @for (prod of lowStockProducts; track prod._id) {
+                <div class="alert-item" 
+                     [style.background]="prod.stock === 0 ? 'rgba(239, 68, 68, 0.08)' : 'rgba(245, 158, 11, 0.08)'"
+                     [style.border]="prod.stock === 0 ? '1px solid rgba(239, 68, 68, 0.2)' : '1px solid rgba(245, 158, 11, 0.2)'">
+                  <div>
+                    <strong class="alert-title-text">{{ prod.title }}</strong>
+                    <span class="alert-subtitle-text" [style.color]="prod.stock === 0 ? '#ef4444' : '#f59e0b'">
+                      {{ prod.stock === 0 ? 'Out of Stock' : 'Low Stock Warning' }}
+                    </span>
+                  </div>
+                  <span class="alert-stock-val" [style.color]="prod.stock === 0 ? '#ef4444' : '#f59e0b'">
+                    {{ prod.stock }} left
+                  </span>
+                </div>
+              }
+            </div>
+            
+            <div *ngIf="lowStockProducts.length === 0" class="empty-widget-success">
+              ✅ All products are adequately stocked!
+            </div>
+          </div>
+
+        </div>
+
+        <div class="subscription-card glass-card" *ngIf="subscription" style="margin-top: var(--space-xl);">
           <div class="sub-header">
             <h2>Subscription Details</h2>
             <span class="badge" [class.badge-success]="subscriptionStatus === 'ACTIVE'">{{ subscriptionStatus }}</span>
@@ -68,7 +155,7 @@ import { environment } from '../../environments/environment.development';
           </div>
         </div>
 
-        <div class="quick-actions">
+        <div class="quick-actions" style="margin-top: var(--space-xl);">
           <h2>Quick Actions</h2>
           <div class="actions-grid">
             @for (action of actions; track action.label) {
@@ -114,9 +201,61 @@ import { environment } from '../../environments/environment.development';
     .stat-value { font-size: 2.2rem; font-weight: 800; font-family: var(--font-heading); color: #fff; line-height: 1; }
     .stat-label { font-size: 0.85rem; color: var(--color-text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
 
+    /* Dashboard widgets layout */
+    .dashboard-widgets-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: var(--space-xl);
+      margin-bottom: var(--space-2xl);
+      @media (max-width: 800px) { grid-template-columns: 1fr; }
+    }
+    .widget-card {
+      padding: var(--space-xl);
+      border-radius: var(--radius-lg);
+    }
+    .widget-title {
+      font-size: 1.35rem; font-weight: 800; color: #fff; margin-top: 0; margin-bottom: var(--space-lg);
+    }
+    .top-products-list {
+      display: flex; flex-direction: column; gap: var(--space-md);
+    }
+    .top-product-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: var(--space-sm); border-bottom: 1px solid rgba(255,255,255,0.05);
+      &:last-child { border-bottom: none; }
+    }
+    .product-info-block {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .mini-prod-img {
+      width: 40px; height: 40px; border-radius: var(--radius-sm); object-fit: cover;
+    }
+    .prod-title-text { color: #fff; font-size: 0.95rem; display: block; }
+    .prod-price-text { font-size: 0.8rem; color: var(--color-text-secondary); }
+    .sales-info-block { text-align: right; }
+    .sales-count-badge { font-weight: 800; color: #25d366; display: block; font-size: 0.95rem; }
+    .sales-rev-text { font-size: 0.8rem; color: var(--color-text-secondary); }
+    .empty-widget-state {
+      padding: var(--space-xl); text-align: center; color: var(--color-text-secondary); font-size: 0.95rem;
+    }
+
+    .stock-alerts-list {
+      display: flex; flex-direction: column; gap: 10px;
+      max-height: 280px; overflow-y: auto;
+    }
+    .alert-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px; border-radius: var(--radius-md);
+    }
+    .alert-title-text { color: #fff; font-size: 0.95rem; display: block; }
+    .alert-subtitle-text { font-size: 0.8rem; font-weight: 700; }
+    .alert-stock-val { font-weight: 800; font-size: 1rem; }
+    .empty-widget-success {
+      padding: var(--space-xl); text-align: center; color: #25d366; font-weight: 700; font-size: 0.95rem;
+    }
+
     .subscription-card {
       padding: var(--space-xl);
-      margin-bottom: var(--space-3xl);
     }
     .sub-header {
       display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);
@@ -152,10 +291,12 @@ export class DashboardComponent implements OnInit {
   dashboardStats: any = null;
   subscriptionStatus: string = 'ACTIVE';
   subscription: any = null;
+  lowStockProducts: any[] = [];
+  topSellingProducts: any[] = [];
 
   actions = [
     { icon: '➕', label: 'Add Product', path: '/admin/products' },
-    { icon: '🎨', label: 'Edit Website', path: '/admin/customize' },
+    { icon: '🎟️', label: 'Discounts / Coupons', path: '/admin/coupons' },
     { icon: '📋', label: 'View Orders', path: '/admin/orders' },
     { icon: '🏪', label: 'Store Settings', path: '/admin/settings' },
   ];
@@ -183,10 +324,20 @@ export class DashboardComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.dashboardStats = res.stats;
+          this.topSellingProducts = res.topSellingProducts || [];
         }
       },
       error: (err) => {
         console.error('Failed to load dashboard stats', err);
+      }
+    });
+
+    // Fetch catalog products to verify low stock warnings
+    this.http.get<any>(`${environment.apiUrl}/products`, { headers }).subscribe({
+      next: (res) => {
+        if (res.success && res.products) {
+          this.lowStockProducts = res.products.filter((p: any) => p.stock <= (p.lowStockThreshold || 3));
+        }
       }
     });
   }

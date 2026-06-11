@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-export type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus = 'NEW' | 'PROCESSING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED';
 
 export interface IOrderItem {
   product: mongoose.Types.ObjectId;
@@ -17,6 +17,9 @@ export interface IOrder extends Document {
   items: IOrderItem[];
   totalAmount: number;
   status: OrderStatus;
+  couponCode?: string;
+  discountAmount?: number;
+  cartId?: string;
   notes: string;
   createdAt: Date;
 }
@@ -36,7 +39,10 @@ const OrderSchema = new Schema<IOrder>(
     customerWhatsapp: { type: String, required: true },
     items:            { type: [OrderItemSchema], required: true },
     totalAmount:      { type: Number, required: true, min: 0 },
-    status:           { type: String, enum: ['pending','confirmed','processing','shipped','delivered','cancelled'], default: 'pending' },
+    status:           { type: String, enum: ['NEW', 'PROCESSING', 'CONFIRMED', 'COMPLETED', 'CANCELLED'], default: 'NEW' },
+    couponCode:       { type: String, default: '' },
+    discountAmount:   { type: Number, default: 0 },
+    cartId:           { type: String, default: '' },
     notes:            { type: String, default: '' },
   },
   { timestamps: true }

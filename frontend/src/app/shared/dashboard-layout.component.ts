@@ -4,6 +4,7 @@ import { AuthService } from './services/auth.service';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
+import { SubscriptionService } from './services/subscription.service';
 
 @Component({
   selector: 'app-dashboard-layout',
@@ -545,12 +546,13 @@ import { environment } from '../../environments/environment.development';
 })
 export class DashboardLayoutComponent implements OnInit {
   currentYear = new Date().getFullYear();
-
   sidebarOpen = false;
+
   navItems = [
     { label: 'Overview', path: '/admin/dashboard', icon: '📊', exact: true },
     { label: 'Products', path: '/admin/products', icon: '📦', exact: false },
     { label: 'Orders', path: '/admin/orders', icon: '🛒', exact: false },
+    { label: 'Coupons', path: '/admin/coupons', icon: '🎟️', exact: false },
     { label: 'Website Builder', path: '/admin/builder', icon: '🎨', exact: false },
     { label: 'Settings', path: '/admin/settings', icon: '⚙️', exact: false },
   ];
@@ -559,28 +561,20 @@ export class DashboardLayoutComponent implements OnInit {
   subscription: any = null;
   loadingSubscription = true;
 
-  constructor(public auth: AuthService, private http: HttpClient, private router: Router) { }
+  constructor(
+    public auth: AuthService,
+    private http: HttpClient,
+    private router: Router,
+    private subService: SubscriptionService
+  ) { }
 
   ngOnInit() {
-    this.checkSubscriptionStatus();
-  }
-
-  checkSubscriptionStatus() {
-    const headers = { Authorization: `Bearer ${localStorage.getItem('sf_token')}` };
-    this.http.get(`${environment.apiUrl}/subscriptions/me`, { headers }).subscribe({
-      next: (res: any) => {
-        this.subscription = res.subscription;
-        this.subscriptionStatus = res.subscription?.status || 'NONE';
-        this.loadingSubscription = false;
-      },
-      error: (err) => {
-        if (err.status === 404 && err.error?.status === 'NONE') {
-          this.subscriptionStatus = 'NONE';
-        } else {
-          this.subscriptionStatus = 'PENDING';
-        }
-        this.loadingSubscription = false;
-      }
+    this.subService.status$.subscribe(status => {
+      this.subscriptionStatus = status;
+    });
+    this.subService.subscription$.subscribe(sub => {
+      this.subscription = sub;
+      this.loadingSubscription = false;
     });
   }
 

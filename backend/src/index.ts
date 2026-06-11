@@ -18,6 +18,8 @@ import superAdminRoutes from './superadmin/superadmin.routes';
 import planRoutes from './plans/plan.routes';
 import subscriptionRoutes from './subscriptions/subscription.routes';
 import logRoutes from './logs/activity-log.routes';
+import cartRoutes from './cart/cart.routes';
+import couponRoutes from './coupons/coupon.routes';
 
 dotenv.config();
 
@@ -63,6 +65,8 @@ app.get('/', (_req, res) => {
       orders:    '/api/orders',
       reviews:   '/api/reviews',
       analytics: '/api/analytics',
+      cart:      '/api/cart',
+      coupons:   '/api/coupons',
     },
   });
 });
@@ -78,6 +82,8 @@ app.use('/api/superadmin', superAdminRoutes);
 app.use('/api/plans', planRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
 app.use('/api/logs', logRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/coupons', couponRoutes);
 
 // ── 404 Handler ─────────────────────────────────────
 app.use((_req, res) => {
