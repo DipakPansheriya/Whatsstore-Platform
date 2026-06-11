@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Coupon from './coupon.model';
 import Business from '../business/business.model';
+import Order from '../orders/orders.model';
 
 /** GET /api/coupons (Admin only) */
 export const getCoupons = async (req: Request, res: Response): Promise<void> => {
@@ -125,6 +126,20 @@ export const validateCoupon = async (req: Request, res: Response): Promise<void>
     if (coupon.expiryDate && new Date(coupon.expiryDate) < new Date()) {
       res.status(400).json({ success: false, message: 'This coupon has expired' });
       return;
+    }
+
+    const phone = req.query.phone as string;
+    if (phone) {
+      const used = await Order.findOne({
+        business: business._id,
+        customerPhone: phone,
+        couponCode: code.toUpperCase(),
+        status: { $ne: 'CANCELLED' }
+      });
+      if (used) {
+        res.status(400).json({ success: false, message: 'You have already used this coupon code.' });
+        return;
+      }
     }
 
     res.json({

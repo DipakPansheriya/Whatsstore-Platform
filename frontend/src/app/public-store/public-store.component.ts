@@ -1253,7 +1253,8 @@ export class PublicStoreComponent implements OnInit {
   // Coupon Promo Codes
   applyCouponCode() {
     this.couponError = '';
-    this.http.get<any>(`${environment.apiUrl}/coupons/public/${this.slug}/validate/${this.couponCode}`).subscribe({
+    const phoneParam = this.checkoutPhone ? `?phone=${encodeURIComponent(this.checkoutPhone)}` : '';
+    this.http.get<any>(`${environment.apiUrl}/coupons/public/${this.slug}/validate/${this.couponCode}${phoneParam}`).subscribe({
       next: (res) => {
         if (res.success && res.coupon) {
           this.appliedCoupon = res.coupon;

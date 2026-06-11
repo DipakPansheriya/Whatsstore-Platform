@@ -4,6 +4,7 @@ import Business from '../business/business.model';
 import Product from '../products/products.model';
 import Subscription from '../subscriptions/subscription.model';
 import Cart from '../cart/cart.model';
+import Coupon from '../coupons/coupon.model';
 
 /** GET /api/orders (Protected: Admin lists their store orders) */
 export const getOrders = async (req: Request, res: Response): Promise<void> => {
@@ -74,6 +75,32 @@ export const createOrder = async (req: Request, res: Response): Promise<void> =>
           code: 'SUBSCRIPTION_EXPIRED',
           message: 'Checkouts are temporarily disabled for this store due to plan expiration.',
         });
+        return;
+      }
+    }
+
+    // Verify coupon validity and prevent double use
+    const { customerPhone, couponCode } = req.body;
+    if (couponCode) {
+      const couponRecord = await Coupon.findOne({ business: store._id, code: couponCode.toUpperCase() });
+      if (!couponRecord || !couponRecord.isActive) {
+        res.status(400).json({ success: false, message: 'Invalid or inactive coupon code.' });
+        return;
+      }
+      if (couponRecord.expiryDate && new Date(couponRecord.expiryDate) < new Date()) {
+        res.status(400).json({ success: false, message: 'This coupon has expired.' });
+        return;
+      }
+
+      // Check if this customer (by phone number) has already used this coupon code
+      const used = await Order.findOne({
+        business: store._id,
+        customerPhone,
+        couponCode: couponCode.toUpperCase(),
+        status: { $ne: 'CANCELLED' }
+      });
+      if (used) {
+        res.status(400).json({ success: false, message: 'You have already used this coupon code.' });
         return;
       }
     }
