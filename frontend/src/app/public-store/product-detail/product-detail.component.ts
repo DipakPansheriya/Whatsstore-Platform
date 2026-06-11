@@ -148,6 +148,37 @@ interface ReviewRecord {
               </span>
             </div>
 
+            <!-- Available Offers Widget -->
+            <div class="available-offers-widget" *ngIf="publicCoupons.length > 0">
+              <h4 class="widget-title">🎁 Available Offers</h4>
+              <div class="mini-tickets-list">
+                @for (cp of publicCoupons; track cp._id) {
+                  <div class="mini-ticket glass-card">
+                    <!-- Left Tab -->
+                    <div class="mini-tab">
+                      <span class="disc-val">{{ cp.discountType === 'percentage' ? cp.discountValue + '%' : '₹' + cp.discountValue }}</span>
+                      <span class="disc-lbl">OFF</span>
+                    </div>
+                    <!-- Divider line with notches -->
+                    <div class="mini-divider">
+                      <div class="notch top-notch"></div>
+                      <div class="notch bottom-notch"></div>
+                    </div>
+                    <!-- Content -->
+                    <div class="mini-content">
+                      <div class="code-and-icon">
+                        <span class="coupon-code">{{ cp.code }}</span>
+                        <button (click)="copyCoupon(cp.code)" class="btn btn-sm copy-btn" [style.background]="copiedCouponCode === cp.code ? '#25d366' : 'rgba(255,255,255,0.05)'" [style.color]="copiedCouponCode === cp.code ? '#000' : '#fff'">
+                          {{ copiedCouponCode === cp.code ? '✓ Copied' : '📋 Copy' }}
+                        </button>
+                      </div>
+                      <p class="expiry-text">📅 Valid: {{ cp.expiryDate ? (cp.expiryDate | date:'mediumDate') : 'Limited Time' }}</p>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+
             <!-- Rich Description with line breaks and Read More/Less toggle -->
             <div class="description-section">
               <p class="description-text">{{ getDescriptionText() }}</p>
@@ -336,6 +367,19 @@ interface ReviewRecord {
                   <input type="text" [(ngModel)]="couponCode" placeholder="Promo Code (e.g. WELCOME10)" [disabled]="appliedCoupon">
                   <button class="btn btn-ghost" (click)="applyCouponCode()" [disabled]="!couponCode || appliedCoupon">Apply</button>
                 </div>
+                
+                <!-- Quick Apply Available Coupons -->
+                <div *ngIf="publicCoupons.length > 0 && !appliedCoupon" style="margin-top: var(--space-sm);">
+                  <div style="font-size: 0.75rem; color: var(--color-text-secondary); text-transform: uppercase; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.05em;">Available Offers (Click to Apply):</div>
+                  <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                    @for (cp of publicCoupons; track cp._id) {
+                      <button (click)="applyQuickCoupon(cp.code)" class="btn btn-sm" style="background: rgba(37, 211, 102, 0.08); border: 1px dashed rgba(37, 211, 102, 0.3); color: #25d366; font-size: 0.75rem; padding: 6px 12px; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                        🏷️ {{ cp.code }} (-{{ cp.discountType === 'percentage' ? cp.discountValue + '%' : '₹' + cp.discountValue }})
+                      </button>
+                    }
+                  </div>
+                </div>
+
                 <div class="coupon-feedback alert alert-success" *ngIf="appliedCoupon">
                   🎉 Code <strong>{{ appliedCoupon.code }}</strong> applied! Discount: 
                   {{ appliedCoupon.discountType === 'percentage' ? appliedCoupon.discountValue + '%' : '₹' + appliedCoupon.discountValue }}
@@ -1036,6 +1080,142 @@ interface ReviewRecord {
     .alert-success { background: rgba(37,211,102,0.1); color: #25d366; border: 1px solid rgba(37,211,102,0.2); }
     .alert-danger { background: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); }
 
+    /* Available Offers widget */
+    .available-offers-widget {
+      margin: var(--space-md) 0;
+      padding: var(--space-md);
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      box-sizing: border-box;
+      
+      .widget-title {
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: #25d366;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+    }
+    .mini-tickets-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .mini-ticket {
+      display: flex;
+      border: 1px solid rgba(37, 211, 102, 0.15);
+      border-radius: var(--radius-md);
+      background: rgba(17, 19, 25, 0.5);
+      position: relative;
+      overflow: visible;
+      box-sizing: border-box;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        border-color: rgba(37, 211, 102, 0.4);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(37, 211, 102, 0.1);
+      }
+    }
+    .mini-tab {
+      width: 70px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(37, 211, 102, 0.06);
+      border-top-left-radius: var(--radius-md);
+      border-bottom-left-radius: var(--radius-md);
+      padding: var(--space-xs);
+      box-sizing: border-box;
+      
+      .disc-val {
+        font-size: 1.1rem;
+        font-weight: 950;
+        color: #25d366;
+        line-height: 1;
+        text-align: center;
+      }
+      .disc-lbl {
+        font-size: 0.65rem;
+        font-weight: 800;
+        color: #fff;
+        opacity: 0.7;
+        margin-top: 2px;
+      }
+    }
+    .mini-divider {
+      position: relative;
+      width: 2px;
+      border-left: 2px dashed rgba(37, 211, 102, 0.2);
+      margin: 8px 0;
+      
+      .notch {
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        background: #08090c;
+        border-radius: 50%;
+        left: -7px;
+        border: 1px solid rgba(37, 211, 102, 0.15);
+        box-sizing: border-box;
+        
+        &.top-notch {
+          top: -15px;
+        }
+        &.bottom-notch {
+          bottom: -15px;
+        }
+      }
+    }
+    .mini-content {
+      flex: 1;
+      padding: var(--space-sm) var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+    .code-and-icon {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      
+      .coupon-code {
+        font-size: 0.9rem;
+        font-weight: 900;
+        color: #fff;
+        background: rgba(255,255,255,0.04);
+        padding: 2px 6px;
+        border-radius: var(--radius-sm);
+        border: 1px dashed rgba(255,255,255,0.1);
+      }
+      .copy-btn {
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        border: 1px solid rgba(255,255,255,0.06);
+        background: rgba(255,255,255,0.02);
+        color: #fff;
+        transition: all 0.2s ease;
+        &:hover { background: rgba(255,255,255,0.06); }
+      }
+    }
+    .mini-ticket .expiry-text {
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+    
     /* Theme customizations */
     .theme-classic-green {
       --color-accent: #25d366;
@@ -1104,6 +1284,8 @@ export class ProductDetailComponent implements OnInit {
   couponCode = '';
   appliedCoupon: any = null;
   couponError = '';
+  publicCoupons: any[] = [];
+  copiedCouponCode: string | null = null;
 
   // Checkout details
   checkoutName = '';
@@ -1171,6 +1353,7 @@ export class ProductDetailComponent implements OnInit {
           this.product = res.product;
           this.activeImage = res.product.images[0] || '';
           this.fetchReviews();
+          this.fetchPublicCoupons();
         } else {
           this.loading = false;
           this.notFound = true;
@@ -1385,10 +1568,15 @@ export class ProductDetailComponent implements OnInit {
   // Coupon calculations
   applyCouponCode() {
     this.couponError = '';
-    this.http.get<any>(`${environment.apiUrl}/coupons/public/${this.slug}/validate/${this.couponCode}`).subscribe({
+    const phoneParam = this.checkoutPhone ? `?phone=${encodeURIComponent(this.checkoutPhone)}` : '';
+    this.http.get<any>(`${environment.apiUrl}/coupons/public/${this.slug}/validate/${this.couponCode}${phoneParam}`).subscribe({
       next: (res) => {
         if (res.success && res.coupon) {
           this.appliedCoupon = res.coupon;
+          // Track coupon application event
+          if (this.business) {
+            this.api.post('analytics/track', { businessId: this.business._id, event: 'coupon_apply', couponCode: res.coupon.code }).subscribe();
+          }
         } else {
           this.couponError = res.message || 'Invalid coupon code';
         }
@@ -1397,6 +1585,37 @@ export class ProductDetailComponent implements OnInit {
         this.couponError = err.error?.message || 'Failed to apply coupon';
       }
     });
+  }
+
+  fetchPublicCoupons() {
+    this.http.get<any>(`${environment.apiUrl}/coupons/public-store/product/${this.productId}`).subscribe({
+      next: (res) => {
+        if (res.success && res.coupons) {
+          this.publicCoupons = res.coupons;
+          // Track coupon views in analytics
+          this.publicCoupons.forEach(c => {
+            if (this.business) {
+              this.api.post('analytics/track', { businessId: this.business._id, event: 'coupon_view', couponCode: c.code }).subscribe();
+            }
+          });
+        }
+      }
+    });
+  }
+
+  copyCoupon(code: string) {
+    navigator.clipboard.writeText(code).then(() => {
+      this.copiedCouponCode = code;
+      if (this.business) {
+        this.api.post('analytics/track', { businessId: this.business._id, event: 'coupon_copy', couponCode: code }).subscribe();
+      }
+      setTimeout(() => this.copiedCouponCode = null, 3000);
+    });
+  }
+
+  applyQuickCoupon(code: string) {
+    this.couponCode = code;
+    this.applyCouponCode();
   }
 
   removeCoupon() {

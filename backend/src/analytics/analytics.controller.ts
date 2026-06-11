@@ -8,7 +8,7 @@ import Cart from '../cart/cart.model';
 /** POST /api/analytics/track — Public track page view or click event */
 export const trackEvent = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { businessId, event, productId } = req.body;
+    const { businessId, event, productId, couponCode } = req.body;
     if (!businessId || !event) {
       res.status(400).json({ success: false, message: 'businessId and event type are required' });
       return;
@@ -16,7 +16,8 @@ export const trackEvent = async (req: Request, res: Response): Promise<void> => 
     const analytics = await Analytics.create({
       business: businessId,
       event,
-      product: productId || undefined
+      product: productId || undefined,
+      couponCode: couponCode || undefined
     });
     res.status(201).json({ success: true, analytics });
   } catch (err: any) {
@@ -111,6 +112,33 @@ export const getAnalyticsDashboard = async (req: Request, res: Response): Promis
       })
     );
 
+    // 10. Coupon Performance Leaderboard (Most Used, Conversions, Revenue Impact)
+    const couponStats = await Order.aggregate([
+      { $match: { business: businessId, couponCode: { $ne: '' }, status: { $ne: 'CANCELLED' } } },
+      { $group: {
+          _id: '$couponCode',
+          useCount: { $sum: 1 },
+          totalRevenue: { $sum: '$totalAmount' },
+          totalDiscount: { $sum: '$discountAmount' }
+        }
+      },
+      { $sort: { useCount: -1 } }
+    ]);
+
+    const couponSummary = await Promise.all(
+      couponStats.map(async (stat) => {
+        const applies = await Analytics.countDocuments({ business: businessId, event: 'coupon_apply', couponCode: stat._id });
+        const conversionRate = applies > 0 ? Number(((stat.useCount / applies) * 100).toFixed(1)) : 100.0;
+        return {
+          code: stat._id,
+          useCount: stat.useCount,
+          revenue: stat.totalRevenue,
+          discount: stat.totalDiscount,
+          conversionRate: Math.min(conversionRate, 100.0)
+        };
+      })
+    );
+
     res.json({
       success: true,
       stats: {
@@ -123,7 +151,8 @@ export const getAnalyticsDashboard = async (req: Request, res: Response): Promis
         cartAbandonmentRate,
         monthlyGrowth
       },
-      topSellingProducts
+      topSellingProducts,
+      couponSummary
     });
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });

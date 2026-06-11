@@ -9,6 +9,7 @@ const business_model_1 = __importDefault(require("../business/business.model"));
 const products_model_1 = __importDefault(require("../products/products.model"));
 const subscription_model_1 = __importDefault(require("../subscriptions/subscription.model"));
 const cart_model_1 = __importDefault(require("../cart/cart.model"));
+const coupon_model_1 = __importDefault(require("../coupons/coupon.model"));
 /** GET /api/orders (Protected: Admin lists their store orders) */
 const getOrders = async (req, res) => {
     try {
@@ -78,6 +79,30 @@ const createOrder = async (req, res) => {
                     code: 'SUBSCRIPTION_EXPIRED',
                     message: 'Checkouts are temporarily disabled for this store due to plan expiration.',
                 });
+                return;
+            }
+        }
+        // Verify coupon validity and prevent double use
+        const { customerPhone, couponCode } = req.body;
+        if (couponCode) {
+            const couponRecord = await coupon_model_1.default.findOne({ business: store._id, code: couponCode.toUpperCase() });
+            if (!couponRecord || !couponRecord.isActive) {
+                res.status(400).json({ success: false, message: 'Invalid or inactive coupon code.' });
+                return;
+            }
+            if (couponRecord.expiryDate && new Date(couponRecord.expiryDate) < new Date()) {
+                res.status(400).json({ success: false, message: 'This coupon has expired.' });
+                return;
+            }
+            // Check if this customer (by phone number) has already used this coupon code
+            const used = await orders_model_1.default.findOne({
+                business: store._id,
+                customerPhone,
+                couponCode: couponCode.toUpperCase(),
+                status: { $ne: 'CANCELLED' }
+            });
+            if (used) {
+                res.status(400).json({ success: false, message: 'You have already used this coupon code.' });
                 return;
             }
         }

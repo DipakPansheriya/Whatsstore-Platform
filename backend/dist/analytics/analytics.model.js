@@ -36,7 +36,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const AnalyticsSchema = new mongoose_1.Schema({
     business: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Business', required: true },
-    event: { type: String, enum: ['page_view', 'product_click', 'whatsapp_click'], required: true },
+    event: { type: String, enum: ['page_view', 'product_click', 'whatsapp_click', 'coupon_view', 'coupon_copy', 'coupon_apply'], required: true },
     product: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Product' },
+    couponCode: { type: String }
 }, { timestamps: { createdAt: true, updatedAt: false } });
 exports.default = mongoose_1.default.model('Analytics', AnalyticsSchema);
