@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.whatsstore.com/api',
+  apiUrl: 'https://whatsstore-platform.onrender.com/api',
   appName: 'WhatsStore',
   firebaseConfig: {
     apiKey: "AIzaSyBdepnlgyzT2CmG7VZf9NlVpSA8OaRs7VA",
