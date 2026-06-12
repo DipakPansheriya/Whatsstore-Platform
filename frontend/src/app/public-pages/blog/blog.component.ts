@@ -66,7 +66,7 @@ interface BlogPost {
         margin: var(--space-sm) 0 var(--space-xs);
         font-size: 3rem;
         font-weight: 800;
-        color: #fff;
+        color: var(--color-text-primary);
         line-height: 1.15;
       }
       .subtitle {
@@ -96,7 +96,7 @@ interface BlogPost {
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--color-border);
       transition: all var(--transition-normal);
       
       &:hover {
@@ -114,7 +114,7 @@ interface BlogPost {
       height: 200px;
       position: relative;
       overflow: hidden;
-      background: #111;
+      background: var(--color-bg-surface);
       
       img {
         width: 100%;
@@ -157,7 +157,7 @@ interface BlogPost {
       
       h3 {
         font-size: 1.25rem;
-        color: #fff;
+        color: var(--color-text-primary);
         line-height: 1.35;
         font-weight: 700;
       }

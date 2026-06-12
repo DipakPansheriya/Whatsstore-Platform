@@ -118,7 +118,7 @@ Order Ref: #12345</pre>
         margin: var(--space-sm) 0;
         font-size: 2.5rem;
         font-weight: 800;
-        color: #fff;
+        color: var(--color-text-primary);
       }
       .lead {
         font-size: 1.15rem;
@@ -138,7 +138,7 @@ Order Ref: #12345</pre>
       gap: var(--space-md);
       h2 {
         font-size: 1.45rem;
-        color: #fff;
+        color: var(--color-text-primary);
         border-left: 3px solid var(--color-accent);
         padding-left: var(--space-sm);
         margin-bottom: var(--space-xs);
@@ -164,7 +164,8 @@ Order Ref: #12345</pre>
       flex-direction: column;
       gap: 8px;
       position: relative;
-      background: rgba(255, 255, 255, 0.01);
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
       &:hover {
         transform: translateY(-2px);
       }
@@ -194,7 +195,7 @@ Order Ref: #12345</pre>
       font-weight: 600;
       transition: color var(--transition-fast);
       &:hover {
-        color: #fff;
+        color: var(--color-text-primary);
         text-decoration: underline;
       }
     }
@@ -223,7 +224,8 @@ Order Ref: #12345</pre>
         }
       }
       code {
-        background: rgba(255,255,255,0.04);
+        background: var(--color-bg-surface);
+        border: 1px solid var(--color-border);
         padding: 2px 6px;
         border-radius: var(--radius-sm);
         font-family: monospace;
@@ -232,13 +234,13 @@ Order Ref: #12345</pre>
     }
     
     .code-block {
-      background: #111318;
+      background: var(--color-bg-surface);
       border: 1px solid var(--color-border);
       padding: var(--space-md) var(--space-lg);
       border-radius: var(--radius-md);
       font-family: 'Fira Code', monospace;
       font-size: 0.85rem;
-      color: #cbd5e1;
+      color: var(--color-text-primary);
       white-space: pre-wrap;
       line-height: 1.6;
     }

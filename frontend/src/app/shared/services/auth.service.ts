@@ -9,6 +9,7 @@ export interface AuthUser {
   name: string;
   email: string;
   role: string;
+  theme?: 'light' | 'dark' | 'system';
 }
 
 export interface AuthResponse {

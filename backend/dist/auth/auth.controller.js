@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMe = exports.login = exports.register = exports.registerSuperAdmin = void 0;
+exports.updateTheme = exports.getMe = exports.login = exports.register = exports.registerSuperAdmin = void 0;
 const auth_model_1 = __importDefault(require("./auth.model"));
 const business_model_1 = __importDefault(require("../business/business.model"));
 const jwt_1 = require("../config/jwt");
@@ -59,7 +59,7 @@ const registerSuperAdmin = async (req, res) => {
             success: true,
             message: 'SuperAdmin created successfully',
             token,
-            user: { id: user.id, name: user.name, email: user.email, role: user.role },
+            user: { id: user.id, name: user.name, email: user.email, role: user.role, theme: user.theme },
         });
     }
     catch (err) {
@@ -110,7 +110,7 @@ const register = async (req, res) => {
             success: true,
             message: 'Registration successful',
             token,
-            user: { id: user.id, name: user.name, email: user.email, role: user.role },
+            user: { id: user.id, name: user.name, email: user.email, role: user.role, theme: user.theme },
         });
     }
     catch (err) {
@@ -136,7 +136,7 @@ const login = async (req, res) => {
             success: true,
             message: 'Login successful',
             token,
-            user: { id: user.id, name: user.name, email: user.email, role: user.role },
+            user: { id: user.id, name: user.name, email: user.email, role: user.role, theme: user.theme },
         });
     }
     catch (err) {
@@ -160,3 +160,24 @@ const getMe = async (req, res) => {
     }
 };
 exports.getMe = getMe;
+/** PUT /api/auth/theme */
+const updateTheme = async (req, res) => {
+    try {
+        const userId = req.user?.userId;
+        const { theme } = req.body;
+        if (!theme || !['light', 'dark', 'system'].includes(theme)) {
+            res.status(400).json({ success: false, message: 'Invalid theme value' });
+            return;
+        }
+        const user = await auth_model_1.default.findByIdAndUpdate(userId, { theme }, { new: true });
+        if (!user) {
+            res.status(404).json({ success: false, message: 'User not found' });
+            return;
+        }
+        res.json({ success: true, theme: user.theme });
+    }
+    catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+};
+exports.updateTheme = updateTheme;

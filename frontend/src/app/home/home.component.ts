@@ -222,7 +222,7 @@ import { RouterLink } from '@angular/router';
       padding: var(--space-3xl) 0;
       border-top: 1px solid var(--color-border);
       border-bottom: 1px solid var(--color-border);
-      background: rgba(17, 19, 25, 0.2);
+      background: var(--color-bg-card);
     }
     .section-header {
       margin-bottom: var(--space-2xl);
@@ -244,15 +244,15 @@ import { RouterLink } from '@angular/router';
         font-size: 2.2rem;
         width: 54px;
         height: 54px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: var(--color-bg-surface);
+        border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         display: flex;
         align-items: center;
         justify-content: center;
         margin-bottom: var(--space-xs);
       }
-      h3 { font-size: 1.25rem; color: #fff; }
+      h3 { font-size: 1.25rem; color: var(--color-text-primary); }
       p { font-size: 0.9375rem; line-height: 1.6; color: var(--color-text-secondary); }
     }
     .view-all-link {
@@ -262,7 +262,7 @@ import { RouterLink } from '@angular/router';
       font-weight: 600;
       color: var(--color-accent);
       transition: color var(--transition-fast);
-      &:hover { color: #fff; }
+      &:hover { color: var(--color-text-primary); }
     }
 
     /* Workflow Section */
@@ -290,7 +290,7 @@ import { RouterLink } from '@angular/router';
         line-height: 1;
         margin-bottom: var(--space-xs);
       }
-      h4 { font-size: 1.15rem; color: #fff; margin-bottom: 4px; }
+      h4 { font-size: 1.15rem; color: var(--color-text-primary); margin-bottom: 4px; }
       p { font-size: 0.875rem; line-height: 1.5; color: var(--color-text-secondary); }
     }
 
@@ -316,7 +316,7 @@ import { RouterLink } from '@angular/router';
       flex-direction: column;
       align-items: flex-start;
       gap: var(--space-md);
-      h2 { font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 800; color: #fff; line-height: 1.25; }
+      h2 { font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 800; color: var(--color-text-primary); line-height: 1.25; }
       p { color: var(--color-text-secondary); line-height: 1.7; font-size: 1rem; }
     }
     .showcase-features {
@@ -331,15 +331,15 @@ import { RouterLink } from '@angular/router';
       align-items: flex-start;
       .feat-icon {
         font-size: 1.5rem;
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.05);
+        background: var(--color-bg-surface);
+        border: 1px solid var(--color-border);
         padding: 8px;
         border-radius: var(--radius-sm);
         display: flex;
         align-items: center;
         justify-content: center;
       }
-      h4 { color: #fff; font-size: 1.05rem; font-weight: 700; margin-bottom: 2px; }
+      h4 { color: var(--color-text-primary); font-size: 1.05rem; font-weight: 700; margin-bottom: 2px; }
       p { color: var(--color-text-muted); font-size: 0.875rem; line-height: 1.4; }
     }
     .showcase-actions {
@@ -353,8 +353,8 @@ import { RouterLink } from '@angular/router';
     .visual-mockup {
       width: 100%;
       max-width: 320px;
-      background: rgba(0,0,0,0.4);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
       padding: var(--space-md);
       display: flex;
@@ -363,12 +363,12 @@ import { RouterLink } from '@angular/router';
       box-shadow: var(--shadow-lg);
     }
     .mockup-header {
-      background: rgba(255,255,255,0.05);
+      background: var(--color-bg-surface);
       padding: 10px 14px;
       border-radius: 999px;
       font-size: 0.8rem;
       color: var(--color-text-muted);
-      border: 1px solid rgba(255,255,255,0.05);
+      border: 1px solid var(--color-border);
     }
     .mockup-grid {
       display: grid;
@@ -376,8 +376,8 @@ import { RouterLink } from '@angular/router';
       gap: 10px;
     }
     .mockup-card {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.04);
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
       padding: 8px;
       display: flex;
@@ -390,7 +390,7 @@ import { RouterLink } from '@angular/router';
     }
     .mockup-info {
       text-align: center;
-      h5 { font-size: 0.78rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
+      h5 { font-size: 0.78rem; font-weight: 700; color: var(--color-text-primary); margin-bottom: 2px; }
       span { font-size: 0.65rem; color: var(--color-text-muted); }
     }
 

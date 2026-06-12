@@ -3,12 +3,14 @@ import { HomeComponent } from './home/home.component';
 import { DashboardLayoutComponent } from './shared/dashboard-layout.component';
 import { SuperAdminLayoutComponent } from './shared/superadmin-layout.component';
 import { authGuard, guestGuard, adminGuard, superAdminGuard } from './shared/guards/auth.guard';
+import { themeGuard } from './shared/guards/theme.guard';
 
 export const routes: Routes = [
   // Public pages
   {
     path: '',
     component: HomeComponent,
+    canActivate: [themeGuard]
   },
   {
     path: 'features',

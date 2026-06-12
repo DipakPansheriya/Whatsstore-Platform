@@ -8,6 +8,7 @@ export interface IUser extends Document {
   passwordHash: string;
   role: 'ADMIN' | 'SUPERADMIN' | 'CUSTOMER';
   isVerified: boolean;
+  theme?: 'light' | 'dark' | 'system';
   createdAt: Date;
   comparePassword(password: string): Promise<boolean>;
 }
@@ -20,6 +21,7 @@ const UserSchema = new Schema<IUser>(
     passwordHash: { type: String, required: true },
     role:         { type: String, enum: ['ADMIN', 'SUPERADMIN', 'CUSTOMER'], default: 'ADMIN' },
     isVerified:   { type: Boolean, default: false },
+    theme:        { type: String, enum: ['light', 'dark', 'system'], default: 'system' },
   },
   { timestamps: true }
 );

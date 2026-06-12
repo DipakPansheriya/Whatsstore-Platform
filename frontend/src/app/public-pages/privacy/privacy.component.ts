@@ -62,7 +62,7 @@ import { Component } from '@angular/core';
         margin: var(--space-sm) 0 var(--space-xs);
         font-size: 2.5rem;
         font-weight: 800;
-        color: #fff;
+        color: var(--color-text-primary);
       }
       .last-updated {
         font-size: 0.85rem;
@@ -83,7 +83,7 @@ import { Component } from '@angular/core';
       gap: var(--space-sm);
       h2 {
         font-size: 1.35rem;
-        color: #fff;
+        color: var(--color-text-primary);
         border-left: 3px solid var(--color-accent);
         padding-left: var(--space-sm);
         margin-bottom: var(--space-xs);

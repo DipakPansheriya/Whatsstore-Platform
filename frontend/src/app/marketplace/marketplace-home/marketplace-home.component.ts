@@ -239,11 +239,11 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
       top: 0; left: 0; right: 0;
       height: 70px;
       z-index: 100;
-      background: rgba(10, 11, 16, 0.85);
+      background: var(--color-bg-card-glass);
       backdrop-filter: blur(30px);
       -webkit-backdrop-filter: blur(30px);
       border-bottom: 1px solid var(--color-border);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--shadow-sm);
     }
     .header-container {
       max-width: 1200px;
@@ -257,7 +257,7 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
     .brand-title {
       font-size: 1.4rem;
       font-weight: 950;
-      color: #fff;
+      color: var(--color-text-primary);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -289,7 +289,7 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
       gap: 6px;
       transition: all 0.25s ease;
       
-      &:hover { color: #fff; background: rgba(255,255,255,0.05); }
+      &:hover { color: var(--color-text-primary); background: var(--color-bg-surface); }
     }
     .nav-badge, .cart-badge {
       font-size: 0.75rem;
@@ -301,8 +301,8 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
     .cart-badge { background: var(--color-accent); color: #000; box-shadow: 0 0 10px var(--color-accent-glow); }
     .cart-btn {
       border: 1px solid var(--color-border);
-      background: rgba(255,255,255,0.04);
-      color: #fff;
+      background: var(--color-bg-surface);
+      color: var(--color-text-primary);
       &:hover { 
         background: var(--color-accent); 
         color: #000; 
@@ -326,12 +326,9 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
       h1 { 
         font-size: clamp(2.2rem, 6vw, 3.4rem); 
         font-weight: 950; 
-        color: #fff; 
+        color: var(--color-text-primary); 
         line-height: 1.15; 
         letter-spacing: -0.03em;
-        background: linear-gradient(135deg, #fff 50%, var(--color-text-secondary) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
       }
       p { font-size: 1.15rem; color: var(--color-text-secondary); margin-top: 12px; margin-bottom: var(--space-2xl); }
     }
@@ -341,7 +338,7 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
       display: flex;
       align-items: center;
       padding: 6px 6px 6px 20px;
-      background: rgba(10, 11, 16, 0.65);
+      background: var(--color-bg-card-glass);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-pill);
       gap: 12px;
@@ -351,7 +348,7 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
       &:focus-within {
         border-color: var(--color-accent);
         box-shadow: 0 0 30px var(--color-accent-glow);
-        background: rgba(10, 11, 16, 0.8);
+        background: var(--color-bg-card);
       }
       
       .search-icon { font-size: 1.3rem; opacity: 0.8; }
@@ -360,7 +357,7 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
         background: transparent;
         border: none;
         outline: none;
-        color: #fff;
+        color: var(--color-text-primary);
         font-size: 1.1rem;
         &::placeholder { color: var(--color-text-muted); }
       }
@@ -400,7 +397,7 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
       align-items: center;
       gap: 10px;
       padding: 12px 22px;
-      background: rgba(255, 255, 255, 0.02);
+      background: var(--color-bg-surface);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
       color: var(--color-text-secondary);
@@ -411,8 +408,8 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       
       &:hover { 
-        background: rgba(255, 255, 255, 0.05); 
-        color: #fff;
+        background: var(--color-bg-surface); 
+        color: var(--color-text-primary);
         transform: translateY(-2px);
       }
       &.active { 
@@ -432,7 +429,7 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
       border-radius: var(--radius-xl);
       overflow: hidden;
       border: 1px solid var(--color-border);
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      box-shadow: var(--shadow-md);
     }
     .banner-slide {
       height: 100%;
@@ -445,7 +442,7 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
     }
     .banner-overlay {
       position: absolute; top:0; left:0; right:0; bottom:0;
-      background: linear-gradient(90deg, rgba(5, 6, 11, 0.95) 0%, rgba(5, 6, 11, 0.4) 100%);
+      background: linear-gradient(90deg, rgba(5, 6, 11, 0.8) 0%, rgba(5, 6, 11, 0.3) 100%);
     }
     .banner-content {
       position: relative;
@@ -453,7 +450,7 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
       max-width: 520px;
       display: flex; flex-direction: column; gap: var(--space-md); align-items: flex-start;
       h2 { font-size: 2.5rem; color: #fff; font-weight: 900; line-height: 1.2; letter-spacing: -0.02em; }
-      p { color: var(--color-text-primary); font-size: 1.05rem; line-height: 1.5; }
+      p { color: #f1f5f9; font-size: 1.05rem; line-height: 1.5; }
     }
     .carousel-dots {
       position: absolute;
@@ -471,15 +468,15 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
     .results-header {
       display: flex; justify-content: space-between; align-items: center;
       margin-bottom: var(--space-xl); border-bottom: 1px solid var(--color-border); padding-bottom: 16px;
-      h3 { font-size: 1.45rem; font-weight: 850; color: #fff; letter-spacing: -0.01em; }
+      h3 { font-size: 1.45rem; font-weight: 850; color: var(--color-text-primary); letter-spacing: -0.01em; }
     }
     .loading-state, .empty-state {
       text-align: center; padding: var(--space-3xl) 0;
-      background: rgba(255, 255, 255, 0.01);
+      background: var(--color-bg-card);
       border: 1px dashed var(--color-border);
       border-radius: var(--radius-lg);
       .spinner { font-size: 2.2rem; display: block; margin-bottom: 12px; }
-      h3 { font-weight: 850; color: #fff; margin-bottom: var(--space-sm); }
+      h3 { font-weight: 850; color: var(--color-text-primary); margin-bottom: var(--space-sm); }
       p { color: var(--color-text-secondary); }
     }
 
@@ -491,7 +488,7 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
     }
     .product-card {
       display: flex; flex-direction: column; overflow: hidden; padding: 0; 
-      background: rgba(10, 11, 16, 0.45); 
+      background: var(--color-bg-card); 
       border: 1px solid var(--color-border); 
       border-radius: var(--radius-xl); 
       transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -508,34 +505,34 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
       img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
     }
     .store-badge-tag {
-      position: absolute; bottom: 10px; left: 10px; font-size: 0.72rem; font-weight: 850; color: #fff; 
-      background: rgba(10, 11, 16, 0.85); 
+      position: absolute; bottom: 10px; left: 10px; font-size: 0.72rem; font-weight: 850; color: var(--color-text-primary); 
+      background: var(--color-bg-card-glass); 
       border: 1px solid var(--color-border); 
       padding: 4px 10px; border-radius: 6px;
       backdrop-filter: blur(5px);
     }
     .wishlist-btn {
       position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 50%; 
-      background: rgba(10, 11, 16, 0.8); 
-      border: 1px solid rgba(255, 255, 255, 0.15); 
+      background: var(--color-bg-surface); 
+      border: 1px solid var(--color-border); 
       display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; 
       transition: all 0.2s ease;
       backdrop-filter: blur(5px);
       filter: grayscale(100%);
-      &:hover { transform: scale(1.1); filter: grayscale(0%); background: rgba(10, 11, 16, 0.95); }
-      &.active { filter: grayscale(0%); background: rgba(10, 11, 16, 0.95); border-color: rgba(239, 68, 68, 0.3); }
+      &:hover { transform: scale(1.1); filter: grayscale(0%); background: var(--color-bg-surface); }
+      &.active { filter: grayscale(0%); background: var(--color-bg-surface); border-color: rgba(239, 68, 68, 0.3); }
     }
     .card-body {
       padding: var(--space-lg); display: flex; flex-direction: column; gap: var(--space-xs); flex: 1;
       .prod-cat { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: #8b5cf6; letter-spacing: 0.08em; }
-      .prod-title { font-size: 1.1rem; font-weight: 850; color: #fff; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; &:hover { color: var(--color-accent); } }
+      .prod-title { font-size: 1.1rem; font-weight: 850; color: var(--color-text-primary); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; &:hover { color: var(--color-accent); } }
       .offer-badges-row { margin-top: 6px; display: flex; }
       .coupon-badge-pill { font-size: 0.72rem; font-weight: 700; color: var(--color-accent); background: var(--color-accent-dim); border: 1px dashed rgba(37, 211, 102, 0.2); padding: 3px 8px; border-radius: 6px; }
     }
     .card-footer {
       display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: var(--space-md);
-      border-top: 1px solid rgba(255, 255, 255, 0.04);
-      .price { font-size: 1.35rem; font-weight: 900; color: #fff; font-family: var(--font-heading); }
+      border-top: 1px solid var(--color-border);
+      .price { font-size: 1.35rem; font-weight: 900; color: var(--color-text-primary); font-family: var(--font-heading); }
       .btn-accent-cart { 
         background: var(--color-accent-dim); 
         color: var(--color-accent); 
@@ -553,11 +550,11 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
 
     /* Featured Stores styling */
     .home-section { margin-bottom: var(--space-3xl); }
-    .section-title { font-size: 1.6rem; font-weight: 950; color: #fff; margin-bottom: var(--space-xl); letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; }
+    .section-title { font-size: 1.6rem; font-weight: 950; color: var(--color-text-primary); margin-bottom: var(--space-xl); letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; }
     .stores-scroll-grid { display: flex; gap: 18px; padding-bottom: 12px; }
     .store-card {
       min-width: 270px; max-width: 290px; padding: var(--space-xl); border-radius: var(--radius-xl); 
-      background: rgba(10, 11, 16, 0.4); 
+      background: var(--color-bg-card); 
       border: 1px solid var(--color-border); 
       display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px;
       transition: all 0.3s ease;
@@ -573,14 +570,14 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
       
       .store-info { 
         display: flex; flex-direction: column; gap: 6px; align-items: center; 
-        h4 { font-size: 1.25rem; font-weight: 900; color: #fff; } 
+        h4 { font-size: 1.25rem; font-weight: 900; color: var(--color-text-primary); } 
         .store-tag { font-size: 0.72rem; font-weight: 800; color: var(--color-accent); text-transform: uppercase; background: var(--color-accent-dim); border: 1px solid rgba(37, 211, 102, 0.15); padding: 3px 10px; border-radius: 20px; } 
         .store-desc { font-size: 0.82rem; color: var(--color-text-secondary); line-height: 1.45; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; min-height: 38px; } 
       }
       .btn { 
-        border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 750; border: 1px solid var(--color-border); background: rgba(255,255,255,0.02); color: #fff; width: 100%; transition: all 0.2s;
+        border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 750; border: 1px solid var(--color-border); background: var(--color-bg-surface); color: var(--color-text-primary); width: 100%; transition: all 0.2s;
         &:hover {
-          background: #fff; color: #000; border-color: #fff;
+          background: var(--color-text-primary); color: var(--color-bg); border-color: var(--color-text-primary);
         }
       }
     }
@@ -588,7 +585,7 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
     /* Coupons carousel section */
     .offers-container { display: flex; gap: var(--space-lg); padding-bottom: var(--space-md); }
     .offer-ticket {
-      min-width: 300px; max-width: 320px; display: flex; border: 1px solid rgba(37, 211, 102, 0.15); border-radius: var(--radius-xl); background: rgba(10, 11, 16, 0.5); position: relative; overflow: visible; box-sizing: border-box;
+      min-width: 300px; max-width: 320px; display: flex; border: 1px solid rgba(37, 211, 102, 0.15); border-radius: var(--radius-xl); background: var(--color-bg-card); position: relative; overflow: visible; box-sizing: border-box;
       transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       &:hover {
         border-color: rgba(37, 211, 102, 0.35);
@@ -599,18 +596,18 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
     .offer-tab {
       width: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(37, 211, 102, 0.03); border-top-left-radius: var(--radius-xl); border-bottom-left-radius: var(--radius-xl); padding: var(--space-sm); box-sizing: border-box;
       .discount-value { font-size: 1.6rem; font-weight: 950; color: var(--color-accent); text-shadow: 0 0 10px var(--color-accent-glow); line-height: 1; text-align: center; }
-      .discount-label { font-size: 0.68rem; font-weight: 850; color: #fff; opacity: 0.7; margin-top: 3px; }
+      .discount-label { font-size: 0.68rem; font-weight: 850; color: var(--color-text-primary); opacity: 0.7; margin-top: 3px; }
     }
     .offer-divider {
       position: relative; width: 2px; border-left: 2px dashed rgba(37, 211, 102, 0.2); margin: 10px 0;
-      .notch { position: absolute; width: 14px; height: 14px; background: #05060b; border-radius: 50%; left: -8px; border: 1px solid rgba(37, 211, 102, 0.15); box-sizing: border-box; &.top-notch { top: -18px; } &.bottom-notch { bottom: -18px; } }
+      .notch { position: absolute; width: 14px; height: 14px; background: var(--color-bg); border-radius: 50%; left: -8px; border: 1px solid rgba(37, 211, 102, 0.15); box-sizing: border-box; &.top-notch { top: -18px; } &.bottom-notch { bottom: -18px; } }
     }
     .offer-content {
       flex: 1; padding: var(--space-md); display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; justify-content: space-between;
     }
     .offer-header {
       display: flex; justify-content: space-between; align-items: center;
-      .coupon-code { font-size: 0.85rem; font-weight: 900; color: #fff; background: rgba(255,255,255,0.06); padding: 3px 8px; border-radius: 6px; border: 1px dashed var(--color-border); }
+      .coupon-code { font-size: 0.85rem; font-weight: 900; color: var(--color-text-primary); background: var(--color-bg-surface); padding: 3px 8px; border-radius: 6px; border: 1px dashed var(--color-border); }
       .ticket-icon { font-size: 1.15rem; opacity: 0.9; }
     }
     .offer-description { font-size: 0.82rem; color: var(--color-text-secondary); margin: 0; line-height: 1.4; }

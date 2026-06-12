@@ -100,7 +100,7 @@ import { CommonModule } from '@angular/common';
         margin: var(--space-sm) 0 var(--space-xs);
         font-size: 3rem;
         font-weight: 800;
-        color: #fff;
+        color: var(--color-text-primary);
         line-height: 1.15;
       }
       .subtitle {
@@ -126,12 +126,12 @@ import { CommonModule } from '@angular/common';
 
     .contact-form-wrapper {
       padding: var(--space-2xl);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--color-border);
       display: flex;
       flex-direction: column;
       gap: var(--space-md);
       
-      h3 { font-size: 1.5rem; color: #fff; }
+      h3 { font-size: 1.5rem; color: var(--color-text-primary); }
       .desc-hint { font-size: 0.9rem; color: var(--color-text-secondary); }
     }
     
@@ -153,8 +153,8 @@ import { CommonModule } from '@angular/common';
       }
       input, textarea {
         padding: 14px;
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: var(--color-bg-surface);
+        border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         color: var(--color-text-primary);
         font-size: 0.95rem;
@@ -163,7 +163,7 @@ import { CommonModule } from '@angular/common';
         transition: all var(--transition-fast);
         &:focus {
           border-color: var(--color-accent);
-          background: rgba(255, 255, 255, 0.04);
+          background: var(--color-bg-card);
           box-shadow: 0 0 12px var(--color-accent-glow);
         }
       }
@@ -178,8 +178,8 @@ import { CommonModule } from '@angular/common';
       font-size: 0.9rem;
     }
     .alert-success {
-      background: rgba(37, 211, 102, 0.1);
-      color: #25d366;
+      background: var(--color-accent-dim);
+      color: var(--color-accent);
       border: 1px solid rgba(37, 211, 102, 0.25);
     }
 
@@ -194,7 +194,7 @@ import { CommonModule } from '@angular/common';
       display: flex;
       gap: var(--space-md);
       align-items: flex-start;
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--color-border);
       transition: all var(--transition-normal);
       
       &:hover {
@@ -224,7 +224,7 @@ import { CommonModule } from '@angular/common';
       flex-direction: column;
       gap: 4px;
       
-      h4 { font-size: 1.05rem; color: #fff; font-weight: 700; }
+      h4 { font-size: 1.05rem; color: var(--color-text-primary); font-weight: 700; }
       p { font-size: 1rem; color: var(--color-text-primary); font-weight: 600; }
       span { font-size: 0.8rem; color: var(--color-text-secondary); }
     }

@@ -3,11 +3,12 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../shared/services/auth.service';
 import { Router } from '@angular/router';
+import { ThemeToggleComponent } from '../../shared/components/theme-toggle.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, ThemeToggleComponent],
   template: `
     <div class="auth-page">
 
@@ -57,6 +58,18 @@ import { Router } from '@angular/router';
 
         <!-- Right Panel: Form -->
         <div class="right-panel">
+
+          <!-- Top bar: back link + theme toggle -->
+          <div class="auth-top-bar">
+            <a routerLink="/" class="back-home-link">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 5l-7 7 7 7"/>
+              </svg>
+              Back to home
+            </a>
+            <app-theme-toggle></app-theme-toggle>
+          </div>
+
           <div class="form-wrapper">
             <div class="form-header">
               <h1>Welcome back</h1>
@@ -123,11 +136,12 @@ import { Router } from '@angular/router';
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #08090d;
+      background: var(--color-bg);
       padding: 20px;
       font-family: var(--font-base);
       position: relative;
       overflow: hidden;
+      transition: background var(--transition-normal);
     }
 
     /* Animated background orbs */
@@ -172,8 +186,9 @@ import { Router } from '@angular/router';
       grid-template-columns: 1fr 1fr;
       border-radius: 28px;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.07);
-      box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(37,211,102,0.05);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-lg), 0 0 0 1px rgba(37,211,102,0.05);
+      transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
 
       @media (max-width: 768px) {
         grid-template-columns: 1fr;
@@ -352,36 +367,48 @@ import { Router } from '@angular/router';
 
     /* ---- RIGHT: Form panel ---- */
     .right-panel {
-      background: #0f1117;
-      padding: 36px 44px;
+      background: var(--color-bg-card);
+      padding: 20px 44px 36px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      position: relative;
+      transition: background var(--transition-normal);
 
       @media (max-width: 480px) {
-        padding: 32px 24px;
+        padding: 16px 24px 32px;
       }
     }
 
-    .btn-close {
-      position: absolute;
-      top: 20px; right: 20px;
-      width: 34px; height: 34px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #94a3b8;
+    /* Top bar row: back link on left, toggle on right */
+    .auth-top-bar {
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-shrink: 0;
+    }
+
+    /* Back to home pill */
+    .back-home-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--color-text-secondary);
       text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
       transition: all 150ms ease;
       &:hover {
-        background: rgba(255,255,255,0.1);
-        color: #f1f5f9;
+        color: var(--color-text-primary);
+        border-color: var(--color-accent);
+        background: var(--color-accent-dim);
         opacity: 1;
       }
+      svg { flex-shrink: 0; }
     }
 
     .form-wrapper {
@@ -395,13 +422,13 @@ import { Router } from '@angular/router';
         font-family: var(--font-heading);
         font-size: 1.9rem;
         font-weight: 800;
-        color: #f1f5f9;
+        color: var(--color-text-primary);
         letter-spacing: -0.03em;
         margin-bottom: 4px;
       }
       p {
         font-size: 0.88rem;
-        color: #64748b;
+        color: var(--color-text-secondary);
       }
     }
 
@@ -441,11 +468,11 @@ import { Router } from '@angular/router';
         content: '';
         flex: 1;
         height: 1px;
-        background: rgba(255,255,255,0.07);
+        background: var(--color-border);
       }
       span {
         font-size: 0.75rem;
-        color: #4b5563;
+        color: var(--color-text-muted);
         white-space: nowrap;
       }
     }
@@ -465,7 +492,7 @@ import { Router } from '@angular/router';
       label {
         font-size: 0.78rem;
         font-weight: 600;
-        color: #94a3b8;
+        color: var(--color-text-secondary);
         letter-spacing: 0.01em;
       }
     }
@@ -491,28 +518,28 @@ import { Router } from '@angular/router';
     .input-icon {
       position: absolute;
       left: 14px;
-      color: #4b5563;
+      color: var(--color-text-muted);
       pointer-events: none;
       flex-shrink: 0;
     }
     .input-wrapper input {
       width: 100%;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
       border-radius: 10px;
       padding: 11px 16px 11px 42px;
       font-size: 0.9rem;
-      color: #f1f5f9;
+      color: var(--color-text-primary);
       outline: none;
       font-family: var(--font-base);
       transition: all 200ms ease;
 
-      &::placeholder { color: #374151; }
+      &::placeholder { color: var(--color-text-muted); }
 
       &:focus {
         border-color: rgba(37,211,102,0.4);
-        background: rgba(37,211,102,0.04);
-        box-shadow: 0 0 0 3px rgba(37,211,102,0.08);
+        background: var(--color-accent-dim);
+        box-shadow: 0 0 0 3px var(--color-accent-glow);
       }
     }
 
@@ -530,8 +557,8 @@ import { Router } from '@angular/router';
 
     .btn-submit {
       width: 100%;
-      background: #25d366;
-      color: #000;
+      background: var(--color-accent);
+      color: var(--color-on-accent);
       border: none;
       border-radius: 10px;
       padding: 13px;
@@ -543,18 +570,18 @@ import { Router } from '@angular/router';
       align-items: center;
       justify-content: center;
       gap: 8px;
-      box-shadow: 0 4px 24px rgba(37,211,102,0.3);
+      box-shadow: 0 4px 24px var(--color-accent-glow);
       transition: all 200ms ease;
       margin-top: 4px;
 
       &:hover:not([disabled]) {
         transform: translateY(-1px);
-        box-shadow: 0 8px 32px rgba(37,211,102,0.45);
+        box-shadow: 0 8px 32px var(--color-accent-glow);
       }
       &:active:not([disabled]) { transform: translateY(0); }
       &:disabled {
-        background: rgba(255,255,255,0.06);
-        color: #4b5563;
+        background: var(--color-bg-surface);
+        color: var(--color-text-muted);
         cursor: not-allowed;
         box-shadow: none;
       }
@@ -574,9 +601,9 @@ import { Router } from '@angular/router';
     .footer-link {
       text-align: center;
       font-size: 0.82rem;
-      color: #4b5563;
+      color: var(--color-text-muted);
       a {
-        color: #25d366;
+        color: var(--color-accent);
         font-weight: 600;
         text-decoration: none;
         &:hover { opacity: 0.85; }
