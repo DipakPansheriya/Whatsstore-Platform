@@ -24,6 +24,7 @@ const subscription_routes_1 = __importDefault(require("./subscriptions/subscript
 const activity_log_routes_1 = __importDefault(require("./logs/activity-log.routes"));
 const cart_routes_1 = __importDefault(require("./cart/cart.routes"));
 const coupon_routes_1 = __importDefault(require("./coupons/coupon.routes"));
+const marketplace_routes_1 = __importDefault(require("./marketplace/marketplace.routes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
@@ -80,6 +81,7 @@ app.use('/api/subscriptions', subscription_routes_1.default);
 app.use('/api/logs', activity_log_routes_1.default);
 app.use('/api/cart', cart_routes_1.default);
 app.use('/api/coupons', coupon_routes_1.default);
+app.use('/api/marketplace', marketplace_routes_1.default);
 // ── 404 Handler ─────────────────────────────────────
 app.use((_req, res) => {
     res.status(404).json({ success: false, message: 'Route not found' });

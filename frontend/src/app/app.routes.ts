@@ -88,6 +88,10 @@ export const routes: Routes = [
         path: 'logs',
         loadComponent: () => import('./superadmin/logs.component').then(m => m.LogsComponent),
       },
+      {
+        path: 'marketplace',
+        loadComponent: () => import('./superadmin/marketplace-settings/marketplace-settings.component').then(m => m.MarketplaceSettingsComponent),
+      },
     ],
   },
 
@@ -122,6 +126,12 @@ export const routes: Routes = [
         loadComponent: () => import('./coupons/coupons.component').then(m => m.CouponsComponent),
       },
     ],
+  },
+
+  // Public Marketplace Panel
+  {
+    path: 'marketplace',
+    loadChildren: () => import('./marketplace/marketplace.routes').then(m => m.marketplaceRoutes),
   },
 
   // Public store (no auth)

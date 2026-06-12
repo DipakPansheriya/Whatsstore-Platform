@@ -20,6 +20,7 @@ import subscriptionRoutes from './subscriptions/subscription.routes';
 import logRoutes from './logs/activity-log.routes';
 import cartRoutes from './cart/cart.routes';
 import couponRoutes from './coupons/coupon.routes';
+import marketplaceRoutes from './marketplace/marketplace.routes';
 
 dotenv.config();
 
@@ -84,6 +85,7 @@ app.use('/api/subscriptions', subscriptionRoutes);
 app.use('/api/logs', logRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/coupons', couponRoutes);
+app.use('/api/marketplace', marketplaceRoutes);
 
 // ── 404 Handler ─────────────────────────────────────
 app.use((_req, res) => {

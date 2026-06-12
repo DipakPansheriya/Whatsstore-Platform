@@ -378,6 +378,7 @@ export class SuperAdminLayoutComponent {
     { label: 'Trials', path: '/superadmin/trials', icon: '⏳', exact: false },
     { label: 'Plans & Pricing', path: '/superadmin/plans', icon: '📈', exact: false },
     { label: 'System Logs', path: '/superadmin/logs', icon: '📝', exact: false },
+    { label: 'Marketplace', path: '/superadmin/marketplace', icon: '⚡', exact: false },
   ];
 
   constructor(public auth: AuthService) {}

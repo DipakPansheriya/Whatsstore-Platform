@@ -32,4 +32,7 @@ const ProductSchema = new Schema<IProduct>(
   { timestamps: true }
 );
 
+// Optimize MongoDB indexes for marketplace search
+ProductSchema.index({ title: 'text', description: 'text' });
+
 export default mongoose.model<IProduct>('Product', ProductSchema);
