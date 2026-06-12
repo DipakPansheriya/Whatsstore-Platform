@@ -71,7 +71,7 @@ import { Component } from '@angular/core';
         margin: var(--space-sm) 0 var(--space-xs);
         font-size: 3rem;
         font-weight: 800;
-        color: #fff;
+        color: var(--color-text-primary);
         line-height: 1.15;
       }
       .subtitle {
@@ -108,7 +108,7 @@ import { Component } from '@angular/core';
       }
       h3 {
         font-size: 1.35rem;
-        color: #fff;
+        color: var(--color-text-primary);
         font-weight: 700;
       }
       p {
@@ -125,8 +125,8 @@ import { Component } from '@angular/core';
 
     .stats-section {
       padding: var(--space-xl) var(--space-2xl);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(17, 19, 25, 0.35);
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-glass);
       border-radius: var(--radius-lg);
     }
     .stats-grid {

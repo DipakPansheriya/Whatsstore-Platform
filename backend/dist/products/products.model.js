@@ -47,4 +47,6 @@ const ProductSchema = new mongoose_1.Schema({
     isAvailable: { type: Boolean, default: true },
     featured: { type: Boolean, default: false },
 }, { timestamps: true });
+// Optimize MongoDB indexes for marketplace search
+ProductSchema.index({ title: 'text', description: 'text' });
 exports.default = mongoose_1.default.model('Product', ProductSchema);

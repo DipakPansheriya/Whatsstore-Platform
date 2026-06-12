@@ -3,6 +3,9 @@
   Navbar + Router Outlet + Footer
 ============================================= -->
 
+<!-- Skip to Content — Keyboard Accessibility -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
 <!-- ---- NAVBAR ---- -->
 @if (!isDashboardOrAuthOrStore) {
 <nav class="navbar" [class.scrolled]="true">
@@ -34,6 +37,7 @@
 
     <!-- CTA Buttons -->
     <div class="nav-actions">
+      <app-theme-toggle></app-theme-toggle>
       <a routerLink="/auth/login" class="btn btn-ghost btn-sm" id="nav-login-btn">Log In</a>
       <a routerLink="/auth/register" class="btn btn-primary btn-sm" id="nav-signup-btn">
         Get Started Free
@@ -64,6 +68,7 @@
       }
     </ul>
     <div class="mobile-actions">
+      <app-theme-toggle [showLabel]="true" style="margin-bottom: 12px; width: 100%; display: flex; justify-content: center;"></app-theme-toggle>
       <a routerLink="/auth/login" class="btn btn-ghost" (click)="closeMobileMenu()">Log In</a>
       <a routerLink="/auth/register" class="btn btn-primary" (click)="closeMobileMenu()">Get Started Free</a>
     </div>

@@ -3,12 +3,14 @@ import { HomeComponent } from './home/home.component';
 import { DashboardLayoutComponent } from './shared/dashboard-layout.component';
 import { SuperAdminLayoutComponent } from './shared/superadmin-layout.component';
 import { authGuard, guestGuard, adminGuard, superAdminGuard } from './shared/guards/auth.guard';
+import { themeGuard } from './shared/guards/theme.guard';
 
 export const routes: Routes = [
   // Public pages
   {
     path: '',
     component: HomeComponent,
+    canActivate: [themeGuard]
   },
   {
     path: 'features',
@@ -88,6 +90,10 @@ export const routes: Routes = [
         path: 'logs',
         loadComponent: () => import('./superadmin/logs.component').then(m => m.LogsComponent),
       },
+      {
+        path: 'marketplace',
+        loadComponent: () => import('./superadmin/marketplace-settings/marketplace-settings.component').then(m => m.MarketplaceSettingsComponent),
+      },
     ],
   },
 
@@ -122,6 +128,12 @@ export const routes: Routes = [
         loadComponent: () => import('./coupons/coupons.component').then(m => m.CouponsComponent),
       },
     ],
+  },
+
+  // Public Marketplace Panel
+  {
+    path: 'marketplace',
+    loadChildren: () => import('./marketplace/marketplace.routes').then(m => m.marketplaceRoutes),
   },
 
   // Public store (no auth)

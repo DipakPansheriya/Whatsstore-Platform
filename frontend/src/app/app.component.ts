@@ -3,11 +3,13 @@ import { RouterOutlet, RouterLink, Router, NavigationEnd } from '@angular/router
 import { filter } from 'rxjs';
 import { Title, Meta } from '@angular/platform-browser';
 import { ScrollService } from './shared/services/scroll.service';
+import { ThemeService } from './shared/services/theme.service';
+import { ThemeToggleComponent } from './shared/components/theme-toggle.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink],
+  imports: [RouterOutlet, RouterLink, ThemeToggleComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -20,8 +22,12 @@ export class AppComponent {
     private router: Router,
     private titleService: Title,
     private metaService: Meta,
-    private scrollService: ScrollService
+    private scrollService: ScrollService,
+    private themeService: ThemeService
   ) {
+    // Ensure theme is applied at Angular bootstrap level (backup to inline script)
+    this.themeService.initTheme();
+
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {

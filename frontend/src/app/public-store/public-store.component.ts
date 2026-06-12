@@ -7,6 +7,7 @@ import { CartService } from '../shared/services/cart.service';
 import { WishlistService } from '../shared/services/wishlist.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
+import { ThemeToggleComponent } from '../shared/components/theme-toggle.component';
 
 interface BusinessProfile {
   _id: string;
@@ -46,7 +47,7 @@ interface ProductItem {
 @Component({
   selector: 'app-public-store',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, ThemeToggleComponent],
   template: `
     <div *ngIf="loading" class="loading-state">
       <span class="spinner">🏪</span> Loading storefront...
@@ -78,6 +79,7 @@ interface ProductItem {
           </nav>
 
           <div class="header-actions">
+            <app-theme-toggle></app-theme-toggle>
             <!-- Cart Button with Hover Dropdown -->
             <div class="cart-dropdown-wrapper" (mouseenter)="showCartDropdown = true" (mouseleave)="showCartDropdown = false">
               <button class="cart-btn" (click)="toggleCartDrawer()">
@@ -323,7 +325,7 @@ interface ProductItem {
                   <div style="font-size: 0.75rem; color: var(--color-text-secondary); text-transform: uppercase; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.05em;">Available Offers (Click to Apply):</div>
                   <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                     @for (cp of publicCoupons; track cp._id) {
-                      <button (click)="applyQuickCoupon(cp.code)" class="btn btn-sm" style="background: rgba(37, 211, 102, 0.08); border: 1px dashed rgba(37, 211, 102, 0.3); color: #25d366; font-size: 0.75rem; padding: 6px 12px; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                      <button (click)="applyQuickCoupon(cp.code)" class="btn btn-sm coupon-quick-btn">
                         🏷️ {{ cp.code }} (-{{ cp.discountType === 'percentage' ? cp.discountValue + '%' : '₹' + cp.discountValue }})
                       </button>
                     }
@@ -405,7 +407,7 @@ interface ProductItem {
     .not-found-state h2 {
       margin-bottom: var(--space-sm);
       font-weight: 800;
-      color: #fff;
+      color: var(--color-text-primary);
     }
     .not-found-state p {
       color: var(--color-text-secondary);
@@ -416,8 +418,8 @@ interface ProductItem {
     /* Device / Theme base wrapper */
     .storefront-wrapper {
       min-height: 100vh;
-      background: #06070a;
-      color: #e2e8f0;
+      background: var(--color-bg);
+      color: var(--color-text-primary);
       position: relative;
     }
     .section-container {
@@ -433,10 +435,10 @@ interface ProductItem {
       top: 0; left: 0; right: 0;
       height: 70px;
       z-index: 100;
-      background: rgba(17, 19, 25, 0.7);
+      background: var(--color-bg-card-glass);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid var(--color-border);
       transition: all 0.3s;
     }
     .header-container {
@@ -453,7 +455,7 @@ interface ProductItem {
       align-items: center;
       gap: 10px;
       text-decoration: none;
-      color: #fff;
+      color: var(--color-text-primary);
       font-weight: 800;
       font-size: 1.25rem;
     }
@@ -475,7 +477,7 @@ interface ProductItem {
       font-weight: 600;
       font-size: 0.95rem;
       transition: color 0.2s;
-      &:hover { color: #fff; }
+      &:hover { color: var(--color-text-primary); }
     }
     .wishlist-link {
       display: flex;
@@ -491,9 +493,9 @@ interface ProductItem {
       border-radius: 10px;
     }
     .cart-btn {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #fff;
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-primary);
       font-weight: 700;
       padding: 8px 18px;
       border-radius: var(--radius-md);
@@ -502,7 +504,7 @@ interface ProductItem {
       align-items: center;
       gap: 6px;
       transition: all 0.2s;
-      &:hover { background: var(--color-accent); color: #000; }
+      &:hover { background: var(--color-accent); color: #000; border-color: var(--color-accent); }
     }
     .cart-badge {
       background: #25d366;
@@ -523,10 +525,10 @@ interface ProductItem {
       width: 320px;
       margin-top: 10px;
       padding: var(--space-md);
-      background: rgba(17, 19, 25, 0.95);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
       z-index: 200;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      box-shadow: var(--shadow-md);
     }
     .cart-dropdown-items {
       max-height: 240px;
@@ -541,7 +543,7 @@ interface ProductItem {
       align-items: center;
       gap: 10px;
       padding-bottom: 8px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid var(--color-border);
       &:last-child { border-bottom: none; }
     }
     .dropdown-img {
@@ -554,7 +556,7 @@ interface ProductItem {
       display: flex; flex-direction: column;
     }
     .dropdown-name {
-      font-size: 0.85rem; font-weight: 700; color: #fff;
+      font-size: 0.85rem; font-weight: 700; color: var(--color-text-primary);
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .dropdown-qty { font-size: 0.75rem; color: var(--color-text-secondary); }
@@ -563,7 +565,7 @@ interface ProductItem {
       &:hover { color: #ef4444; }
     }
     .cart-dropdown-footer {
-      border-top: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid var(--color-border);
       padding-top: var(--space-sm);
       display: flex; flex-direction: column; gap: 8px;
     }
@@ -603,13 +605,13 @@ interface ProductItem {
       align-items: center;
       justify-content: center;
       text-align: center;
-      background-color: #111317;
+      background-color: var(--color-bg-card);
       padding-top: 70px;
     }
     .hero-overlay {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.68);
+      background: rgba(0,0,0,0.6);
       z-index: 1;
     }
     .hero-container {
@@ -641,7 +643,7 @@ interface ProductItem {
       }
       p {
         font-size: clamp(1.05rem, 2.5vw, 1.25rem);
-        color: #cbd5e1;
+        color: rgba(255,255,255,0.85);
         max-width: 600px;
         margin: var(--space-md) auto var(--space-xl);
         line-height: 1.6;
@@ -651,8 +653,8 @@ interface ProductItem {
     /* Coupons Section & Ticket Card styling */
     .coupons-section {
       padding: var(--space-2xl) 0;
-      background: linear-gradient(180deg, rgba(37, 211, 102, 0.03) 0%, transparent 100%);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+      background: linear-gradient(180deg, var(--color-accent-dim) 0%, transparent 100%);
+      border-bottom: 1px solid var(--color-border);
     }
     .section-subtitle {
       color: var(--color-text-secondary);
@@ -669,11 +671,11 @@ interface ProductItem {
         height: 6px;
       }
       &::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.01);
+        background: var(--color-bg-surface);
         border-radius: var(--radius-pill);
       }
       &::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--color-border);
         border-radius: var(--radius-pill);
       }
     }
@@ -683,17 +685,17 @@ interface ProductItem {
       display: flex;
       border: 1px solid rgba(37, 211, 102, 0.20);
       border-radius: var(--radius-lg);
-      background: rgba(17, 19, 25, 0.6);
+      background: var(--color-bg-card-glass);
       backdrop-filter: blur(10px);
       position: relative;
       overflow: visible;
       box-sizing: border-box;
-      transition: all 0.3s ease;
+      transition: all var(--transition-normal);
       
       &:hover {
-        border-color: #25d366;
+        border-color: var(--color-accent);
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(37, 211, 102, 0.15);
+        box-shadow: 0 8px 25px var(--color-accent-glow);
       }
     }
     .offer-tab {
@@ -711,15 +713,15 @@ interface ProductItem {
       .discount-value {
         font-size: 1.8rem;
         font-weight: 950;
-        color: #25d366;
-        text-shadow: 0 0 10px rgba(37, 211, 102, 0.25);
+        color: var(--color-accent);
+        text-shadow: 0 0 10px var(--color-accent-glow);
         line-height: 1;
         text-align: center;
       }
       .discount-label {
         font-size: 0.75rem;
         font-weight: 800;
-        color: #fff;
+        color: var(--color-text-primary);
         letter-spacing: 0.1em;
         margin-top: 4px;
         opacity: 0.8;
@@ -735,7 +737,7 @@ interface ProductItem {
         position: absolute;
         width: 16px;
         height: 16px;
-        background: #06070a;
+        background: var(--color-bg);
         border-radius: 50%;
         left: -9px;
         border: 1px solid rgba(37, 211, 102, 0.2);
@@ -766,12 +768,12 @@ interface ProductItem {
       .coupon-code {
         font-size: 1.05rem;
         font-weight: 900;
-        color: #fff;
+        color: var(--color-text-primary);
         letter-spacing: 0.05em;
-        background: rgba(255,255,255,0.05);
+        background: var(--color-bg-surface);
         padding: 4px 8px;
         border-radius: var(--radius-sm);
-        border: 1px dashed rgba(255,255,255,0.15);
+        border: 1px dashed var(--color-border-hover);
       }
       .ticket-icon {
         font-size: 1.15rem;
@@ -804,8 +806,10 @@ interface ProductItem {
         padding: 5px 12px;
         border-radius: var(--radius-sm);
         cursor: pointer;
-        border: 1px solid rgba(255,255,255,0.08);
-        transition: all 0.2s ease;
+        border: 1px solid var(--color-border);
+        background: var(--color-bg-surface);
+        color: var(--color-text-secondary);
+        transition: all var(--transition-normal);
         &:hover { opacity: 0.9; transform: translateY(-1px); }
       }
     }
@@ -819,7 +823,7 @@ interface ProductItem {
       font-weight: 900;
       margin-bottom: var(--space-xl);
       letter-spacing: -0.02em;
-      color: #fff;
+      color: var(--color-text-primary);
     }
     .category-filters {
       display: flex;
@@ -831,9 +835,9 @@ interface ProductItem {
     }
     .filter-pill {
       padding: 10px 22px;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.06);
-      color: #94a3b8;
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
       border-radius: var(--radius-pill);
       cursor: pointer;
       font-weight: 700;
@@ -841,14 +845,14 @@ interface ProductItem {
       transition: all var(--transition-normal);
       white-space: nowrap;
       &:hover {
-        background: rgba(255,255,255,0.05);
-        color: #fff;
+        background: var(--color-bg-card);
+        color: var(--color-text-primary);
       }
       &.active {
-        background: #fff;
-        color: #000;
-        border-color: #fff;
-        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+        border-color: var(--color-accent);
+        box-shadow: 0 4px 15px var(--color-accent-glow);
       }
     }
     
@@ -863,14 +867,14 @@ interface ProductItem {
       flex-direction: column;
       overflow: hidden;
       padding: 0;
-      border: 1px solid rgba(255,255,255,0.05);
-      background: rgba(17, 19, 25, 0.45);
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-card);
       transition: all var(--transition-normal);
       border-radius: var(--radius-lg);
       &:hover {
-        border-color: var(--color-accent-glow);
+        border-color: var(--color-accent);
         transform: translateY(-4px);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.55);
+        box-shadow: var(--shadow-md);
         .image-box img {
           transform: scale(1.04);
         }
@@ -884,7 +888,7 @@ interface ProductItem {
       height: 220px;
       position: relative;
       overflow: hidden;
-      background: #111317;
+      background: var(--color-bg-surface);
       img {
         width: 100%;
         height: 100%;
@@ -936,7 +940,7 @@ interface ProductItem {
     .card-title {
       font-size: 1.2rem;
       font-weight: 800;
-      color: #fff;
+      color: var(--color-text-primary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -951,35 +955,35 @@ interface ProductItem {
     .price {
       font-size: 1.35rem;
       font-weight: 900;
-      color: #fff;
+      color: var(--color-accent);
       font-family: var(--font-heading);
     }
     .btn-whatsapp-add {
       background: var(--color-accent);
-      color: #000;
+      color: var(--color-on-accent);
       border: none;
       padding: 6px 14px;
       border-radius: var(--radius-sm);
       font-weight: 700;
       font-size: 0.85rem;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all var(--transition-normal);
       &:hover { opacity: 0.9; transform: translateY(-1px); }
-      &:disabled { background: rgba(255,255,255,0.05); color: var(--color-text-muted); cursor: not-allowed; }
+      &:disabled { background: var(--color-bg-surface); color: var(--color-text-muted); cursor: not-allowed; }
     }
     .empty-catalog {
       text-align: center;
       padding: var(--space-3xl);
-      h3 { font-weight: 800; color: #fff; }
+      h3 { font-weight: 800; color: var(--color-text-primary); }
       p { color: var(--color-text-secondary); }
     }
  
     /* About Section */
     .about-section {
       padding: var(--space-3xl) 0;
-      background: rgba(17, 19, 25, 0.3);
-      border-top: 1px solid rgba(255,255,255,0.02);
-      border-bottom: 1px solid rgba(255,255,255,0.02);
+      background: var(--color-bg-glass);
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
       backdrop-filter: blur(8px);
     }
     .about-grid {
@@ -993,7 +997,7 @@ interface ProductItem {
       height: 150px;
       border-radius: var(--radius-lg);
       object-fit: cover;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid var(--color-border);
       box-shadow: var(--shadow-md);
     }
     .about-content {
@@ -1005,7 +1009,7 @@ interface ProductItem {
       h2 {
         font-size: 2rem;
         font-weight: 900;
-        color: #fff;
+        color: var(--color-text-primary);
       }
       p {
         font-size: 1rem;
@@ -1015,24 +1019,24 @@ interface ProductItem {
     }
     .about-meta {
       font-size: 0.9rem;
-      color: #cbd5e1;
-      background: rgba(255,255,255,0.03);
+      color: var(--color-text-secondary);
+      background: var(--color-bg-surface);
       padding: 12px 18px;
       border-radius: var(--radius-md);
       display: inline-block;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      strong { color: #fff; }
+      border: 1px solid var(--color-border);
+      strong { color: var(--color-text-primary); }
     }
  
     /* CTA Banner Section */
     .cta-section {
       padding: var(--space-3xl) 0;
-      background: linear-gradient(180deg, transparent, rgba(37, 211, 102, 0.03));
+      background: linear-gradient(180deg, transparent, var(--color-accent-dim));
       h2 {
         font-size: clamp(1.8rem, 4vw, 2.5rem);
         margin-bottom: var(--space-sm);
         font-weight: 900;
-        color: #fff;
+        color: var(--color-text-primary);
       }
       p {
         color: var(--color-text-secondary);
@@ -1040,8 +1044,8 @@ interface ProductItem {
       }
     }
     .btn-whatsapp-large {
-      background: #25d366;
-      color: #000;
+      background: var(--color-accent);
+      color: var(--color-on-accent);
       border: none;
       padding: 16px 40px;
       border-radius: var(--radius-md);
@@ -1052,11 +1056,12 @@ interface ProductItem {
       align-items: center;
       gap: var(--space-sm);
       text-decoration: none;
-      box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
+      box-shadow: 0 10px 25px var(--color-accent-glow);
       transition: all var(--transition-normal);
       &:hover {
+        background: var(--color-accent-hover);
         transform: translateY(-3px);
-        box-shadow: 0 15px 35px rgba(37, 211, 102, 0.45);
+        box-shadow: 0 15px 35px var(--color-accent-glow);
         opacity: 1;
       }
     }
@@ -1064,8 +1069,8 @@ interface ProductItem {
     /* Public Footer styles */
     .public-footer {
       padding: var(--space-2xl) 0;
-      background: #040507;
-      border-top: 1px solid rgba(255,255,255,0.02);
+      background: var(--color-bg-card);
+      border-top: 1px solid var(--color-border);
       color: var(--color-text-muted);
       font-size: 0.85rem;
       p {
@@ -1078,7 +1083,7 @@ interface ProductItem {
           color: var(--color-text-secondary);
           font-weight: 700;
           text-decoration: none;
-          &:hover { color: #fff; }
+          &:hover { color: var(--color-text-primary); }
         }
       }
     }
@@ -1141,19 +1146,19 @@ interface ProductItem {
     .cart-drawer {
       width: 100%; max-width: 480px;
       height: 100%;
-      background: #0f111a;
-      border-left: 1px solid rgba(255,255,255,0.08);
+      background: var(--color-bg-card);
+      border-left: 1px solid var(--color-border);
       display: flex; flex-direction: column;
       padding: 0;
     }
     .drawer-header {
       padding: var(--space-lg);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid var(--color-border);
       display: flex; align-items: center; justify-content: space-between;
-      h3 { font-size: 1.25rem; font-weight: 800; color: #fff; margin: 0; }
+      h3 { font-size: 1.25rem; font-weight: 800; color: var(--color-text-primary); margin: 0; }
       .btn-close {
         background: transparent; border: none; color: var(--color-text-secondary);
-        font-size: 2rem; cursor: pointer; &:hover { color: #fff; }
+        font-size: 2rem; cursor: pointer; &:hover { color: var(--color-text-primary); }
       }
     }
     .drawer-body {
@@ -1174,45 +1179,45 @@ interface ProductItem {
     .drawer-item {
       display: flex; gap: var(--space-md);
       padding-bottom: var(--space-md);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid var(--color-border);
     }
     .drawer-img {
       width: 64px; height: 64px; object-fit: cover;
-      border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.05);
+      border-radius: var(--radius-md); border: 1px solid var(--color-border);
     }
     .drawer-info {
       flex: 1; display: flex; flex-direction: column; gap: 4px;
-      .item-name { font-weight: 800; color: #fff; font-size: 0.95rem; }
+      .item-name { font-weight: 800; color: var(--color-text-primary); font-size: 0.95rem; }
       .item-price { color: var(--color-text-secondary); font-size: 0.9rem; }
     }
     
     /* Qty Selector */
     .qty-selector {
       display: flex; align-items: center; gap: 4px; margin-top: 4px;
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      background: var(--color-bg-surface); border: 1px solid var(--color-border);
       border-radius: 4px; width: fit-content; overflow: hidden;
     }
     .qty-btn {
-      background: transparent; border: none; color: #fff; width: 26px; height: 26px;
+      background: transparent; border: none; color: var(--color-text-primary); width: 26px; height: 26px;
       cursor: pointer; font-weight: 800; font-size: 0.95rem;
-      &:hover:not([disabled]) { background: rgba(255,255,255,0.08); }
+      &:hover:not([disabled]) { background: var(--color-bg-card); }
       &:disabled { color: var(--color-text-muted); cursor: not-allowed; }
     }
-    .qty-val { font-size: 0.9rem; font-weight: 700; width: 24px; text-align: center; color: #fff; }
+    .qty-val { font-size: 0.9rem; font-weight: 700; width: 24px; text-align: center; color: var(--color-text-primary); }
 
     .item-actions {
       display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between;
-      .item-subtotal { font-weight: 800; color: #fff; font-size: 1rem; }
+      .item-subtotal { font-weight: 800; color: var(--color-text-primary); font-size: 1rem; }
       .btn-remove {
         background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer;
-        font-size: 0.8rem; &:hover { color: #ef4444; }
+        font-size: 0.8rem; &:hover { color: var(--color-danger); }
       }
     }
 
     /* Coupon section */
     .coupon-section {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.05);
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
       padding: var(--space-md);
       margin-bottom: var(--space-xl);
@@ -1220,11 +1225,11 @@ interface ProductItem {
     .coupon-input {
       display: flex; gap: 8px;
       input {
-        flex: 1; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08);
-        color: #fff; border-radius: var(--radius-sm); outline: none; font-size: 0.9rem;
-        &:focus { border-color: var(--color-accent); }
+        flex: 1; padding: 10px; background: var(--color-bg); border: 1px solid var(--color-border);
+        color: var(--color-text-primary); border-radius: var(--radius-sm); outline: none; font-size: 0.9rem;
+        &:focus { border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-glow); }
       }
-      .btn-ghost { padding: 10px 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm); font-size: 0.9rem; }
+      .btn-ghost { padding: 10px 16px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 0.9rem; }
     }
     .coupon-feedback {
       margin-top: 8px; font-size: 0.8rem; padding: 8px 12px; border-radius: var(--radius-sm);
@@ -1234,24 +1239,24 @@ interface ProductItem {
 
     .cart-summary {
       display: flex; flex-direction: column; gap: var(--space-sm);
-      background: rgba(255,255,255,0.02); border-radius: var(--radius-md);
+      background: var(--color-bg-surface); border-radius: var(--radius-md);
       padding: var(--space-md); margin-bottom: var(--space-xl);
-      border: 1px solid rgba(255,255,255,0.05);
+      border: 1px solid var(--color-border);
     }
     .summary-row {
       display: flex; justify-content: space-between; font-size: 0.95rem; color: var(--color-text-secondary);
-      &.discount { color: #25d366; }
+      &.discount { color: var(--color-accent); }
       &.total {
-        border-top: 1px solid rgba(255,255,255,0.08); padding-top: 8px;
-        font-weight: 800; color: #fff; font-size: 1.15rem;
+        border-top: 1px solid var(--color-border); padding-top: 8px;
+        font-weight: 800; color: var(--color-text-primary); font-size: 1.15rem;
       }
     }
 
     /* Checkout Details */
     .drawer-checkout {
-      border-top: 1px solid rgba(255,255,255,0.08);
+      border-top: 1px solid var(--color-border);
       padding-top: var(--space-xl);
-      h4 { font-size: 1.1rem; font-weight: 800; color: #fff; margin-bottom: var(--space-md); }
+      h4 { font-size: 1.1rem; font-weight: 800; color: var(--color-text-primary); margin-bottom: var(--space-md); }
     }
     .checkout-form {
       display: flex; flex-direction: column; gap: var(--space-md);
@@ -1260,18 +1265,32 @@ interface ProductItem {
       display: flex; flex-direction: column; gap: 4px;
       label { font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; }
       input, textarea {
-        padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08);
-        border-radius: var(--radius-sm); color: #fff; outline: none; font-size: 0.95rem;
-        transition: border 0.2s;
-        &:focus { border-color: var(--color-accent); }
+        padding: 12px; background: var(--color-bg-surface); border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm); color: var(--color-text-primary); outline: none; font-size: 0.95rem;
+        transition: border var(--transition-normal);
+        &:focus { border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-glow); }
       }
       textarea { resize: vertical; min-height: 80px; }
     }
     .btn-whatsapp {
-      background: #25d366; color: #000; border: none; padding: 14px; border-radius: var(--radius-md);
+      background: var(--color-accent); color: var(--color-on-accent); border: none; padding: 14px; border-radius: var(--radius-md);
       font-weight: 800; font-size: 1rem; cursor: pointer; text-align: center;
-      box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);
-      &:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3); }
+      box-shadow: 0 4px 15px var(--color-accent-glow);
+      &:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(--color-accent-glow); }
+    }
+    .coupon-quick-btn {
+      background: var(--color-accent-dim) !important;
+      border: 1px dashed var(--color-accent) !important;
+      color: var(--color-accent) !important;
+      font-size: 0.75rem !important;
+      padding: 6px 12px !important;
+      border-radius: var(--radius-sm) !important;
+      font-weight: 700 !important;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      &:hover { opacity: 0.85; transform: translateY(-1px); }
     }
     .w-full { width: 100%; }
     .alert { padding: 10px 14px; border-radius: var(--radius-sm); font-size: 0.85rem; }

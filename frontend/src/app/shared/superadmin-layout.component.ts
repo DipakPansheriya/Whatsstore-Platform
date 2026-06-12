@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { AsyncPipe, CommonModule } from '@angular/common';
+import { ThemeToggleComponent } from './components/theme-toggle.component';
 
 @Component({
   selector: 'app-superadmin-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe, CommonModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe, CommonModule, ThemeToggleComponent],
   template: `
     <div class="dash-layout">
       <!-- Sidebar -->
@@ -48,6 +49,7 @@ import { AsyncPipe, CommonModule } from '@angular/common';
             </div>
           </div>
           <div class="navbar-right" *ngIf="auth.currentUser$ | async as user">
+            <app-theme-toggle></app-theme-toggle>
 
             <button class="icon-btn">
               <span class="bell-icon">🔔</span>
@@ -88,7 +90,7 @@ import { AsyncPipe, CommonModule } from '@angular/common';
       height: 100vh;
       max-height: 100vh;
       overflow: hidden;
-      background: #06070a;
+      background: var(--color-bg);
       color: var(--color-text-primary);
       padding: var(--space-md);
       gap: var(--space-md);
@@ -96,10 +98,10 @@ import { AsyncPipe, CommonModule } from '@angular/common';
     }
     .sidebar {
       width: 270px;
-      background: rgba(17, 19, 25, 0.6);
+      background: var(--color-bg-card-glass);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
       display: flex;
       flex-direction: column;
@@ -113,7 +115,7 @@ import { AsyncPipe, CommonModule } from '@angular/common';
       align-items: center;
       gap: var(--space-sm);
       padding: 0 var(--space-xl);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid var(--color-border);
     }
     .logo-glow {
       width: 34px;
@@ -131,9 +133,7 @@ import { AsyncPipe, CommonModule } from '@angular/common';
       font-size: 1.25rem;
       font-weight: 700;
       letter-spacing: -0.02em;
-      background: linear-gradient(to right, #fff, #94a3b8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--color-text-primary);
     }
     .sidebar-nav {
       flex: 1;
@@ -159,15 +159,15 @@ import { AsyncPipe, CommonModule } from '@angular/common';
       border: 1px solid transparent;
       &:hover {
         color: var(--color-text-primary);
-        background: rgba(255, 255, 255, 0.04);
+        background: var(--color-bg-surface);
         transform: translateX(4px);
       }
       &.active {
-        color: #fff;
-        background: linear-gradient(90deg, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0.02) 100%);
-        border: 1px solid rgba(139, 92, 246, 0.15);
+        color: var(--color-text-primary);
+        background: rgba(139, 92, 246, 0.12);
+        border: 1px solid rgba(139, 92, 246, 0.25);
         border-left: 4px solid #8b5cf6;
-        box-shadow: inset 4px 0 15px rgba(139, 92, 246, 0.05);
+        box-shadow: inset 4px 0 15px rgba(139, 92, 246, 0.08);
       }
     }
     .nav-icon {
@@ -179,7 +179,7 @@ import { AsyncPipe, CommonModule } from '@angular/common';
     }
     .sidebar-footer {
       padding: var(--space-lg) var(--space-md);
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid var(--color-border);
     }
     .btn-logout {
       width: 100%;
@@ -205,26 +205,26 @@ import { AsyncPipe, CommonModule } from '@angular/common';
       display: flex;
       flex-direction: column;
       min-width: 0;
-      background: rgba(17, 19, 25, 0.3);
+      background: var(--color-bg-glass);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
       overflow: hidden;
     }
     .dash-navbar {
       height: 80px;
       padding: 0 var(--space-xl);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid var(--color-border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(17, 19, 25, 0.15);
+      background: var(--color-bg-glass);
     }
     .mobile-toggle {
       display: none;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
       color: var(--color-text-primary);
       width: 42px;
       height: 42px;
@@ -280,10 +280,10 @@ import { AsyncPipe, CommonModule } from '@angular/common';
     }
     
     .glass-header {
-      background: rgba(17, 19, 25, 0.7) !important;
+      background: var(--color-bg-card-glass) !important;
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid var(--color-border);
       position: sticky;
       top: 0;
       z-index: 50;
@@ -292,50 +292,50 @@ import { AsyncPipe, CommonModule } from '@angular/common';
     .search-bar {
       display: flex;
       align-items: center;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
       border-radius: 999px;
       padding: 0.5rem 1rem;
       width: 100%;
       max-width: 400px;
-      transition: all 0.3s ease;
+      transition: all var(--transition-normal);
     }
     .search-bar:focus-within {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: var(--color-accent, #25d366);
-      box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.1);
+      background: var(--color-bg-card);
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px var(--color-accent-glow);
     }
-    .search-icon { color: #94a3b8; font-size: 0.9rem; margin-right: 0.5rem; }
+    .search-icon { color: var(--color-text-muted); font-size: 0.9rem; margin-right: 0.5rem; }
     .search-bar input {
-      background: transparent; border: none; outline: none; color: #fff; width: 100%; font-size: 0.9rem;
+      background: transparent; border: none; outline: none; color: var(--color-text-primary); width: 100%; font-size: 0.9rem;
     }
     .search-shortcut {
-      color: #64748b; font-size: 0.75rem; background: rgba(255, 255, 255, 0.1); padding: 2px 6px; border-radius: 4px; font-weight: 600;
+      color: var(--color-text-muted); font-size: 0.75rem; background: var(--color-bg-surface); padding: 2px 6px; border-radius: 4px; font-weight: 600;
     }
     .icon-btn {
-      background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50%;
-      width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; transition: all 0.2s; color: #fff;
+      background: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: 50%;
+      width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; transition: all var(--transition-normal); color: var(--color-text-primary);
     }
-    .icon-btn:hover { background: rgba(255, 255, 255, 0.1); }
+    .icon-btn:hover { background: var(--color-bg-card); border-color: var(--color-border-hover); }
     .badge-dot {
-      position: absolute; top: 10px; right: 10px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; border: 2px solid #0f1117;
+      position: absolute; top: 10px; right: 10px; width: 8px; height: 8px; background: var(--color-danger); border-radius: 50%; border: 2px solid var(--color-bg-card);
     }
     .user-profile-widget {
-      display: flex; align-items: center; gap: 12px; padding: 6px 12px 6px 16px; border-radius: 50px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 12px; padding: 6px 12px 6px 16px; border-radius: 50px; background: var(--color-bg-surface); border: 1px solid var(--color-border); cursor: pointer; transition: all var(--transition-normal);
     }
-    .user-profile-widget:hover { background: rgba(255, 255, 255, 0.06); }
+    .user-profile-widget:hover { background: var(--color-bg-card); border-color: var(--color-border-hover); }
     
     .dash-footer {
       padding: 1.5rem 2rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid var(--color-border);
       margin-top: auto;
     }
     .footer-content {
-      display: flex; justify-content: space-between; align-items: center; color: #64748b; font-size: 0.85rem;
+      display: flex; justify-content: space-between; align-items: center; color: var(--color-text-muted); font-size: 0.85rem;
     }
     .footer-links { display: flex; gap: 1.5rem; }
-    .footer-links a { color: #64748b; text-decoration: none; transition: color 0.2s; }
-    .footer-links a:hover { color: #fff; }
+    .footer-links a { color: var(--color-text-muted); text-decoration: none; transition: color var(--transition-normal); }
+    .footer-links a:hover { color: var(--color-text-primary); }
     
     @media (max-width: 768px) {
       .navbar-center { display: none; }
@@ -355,7 +355,7 @@ import { AsyncPipe, CommonModule } from '@angular/common';
         transform: translateX(-100%);
         border-radius: 0;
         margin: 0;
-        border-right: 1px solid rgba(255, 255, 255, 0.08);
+        border-right: 1px solid var(--color-border);
         &.open { transform: translateX(0); }
       }
       .dash-container {
@@ -378,6 +378,7 @@ export class SuperAdminLayoutComponent {
     { label: 'Trials', path: '/superadmin/trials', icon: '⏳', exact: false },
     { label: 'Plans & Pricing', path: '/superadmin/plans', icon: '📈', exact: false },
     { label: 'System Logs', path: '/superadmin/logs', icon: '📝', exact: false },
+    { label: 'Marketplace', path: '/superadmin/marketplace', icon: '⚡', exact: false },
   ];
 
   constructor(public auth: AuthService) {}

@@ -7,7 +7,7 @@
 
 /* --- CSS Custom Properties (Design Tokens) --- */
 :root {
-  /* Colors */
+  /* Colors - Default Dark Theme */
   --color-bg:           #08090d;
   --color-bg-card:      #111319;
   --color-bg-surface:   #171a23;
@@ -21,8 +21,10 @@
 
   /* Brand / Accent */
   --color-accent:       #25d366;   /* WhatsApp green */
+  --color-accent-hover: #1ebd5d;
   --color-accent-dim:   rgba(37, 211, 102, 0.12);
   --color-accent-glow:  rgba(37, 211, 102, 0.25);
+  --color-on-accent:    #000;      /* Text on accent background */
 
   /* Text */
   --color-text-primary:   #f1f5f9;
@@ -57,6 +59,7 @@
   /* Shadows */
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
   --shadow-md: 0 10px 30px rgba(0,0,0,0.5);
+  --shadow-lg: 0 20px 40px rgba(0,0,0,0.4);
   --shadow-glow: 0 0 30px var(--color-accent-glow);
 
   /* Transitions */
@@ -67,6 +70,88 @@
   /* Layout */
   --navbar-height: 72px;
   --content-max-width: 1200px;
+}
+
+/* Dark Mode (Explicit Class) */
+.dark {
+  --color-bg:           #08090d;
+  --color-bg-card:      #111319;
+  --color-bg-surface:   #171a23;
+  --color-border:       rgba(255, 255, 255, 0.08);
+  --color-border-hover: rgba(255, 255, 255, 0.16);
+
+  /* Glass Colors */
+  --color-bg-glass:        rgba(8, 9, 13, 0.6);
+  --color-bg-card-glass:   rgba(17, 19, 25, 0.65);
+  --color-bg-surface-glass:rgba(23, 26, 35, 0.75);
+
+  /* Brand / Accent */
+  --color-accent:       #25d366;
+  --color-accent-hover: #1ebd5d;
+  --color-accent-dim:   rgba(37, 211, 102, 0.12);
+  --color-accent-glow:  rgba(37, 211, 102, 0.25);
+  --color-on-accent:    #000;
+
+  /* Text */
+  --color-text-primary:   #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted:     #64748b;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 10px 30px rgba(0,0,0,0.5);
+  --shadow-lg: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* Light Mode Overrides — WCAG AA Compliant */
+.light {
+  /* Colors - Light Theme */
+  --color-bg:           #F8FAFC;
+  --color-bg-card:      #FFFFFF;
+  --color-bg-surface:   #F1F5F9;
+  --color-border:       #E2E8F0;
+  --color-border-hover: rgba(15, 23, 42, 0.20);
+
+  /* Glass Colors */
+  --color-bg-glass:        rgba(248, 250, 252, 0.85);
+  --color-bg-card-glass:   rgba(255, 255, 255, 0.90);
+  --color-bg-surface-glass:rgba(241, 245, 249, 0.92);
+
+  /* Brand / Accent - Primary */
+  --color-accent:       #22C55E;
+  --color-accent-hover: #16A34A;
+  --color-accent-dim:   rgba(34, 197, 94, 0.10);
+  --color-accent-glow:  rgba(34, 197, 94, 0.20);
+  --color-on-accent:    #000;
+
+  /* Text */
+  --color-text-primary:   #0F172A;
+  --color-text-secondary: #475569;
+  --color-text-muted:     #64748B;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 10px 30px rgba(0,0,0,0.08);
+  --shadow-lg: 0 20px 40px rgba(0,0,0,0.06);
+}
+
+/* --- Smooth Theme Transitions --- */
+html {
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+body, .navbar, .sidebar, .dash-layout, .dash-container, .dash-navbar, footer,
+.card, .glass-card, input, textarea, select, button, table, td, th, tr {
+  transition: background-color var(--transition-normal), color var(--transition-normal),
+              border-color var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
 }
 
 /* --- Reset & Base --- */
@@ -113,6 +198,34 @@ a {
   &:hover { opacity: 0.8; }
 }
 
+/* --- Skip to Content (Accessibility) --- */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: var(--space-md);
+  z-index: 9999;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  &:focus {
+    top: var(--space-md);
+    outline: 3px solid var(--color-on-accent);
+    outline-offset: 2px;
+  }
+}
+
+/* --- Focus Visible Global — WCAG AA --- */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px var(--color-accent-glow);
+  border-radius: var(--radius-sm);
+}
+
 /* --- Scrollbar --- */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--color-bg); }
@@ -137,7 +250,7 @@ a {
   padding: 4px 12px;
   background: var(--color-accent-dim);
   color: var(--color-accent);
-  border: 1px solid rgba(37, 211, 102, 0.25);
+  border: 1px solid var(--color-accent);
   border-radius: var(--radius-pill);
   font-size: 0.75rem;
   font-weight: 600;
@@ -160,11 +273,18 @@ a {
   transition: all var(--transition-normal);
   text-decoration: none;
 
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 4px var(--color-accent-glow);
+  }
+
   &.btn-primary {
     background: var(--color-accent);
-    color: #000;
+    color: var(--color-on-accent);
     box-shadow: 0 4px 20px var(--color-accent-glow);
     &:hover {
+      background: var(--color-accent-hover);
       transform: translateY(-2px);
       box-shadow: 0 8px 30px var(--color-accent-glow);
       opacity: 1;
@@ -208,9 +328,9 @@ a {
   padding: var(--space-lg);
   transition: all var(--transition-normal);
   &:hover {
-    border-color: rgba(255, 255, 255, 0.14);
+    border-color: var(--color-border-hover);
     transform: translateY(-3px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45);
+    box-shadow: var(--shadow-md);
   }
 }
 
@@ -238,6 +358,8 @@ a {
   50%      { transform: translateY(-6px); }
 }
 
+@keyframes spin { to { transform: rotate(360deg); } }
+
 .animate-fade-in-up {
   animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -245,4 +367,3 @@ a {
 .animate-float {
   animation: float 4s ease-in-out infinite;
 }
-

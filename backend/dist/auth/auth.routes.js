@@ -8,4 +8,5 @@ router.post('/setup-superadmin', auth_controller_1.registerSuperAdmin);
 router.post('/register', auth_controller_1.register);
 router.post('/login', auth_controller_1.login);
 router.get('/me', jwt_1.protect, auth_controller_1.getMe);
+router.put('/theme', jwt_1.protect, auth_controller_1.updateTheme);
 exports.default = router;

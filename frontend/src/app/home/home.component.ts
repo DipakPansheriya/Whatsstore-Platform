@@ -92,6 +92,75 @@ import { RouterLink } from '@angular/router';
       </div>
     </section>
 
+    <!-- Marketplace Section -->
+    <section class="home-marketplace animate-fade-in-up">
+      <div class="container">
+        <div class="marketplace-showcase glass-card accent-glow-hover">
+          <div class="showcase-content">
+            <span class="badge" style="background: rgba(139, 92, 246, 0.1); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.2);">✨ New Feature</span>
+            <h2>Discover Local Stores & Products in our Global Marketplace ⚡</h2>
+            <p>
+              We've launched the WhatsStore Marketplace! Customers can now search and browse products across all local merchant stores in one unified search engine. Add items from multiple stores to a single cart, apply discount codes, and order directly on WhatsApp.
+            </p>
+            <div class="showcase-features">
+              <div class="showcase-feat-item">
+                <span class="feat-icon">🔍</span>
+                <div>
+                  <h4>Unified Search</h4>
+                  <p>Search products, categories, or store names instantly across the entire platform.</p>
+                </div>
+              </div>
+              <div class="showcase-feat-item">
+                <span class="feat-icon">🏷️</span>
+                <div>
+                  <h4>Merchant Coupons</h4>
+                  <p>Apply store coupons directly in your cart to claim exclusive customer discounts.</p>
+                </div>
+              </div>
+              <div class="showcase-feat-item">
+                <span class="feat-icon">🛒</span>
+                <div>
+                  <h4>Consolidated Multi-Store Cart</h4>
+                  <p>Shop from different stores simultaneously with orders separated automatically by merchant.</p>
+                </div>
+              </div>
+            </div>
+            <div class="showcase-actions">
+              <a routerLink="/marketplace" class="btn btn-primary" id="landing-marketplace-cta">
+                Browse Marketplace
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="showcase-visual">
+            <div class="visual-mockup">
+              <div class="mockup-header">
+                <span>🔍 Search "Fresh Grocery"...</span>
+              </div>
+              <div class="mockup-grid">
+                <div class="mockup-card">
+                  <div class="mockup-img">🍇</div>
+                  <div class="mockup-info">
+                    <h5>Organic Grapes</h5>
+                    <span>₹120 • Fresh Grocer</span>
+                  </div>
+                </div>
+                <div class="mockup-card">
+                  <div class="mockup-img">🔌</div>
+                  <div class="mockup-info">
+                    <h5>Fast Charger</h5>
+                    <span>₹499 • ElectroTech</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Upgrade Subscription Banner -->
     <section class="home-upgrade">
       <div class="container">
@@ -153,7 +222,7 @@ import { RouterLink } from '@angular/router';
       padding: var(--space-3xl) 0;
       border-top: 1px solid var(--color-border);
       border-bottom: 1px solid var(--color-border);
-      background: rgba(17, 19, 25, 0.2);
+      background: var(--color-bg-card);
     }
     .section-header {
       margin-bottom: var(--space-2xl);
@@ -175,15 +244,15 @@ import { RouterLink } from '@angular/router';
         font-size: 2.2rem;
         width: 54px;
         height: 54px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: var(--color-bg-surface);
+        border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         display: flex;
         align-items: center;
         justify-content: center;
         margin-bottom: var(--space-xs);
       }
-      h3 { font-size: 1.25rem; color: #fff; }
+      h3 { font-size: 1.25rem; color: var(--color-text-primary); }
       p { font-size: 0.9375rem; line-height: 1.6; color: var(--color-text-secondary); }
     }
     .view-all-link {
@@ -193,7 +262,7 @@ import { RouterLink } from '@angular/router';
       font-weight: 600;
       color: var(--color-accent);
       transition: color var(--transition-fast);
-      &:hover { color: #fff; }
+      &:hover { color: var(--color-text-primary); }
     }
 
     /* Workflow Section */
@@ -221,8 +290,108 @@ import { RouterLink } from '@angular/router';
         line-height: 1;
         margin-bottom: var(--space-xs);
       }
-      h4 { font-size: 1.15rem; color: #fff; margin-bottom: 4px; }
+      h4 { font-size: 1.15rem; color: var(--color-text-primary); margin-bottom: 4px; }
       p { font-size: 0.875rem; line-height: 1.5; color: var(--color-text-secondary); }
+    }
+
+    /* Marketplace Showcase */
+    .home-marketplace {
+      padding: var(--space-xl) 0;
+    }
+    .marketplace-showcase {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: var(--space-2xl);
+      padding: var(--space-3xl);
+      border-color: rgba(139, 92, 246, 0.15);
+      align-items: center;
+      @media (max-width: 850px) {
+        grid-template-columns: 1fr;
+        padding: var(--space-xl);
+        gap: var(--space-xl);
+      }
+    }
+    .showcase-content {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-md);
+      h2 { font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 800; color: var(--color-text-primary); line-height: 1.25; }
+      p { color: var(--color-text-secondary); line-height: 1.7; font-size: 1rem; }
+    }
+    .showcase-features {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      margin: var(--space-sm) 0;
+    }
+    .showcase-feat-item {
+      display: flex;
+      gap: var(--space-md);
+      align-items: flex-start;
+      .feat-icon {
+        font-size: 1.5rem;
+        background: var(--color-bg-surface);
+        border: 1px solid var(--color-border);
+        padding: 8px;
+        border-radius: var(--radius-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      h4 { color: var(--color-text-primary); font-size: 1.05rem; font-weight: 700; margin-bottom: 2px; }
+      p { color: var(--color-text-muted); font-size: 0.875rem; line-height: 1.4; }
+    }
+    .showcase-actions {
+      margin-top: var(--space-sm);
+    }
+    .showcase-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .visual-mockup {
+      width: 100%;
+      max-width: 320px;
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      box-shadow: var(--shadow-lg);
+    }
+    .mockup-header {
+      background: var(--color-bg-surface);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+      border: 1px solid var(--color-border);
+    }
+    .mockup-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .mockup-card {
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+    .mockup-img {
+      font-size: 1.8rem;
+    }
+    .mockup-info {
+      text-align: center;
+      h5 { font-size: 0.78rem; font-weight: 700; color: var(--color-text-primary); margin-bottom: 2px; }
+      span { font-size: 0.65rem; color: var(--color-text-muted); }
     }
 
     /* Upgrade Banner Section */

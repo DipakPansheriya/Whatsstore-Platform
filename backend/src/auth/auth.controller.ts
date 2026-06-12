@@ -27,7 +27,7 @@ export const registerSuperAdmin = async (req: Request, res: Response): Promise<v
       success: true,
       message: 'SuperAdmin created successfully',
       token,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      user: { id: user.id, name: user.name, email: user.email, role: user.role, theme: user.theme },
     });
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });
@@ -85,7 +85,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       success: true,
       message: 'Registration successful',
       token,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      user: { id: user.id, name: user.name, email: user.email, role: user.role, theme: user.theme },
     });
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });
@@ -114,7 +114,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       success: true,
       message: 'Login successful',
       token,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      user: { id: user.id, name: user.name, email: user.email, role: user.role, theme: user.theme },
     });
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });
@@ -131,6 +131,26 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
       return;
     }
     res.json({ success: true, user });
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+/** PUT /api/auth/theme */
+export const updateTheme = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = (req as any).user?.userId;
+    const { theme } = req.body;
+    if (!theme || !['light', 'dark', 'system'].includes(theme)) {
+      res.status(400).json({ success: false, message: 'Invalid theme value' });
+      return;
+    }
+    const user = await User.findByIdAndUpdate(userId, { theme }, { new: true });
+    if (!user) {
+      res.status(404).json({ success: false, message: 'User not found' });
+      return;
+    }
+    res.json({ success: true, theme: user.theme });
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });
   }

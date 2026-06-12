@@ -117,8 +117,8 @@ import { RouterLink } from '@angular/router';
         font-size: 2.3rem;
         width: 58px;
         height: 58px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: var(--color-bg-surface);
+        border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         display: flex;
         align-items: center;
@@ -127,7 +127,7 @@ import { RouterLink } from '@angular/router';
       h3 {
         font-size: 1.3rem;
         font-weight: 800;
-        color: #fff;
+        color: var(--color-text-primary);
       }
       p {
         font-size: 0.9375rem;

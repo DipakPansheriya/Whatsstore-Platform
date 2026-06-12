@@ -152,20 +152,20 @@ import { FormsModule } from '@angular/forms';
     
     .billing-toggle { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 2rem; font-weight: 600; }
     .billing-toggle span { color: var(--color-text-secondary); transition: 0.3s; }
-    .billing-toggle span.active { color: #fff; }
-    .discount-badge { background: rgba(37, 211, 102, 0.15); color: var(--color-primary); font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; margin-left: 8px; vertical-align: middle; }
+    .billing-toggle span.active { color: var(--color-text-primary); }
+    .discount-badge { background: rgba(37, 211, 102, 0.15); color: var(--color-accent); font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; margin-left: 8px; vertical-align: middle; }
     
     .switch { position: relative; display: inline-block; width: 60px; height: 34px; }
     .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .4s; border: 1px solid rgba(255,255,255,0.2); }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--color-bg-surface); transition: .4s; border: 1px solid var(--color-border); }
     .slider:before { position: absolute; content: ""; height: 26px; width: 26px; left: 3px; bottom: 3px; background-color: var(--color-accent); transition: .4s; }
     input:checked + .slider:before { transform: translateX(26px); }
     .slider.round { border-radius: 34px; }
     .slider.round:before { border-radius: 50%; }
 
     .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; max-width: 1000px; margin: 0 auto; justify-content: center; }
-    .pricing-card { position: relative; background: rgba(17, 19, 25, 0.6); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 24px; padding: 3rem 2rem; transition: transform 0.3s, box-shadow 0.3s; display: flex; flex-direction: column; }
-    .pricing-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); border-color: rgba(139, 92, 246, 0.3); }
+    .pricing-card { position: relative; background: var(--color-bg-card-glass); backdrop-filter: blur(24px); border: 1px solid var(--color-border); border-radius: 24px; padding: 3rem 2rem; transition: transform 0.3s, box-shadow 0.3s; display: flex; flex-direction: column; }
+    .pricing-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); border-color: rgba(139, 92, 246, 0.3); }
     .popular-tag { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #8b5cf6 0%, #c084fc 100%); color: #fff; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
     
     .card-header h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
@@ -173,7 +173,7 @@ import { FormsModule } from '@angular/forms';
     
     .card-price { display: flex; align-items: flex-end; gap: 4px; margin-bottom: 2rem; justify-content: center; }
     .currency { font-size: 1.5rem; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 8px; }
-    .amount { font-size: 4rem; font-weight: 800; font-family: var(--font-heading); line-height: 1; letter-spacing: -0.05em; color: #fff;}
+    .amount { font-size: 4rem; font-weight: 800; font-family: var(--font-heading); line-height: 1; letter-spacing: -0.05em; color: var(--color-text-primary); }
     .period { font-size: 1rem; color: var(--color-text-secondary); margin-bottom: 8px; font-weight: 500; }
     
     .w-100 { width: 100%; display: block; }
@@ -183,12 +183,12 @@ import { FormsModule } from '@angular/forms';
     .text-center { text-align: center; }
     .text-accent { color: var(--color-accent); }
     .text-muted { color: var(--color-text-secondary); }
-    .btn-primary { background: var(--color-accent); color: #000; padding: 12px 24px; border-radius: 50px; font-weight: 700; text-decoration: none; transition: 0.3s; border: none; cursor: pointer; }
-    .btn-primary:hover { box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); transform: translateY(-2px); }
+    .btn-primary { background: var(--color-accent); color: var(--color-on-accent); padding: 12px 24px; border-radius: 50px; font-weight: 700; text-decoration: none; transition: var(--transition-normal); border: none; cursor: pointer; }
+    .btn-primary:hover { box-shadow: 0 4px 15px var(--color-accent-glow); transform: translateY(-2px); }
     .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
     
     .card-features { margin-top: 1rem; flex: 1; }
-    .features-title { font-size: 1.1rem; font-weight: 700; margin-bottom: var(--space-md); color: #fff; }
+    .features-title { font-size: 1.1rem; font-weight: 700; margin-bottom: var(--space-md); color: var(--color-text-primary); }
     .features-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-md); }
     .features-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; line-height: 1.4; color: var(--color-text-primary); }
     .check-icon { color: var(--color-accent); font-weight: 900; font-size: 1.3rem; line-height: 1.2; flex-shrink: 0; }
@@ -196,24 +196,24 @@ import { FormsModule } from '@angular/forms';
     .faq-section { padding-top: var(--space-xl); margin-bottom: var(--space-3xl); }
     .faq-section h2 { margin-bottom: var(--space-2xl); font-size: 2.2rem; font-weight: 800; }
     .faq-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: var(--space-lg); }
-    .faq-item { padding: var(--space-xl); display: flex; flex-direction: column; gap: var(--space-sm); border-top: 1px solid rgba(255,255,255,0.05); }
-    .faq-item h4 { font-size: 1.1rem; color: #fff; font-weight: 700; }
+    .faq-item { padding: var(--space-xl); display: flex; flex-direction: column; gap: var(--space-sm); border-top: 1px solid var(--color-border); }
+    .faq-item h4 { font-size: 1.1rem; color: var(--color-text-primary); font-weight: 700; }
     .faq-item p { font-size: 0.9rem; line-height: 1.6; color: var(--color-text-secondary); }
 
     /* Modal Styles */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 1rem; }
-    .modal-card { background: rgba(17, 19, 25, 0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; width: 100%; max-width: 450px; overflow: hidden; }
-    .modal-header { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
+    .modal-card { background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: 16px; width: 100%; max-width: 450px; overflow: hidden; }
+    .modal-header { padding: 1.5rem; border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; }
     .modal-header h3 { font-size: 1.25rem; font-weight: 800; margin: 0; }
-    .btn-close { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; opacity: 0.7; }
+    .btn-close { background: none; border: none; color: var(--color-text-primary); font-size: 1.5rem; cursor: pointer; opacity: 0.7; }
     .btn-close:hover { opacity: 1; }
     .modal-body { padding: 1.5rem; }
-    .plan-summary { background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+    .plan-summary { background: var(--color-bg-surface); padding: 1rem; border-radius: 8px; border: 1px solid var(--color-border); }
     .plan-summary p { margin-bottom: 0.5rem; font-size: 0.95rem; }
     .plan-summary p:last-child { margin-bottom: 0; }
     
     .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: 600; color: var(--color-text-secondary); }
-    .form-control { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 0.75rem 1rem; color: #fff; font-family: inherit; }
+    .form-control { width: 100%; background: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: 8px; padding: 0.75rem 1rem; color: var(--color-text-primary); font-family: inherit; }
     .form-control:disabled { opacity: 0.6; cursor: not-allowed; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .alert-danger { background: rgba(239, 68, 68, 0.1); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.2); padding: 0.75rem; border-radius: 8px; font-size: 0.85rem; }

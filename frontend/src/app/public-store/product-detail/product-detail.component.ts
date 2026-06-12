@@ -7,6 +7,7 @@ import { CartService } from '../../shared/services/cart.service';
 import { WishlistService } from '../../shared/services/wishlist.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
+import { ThemeToggleComponent } from '../../shared/components/theme-toggle.component';
 
 interface ProductItem {
   _id: string;
@@ -32,7 +33,7 @@ interface ReviewRecord {
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, ThemeToggleComponent],
   template: `
     <div *ngIf="loading" class="loading-state">
       <span class="spinner">📦</span> Loading product details...
@@ -64,6 +65,7 @@ interface ReviewRecord {
           </nav>
 
           <div class="header-actions">
+            <app-theme-toggle></app-theme-toggle>
             <!-- Cart Button with Hover Dropdown -->
             <div class="cart-dropdown-wrapper" (mouseenter)="showCartDropdown = true" (mouseleave)="showCartDropdown = false">
               <button class="cart-btn" (click)="toggleCartDrawer()">
