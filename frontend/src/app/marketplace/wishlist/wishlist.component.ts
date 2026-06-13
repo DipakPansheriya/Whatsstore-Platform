@@ -75,11 +75,11 @@ import { MarketplaceService } from '../../shared/services/marketplace.service';
       top: 0; left: 0; right: 0;
       height: 70px;
       z-index: 100;
-      background: rgba(10, 11, 16, 0.85);
+      background: var(--color-bg-card-glass);
       backdrop-filter: blur(30px);
       -webkit-backdrop-filter: blur(30px);
       border-bottom: 1px solid var(--color-border);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
     }
     .header-container {
       max-width: 1200px;
@@ -93,7 +93,7 @@ import { MarketplaceService } from '../../shared/services/marketplace.service';
     .brand-title {
       font-size: 1.4rem;
       font-weight: 950;
-      color: #fff;
+      color: var(--color-text-primary);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -125,7 +125,7 @@ import { MarketplaceService } from '../../shared/services/marketplace.service';
       gap: 6px;
       transition: all 0.25s ease;
       
-      &:hover { color: #fff; background: rgba(255,255,255,0.05); }
+      &:hover { color: var(--color-text-primary); background: var(--color-bg-surface); }
     }
     .cart-badge {
       font-size: 0.75rem;
@@ -137,8 +137,8 @@ import { MarketplaceService } from '../../shared/services/marketplace.service';
     }
     .cart-btn {
       border: 1px solid var(--color-border);
-      background: rgba(255,255,255,0.04);
-      color: #fff;
+      background: var(--color-bg-surface);
+      color: var(--color-text-primary);
       &:hover { 
         background: var(--color-accent); 
         color: #000; 
@@ -157,26 +157,33 @@ import { MarketplaceService } from '../../shared/services/marketplace.service';
       a { color: var(--color-text-secondary); font-weight: 600; text-decoration: none; transition: color 0.2s; &:hover { color: var(--color-accent); } }
     }
  
-    .section-title { font-size: 1.6rem; font-weight: 950; color: #fff; margin-bottom: var(--space-xl); letter-spacing: -0.02em; }
+    .section-title { font-size: 1.6rem; font-weight: 950; color: var(--color-text-primary); margin-bottom: var(--space-xl); letter-spacing: -0.02em; }
     .empty-state {
       text-align: center; padding: var(--space-3xl) 0;
-      background: rgba(255, 255, 255, 0.01);
-      border: 1px dashed rgba(255, 255, 255, 0.08);
+      background: var(--color-bg-card);
+      border: 1px dashed var(--color-border);
       border-radius: var(--radius-lg);
       .empty-icon { font-size: 3rem; display: block; margin-bottom: 12px; color: var(--color-danger); text-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
-      h3 { font-weight: 850; color: #fff; margin-bottom: var(--space-sm); }
+      h3 { font-weight: 850; color: var(--color-text-primary); margin-bottom: var(--space-sm); }
       p { color: var(--color-text-secondary); }
     }
  
     /* Grid */
     .products-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: var(--space-xl);
     }
+    @media (max-width: 1024px) {
+      .products-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-md); }
+    }
+    @media (max-width: 600px) {
+      .products-grid { grid-template-columns: repeat(1, 1fr); }
+    }
+    
     .product-card {
       display: flex; flex-direction: column; overflow: hidden; padding: 0; 
-      background: rgba(10, 11, 16, 0.45); 
+      background: var(--color-bg-card); 
       border: 1px solid var(--color-border); 
       border-radius: var(--radius-xl); 
       transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -193,34 +200,34 @@ import { MarketplaceService } from '../../shared/services/marketplace.service';
       img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
     }
     .store-badge-tag {
-      position: absolute; bottom: 10px; left: 10px; font-size: 0.72rem; font-weight: 850; color: #fff; 
-      background: rgba(10, 11, 16, 0.85); 
-      border: 1px solid rgba(255, 255, 255, 0.1); 
+      position: absolute; bottom: 10px; left: 10px; font-size: 0.72rem; font-weight: 850; color: var(--color-text-primary); 
+      background: var(--color-bg-card-glass); 
+      border: 1px solid var(--color-border); 
       padding: 4px 10px; border-radius: 6px;
       backdrop-filter: blur(5px);
     }
     .wishlist-btn {
       position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 50%; 
-      background: rgba(10, 11, 16, 0.85); 
-      border: 1px solid rgba(255, 255, 255, 0.15); 
+      background: var(--color-bg-surface); 
+      border: 1px solid var(--color-border); 
       display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; 
       transition: all 0.2s ease;
       backdrop-filter: blur(5px);
       filter: grayscale(0%);
-      &:hover { transform: scale(1.1); background: rgba(10, 11, 16, 0.95); }
-      &.active { background: rgba(10, 11, 16, 0.95); border-color: rgba(239, 68, 68, 0.3); }
+      &:hover { transform: scale(1.1); background: var(--color-bg-card); }
+      &.active { background: var(--color-bg-surface); border-color: rgba(239, 68, 68, 0.3); }
     }
     .card-body {
       padding: var(--space-lg); display: flex; flex-direction: column; gap: var(--space-xs); flex: 1;
       .prod-cat { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: #8b5cf6; letter-spacing: 0.08em; }
-      .prod-title { font-size: 1.1rem; font-weight: 850; color: #fff; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; &:hover { color: var(--color-accent); } }
+      .prod-title { font-size: 1.1rem; font-weight: 850; color: var(--color-text-primary); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; &:hover { color: var(--color-accent); } }
     }
     .card-footer {
       display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: var(--space-md);
-      border-top: 1px solid rgba(255, 255, 255, 0.04);
-      .price { font-size: 1.35rem; font-weight: 900; color: #fff; font-family: var(--font-heading); }
+      border-top: 1px solid var(--color-border);
+      .price { font-size: 1.35rem; font-weight: 900; color: var(--color-text-primary); font-family: var(--font-heading); }
       .btn-accent-cart { 
-        background: rgba(37, 211, 102, 0.08); 
+        background: var(--color-accent-dim); 
         color: var(--color-accent); 
         border: 1px solid rgba(37, 211, 102, 0.2); 
         padding: 8px 18px; font-weight: 850; font-size: 0.85rem; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.25s ease; 

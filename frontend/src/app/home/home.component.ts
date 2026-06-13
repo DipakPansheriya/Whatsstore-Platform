@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ScrollRevealDirective } from '../shared/directives/scroll-reveal.directive';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, ScrollRevealDirective],
   template: `
     <!-- Hero Section -->
     <section class="hero animate-fade-in-up">
@@ -29,7 +30,7 @@ import { RouterLink } from '@angular/router';
     </section>
 
     <!-- Key Features Overview Section -->
-    <section class="home-features">
+    <section class="home-features" appScrollReveal>
       <div class="container">
         <div class="section-header text-center">
           <span class="badge">Highlights</span>
@@ -60,7 +61,7 @@ import { RouterLink } from '@angular/router';
     </section>
 
     <!-- Short Workflow Steps -->
-    <section class="home-workflow">
+    <section class="home-workflow" appScrollReveal>
       <div class="container">
         <div class="section-header text-center">
           <span class="badge">Workflow</span>
@@ -93,11 +94,11 @@ import { RouterLink } from '@angular/router';
     </section>
 
     <!-- Marketplace Section -->
-    <section class="home-marketplace animate-fade-in-up">
+    <section class="home-marketplace animate-fade-in-up" appScrollReveal>
       <div class="container">
         <div class="marketplace-showcase glass-card accent-glow-hover">
           <div class="showcase-content">
-            <span class="badge" style="background: rgba(139, 92, 246, 0.1); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.2);">✨ New Feature</span>
+            <span class="badge" style="background: rgba(139, 92, 246, 0.1); color: var(--color-accent); border: 1px solid rgba(139, 92, 246, 0.2);">✨ New Feature</span>
             <h2>Discover Local Stores & Products in our Global Marketplace ⚡</h2>
             <p>
               We've launched the WhatsStore Marketplace! Customers can now search and browse products across all local merchant stores in one unified search engine. Add items from multiple stores to a single cart, apply discount codes, and order directly on WhatsApp.
@@ -162,7 +163,7 @@ import { RouterLink } from '@angular/router';
     </section>
 
     <!-- Upgrade Subscription Banner -->
-    <section class="home-upgrade">
+    <section class="home-upgrade" appScrollReveal>
       <div class="container">
         <div class="upgrade-banner glass-card accent-glow-hover text-center">
           <span class="badge">Plan Access</span>

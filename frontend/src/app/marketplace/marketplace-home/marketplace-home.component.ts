@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/marketplace.service';
-
 import { ToastService } from '../../shared/services/toast.service';
+import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.directive';
+import { SkeletonComponent } from '../../shared/components/skeleton/skeleton.component';
 
 @Component({
   selector: 'app-marketplace-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, ScrollRevealDirective, SkeletonComponent],
   template: `
     <div class="marketplace-wrapper animate-fade-in-up">
       <!-- Premium Glass Header -->
@@ -24,7 +25,7 @@ import { ToastService } from '../../shared/services/toast.service';
               ❤️ Wishlist <span class="nav-badge" *ngIf="wishlistCount > 0">{{ wishlistCount }}</span>
             </a>
             <a routerLink="/marketplace/cart" class="nav-link-btn cart-btn">
-              🛒 Cart <span class="cart-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+              🛒 Cart <span class="cart-badge" [class.animate-bounce]="isCartBouncing" *ngIf="cartCount > 0">{{ cartCount }}</span>
             </a>
             <a routerLink="/" class="nav-link-btn home-link">SaaS Home</a>
           </div>
@@ -116,8 +117,19 @@ import { ToastService } from '../../shared/services/toast.service';
               </div>
             </div>
 
-            <div *ngIf="loadingSearch" class="loading-state">
-              <span class="spinner">⏳</span> Fetching matching products...
+            <div *ngIf="loadingSearch" class="products-grid">
+              <div *ngFor="let i of [1,2,3,4]" class="product-card card p-0">
+                <app-skeleton height="200px" borderRadius="var(--radius-xl) var(--radius-xl) 0 0"></app-skeleton>
+                <div class="card-body">
+                  <app-skeleton width="60px" height="12px"></app-skeleton>
+                  <app-skeleton width="90%" height="20px" className="mt-2"></app-skeleton>
+                  <app-skeleton width="40%" height="16px" className="mt-2"></app-skeleton>
+                  <div class="card-footer mt-auto">
+                    <app-skeleton width="80px" height="24px"></app-skeleton>
+                    <app-skeleton width="70px" height="34px" borderRadius="var(--radius-sm)"></app-skeleton>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div *ngIf="!loadingSearch && searchResults.length === 0" class="empty-state card">
@@ -128,7 +140,7 @@ import { ToastService } from '../../shared/services/toast.service';
 
             <div *ngIf="!loadingSearch && searchResults.length > 0" class="products-grid">
               @for (prod of searchResults; track prod._id) {
-                <div class="product-card card">
+                <div class="product-card card" appScrollReveal>
                   <div class="image-box" [routerLink]="['/marketplace/product', prod._id]">
                     <img [src]="prod.images[0] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=300&auto=format&fit=crop'" [alt]="prod.title">
                     <span class="store-badge-tag">{{ prod.business?.name }}</span>
@@ -156,29 +168,41 @@ import { ToastService } from '../../shared/services/toast.service';
         <!-- Default Homepage View (Only shown when q/search is empty) -->
         <div class="default-home-sections animate-fade-in-up" *ngIf="!isSearching">
           <!-- Featured Stores (RTL Auto Scroll Carousel) -->
-          <section class="home-section" *ngIf="featuredStores.length > 0">
+          <section class="home-section" *ngIf="featuredStores.length > 0" appScrollReveal>
             <h2 class="section-title">🔥 Featured Stores</h2>
-            <div class="stores-container scroll-x">
+            <div class="stores-container">
               @for (store of featuredStores; track store._id) {
-                <div class="store-card glass-card">
-                  <img class="store-logo" [src]="store.logoUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=100&auto=format&fit=crop'" [alt]="store.name">
+                <div class="store-card">
+                  <img [src]="store.logoUrl || 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=150&auto=format&fit=crop'" alt="Store Logo" class="store-logo">
                   <div class="store-info">
                     <h4>{{ store.name }}</h4>
                     <span class="store-tag">{{ store.category }}</span>
                     <p class="store-desc">{{ store.description || 'Verified WhatsStore Merchant' }}</p>
                   </div>
-                  <a [routerLink]="['/store', store.websiteSlug]" class="btn btn-ghost btn-sm w-full">Visit Storefront</a>
+                  <button class="btn" [routerLink]="['/store', store.websiteSlug]">Visit Storefront</button>
+                </div>
+              }
+              <!-- Duplicate for infinite seamless scroll -->
+              @for (store of featuredStores; track store._id + '-copy') {
+                <div class="store-card">
+                  <img [src]="store.logoUrl || 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=150&auto=format&fit=crop'" alt="Store Logo" class="store-logo">
+                  <div class="store-info">
+                    <h4>{{ store.name }}</h4>
+                    <span class="store-tag">{{ store.category }}</span>
+                    <p class="store-desc">{{ store.description || 'Verified WhatsStore Merchant' }}</p>
+                  </div>
+                  <button class="btn" [routerLink]="['/store', store.websiteSlug]">Visit Storefront</button>
                 </div>
               }
             </div>
           </section>
 
           <!-- Featured Products -->
-          <section class="home-section" *ngIf="featuredProducts.length > 0">
-            <h2 class="section-title">✨ Curated Featured Products</h2>
+          <section class="home-section" *ngIf="featuredProducts.length > 0" appScrollReveal>
+            <h2 class="section-title">✨ Top Rated Products</h2>
             <div class="products-grid">
               @for (prod of featuredProducts; track prod._id) {
-                <div class="product-card card">
+                <div class="product-card card" appScrollReveal>
                   <div class="image-box" [routerLink]="['/marketplace/product', prod._id]">
                     <img [src]="prod.images[0] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=300&auto=format&fit=crop'" [alt]="prod.title">
                     <span class="store-badge-tag">{{ prod.business?.name }}</span>
@@ -200,7 +224,7 @@ import { ToastService } from '../../shared/services/toast.service';
           </section>
 
           <!-- Public Coupons -->
-          <section class="home-section" *ngIf="globalCoupons.length > 0">
+          <section class="home-section" *ngIf="globalCoupons.length > 0" appScrollReveal>
             <h2 class="section-title">🎉 Hot Merchant Coupons</h2>
             <div class="offers-container scroll-x">
               @for (cp of globalCoupons; track cp._id) {
@@ -209,7 +233,7 @@ import { ToastService } from '../../shared/services/toast.service';
                   <div class="offer-pill-content">
                     <span class="offer-pill-discount">{{ cp.discountType === 'percentage' ? cp.discountValue + '%' : '₹' + cp.discountValue }} OFF</span>
                     <span class="offer-pill-divider"></span>
-                    <span class="offer-pill-code">{{ cp.code }}</span>
+                    <span class="offer-pill-code">{{ copiedCode === cp.code ? '✓ Copied' : cp.code }}</span>
                     <span class="offer-pill-store">&#64; {{ cp.business?.name }}</span>
                   </div>
                 </div>
@@ -218,11 +242,11 @@ import { ToastService } from '../../shared/services/toast.service';
           </section>
 
           <!-- Trending Products -->
-          <section class="home-section" *ngIf="trendingProducts.length > 0">
+          <section class="home-section" *ngIf="trendingProducts.length > 0" appScrollReveal>
             <h2 class="section-title">⚡ Fresh & Trending Additions</h2>
             <div class="products-grid">
               @for (prod of trendingProducts; track prod._id) {
-                <div class="product-card card">
+                <div class="product-card card" appScrollReveal>
                   <div class="image-box" [routerLink]="['/marketplace/product', prod._id]">
                     <img [src]="prod.images[0] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=300&auto=format&fit=crop'" [alt]="prod.title">
                     <span class="store-badge-tag">{{ prod.business?.name }}</span>
@@ -529,8 +553,14 @@ import { ToastService } from '../../shared/services/toast.service';
     /* Products Listing Grid */
     .products-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: var(--space-xl);
+    }
+    @media (max-width: 1024px) {
+      .products-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-md); }
+    }
+    @media (max-width: 600px) {
+      .products-grid { grid-template-columns: repeat(1, 1fr); }
     }
     .product-card {
       display: flex; flex-direction: column; overflow: hidden; padding: 0; 
@@ -538,9 +568,10 @@ import { ToastService } from '../../shared/services/toast.service';
       border: 1px solid var(--color-border); 
       border-radius: var(--radius-xl); 
       transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: var(--shadow-sm);
       
       &:hover { 
-        border-color: rgba(37, 211, 102, 0.25); 
+        border-color: rgba(37, 211, 102, 0.4); 
         transform: translateY(-5px); 
         box-shadow: 0 15px 35px -10px var(--color-accent-glow);
         .image-box img { transform: scale(1.06); }
@@ -582,7 +613,7 @@ import { ToastService } from '../../shared/services/toast.service';
       .btn-accent-cart { 
         background: var(--color-accent-dim); 
         color: var(--color-accent); 
-        border: 1px solid rgba(37, 211, 102, 0.2); 
+        border: 1px solid var(--color-accent-glow); 
         padding: 8px 18px; font-weight: 850; font-size: 0.85rem; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.25s ease; 
         &:hover:not([disabled]) { 
           background: var(--color-accent); 
@@ -602,34 +633,46 @@ import { ToastService } from '../../shared/services/toast.service';
       display: flex;
       gap: 18px;
       padding-bottom: 16px;
+      width: max-content;
+      animation: autoScrollX 25s linear infinite;
+      
+      &:hover {
+        animation-play-state: paused;
+      }
+    }
+    
+    @keyframes autoScrollX {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(calc(-50% - 9px)); } /* Shift by half minus half gap */
     }
 
     .store-card {
-      min-width: 270px; max-width: 290px; padding: var(--space-xl); border-radius: var(--radius-xl); 
+      min-width: 260px; max-width: 280px; padding: 24px; border-radius: 20px; 
       background: var(--color-bg-card); 
       border: 1px solid var(--color-border); 
-      display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px;
-      transition: all 0.3s ease;
+      display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
       
       &:hover {
-        border-color: rgba(37, 211, 102, 0.25);
-        transform: translateY(-4px);
-        box-shadow: 0 12px 30px -10px var(--color-accent-glow);
+        border-color: var(--color-accent);
+        transform: translateY(-6px);
+        box-shadow: 0 15px 35px rgba(37, 211, 102, 0.15);
       }
       
-      .store-logo { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid var(--color-border); box-shadow: var(--shadow-md); transition: all 0.3s ease; }
-      &:hover .store-logo { border-color: var(--color-accent); box-shadow: 0 0 15px var(--color-accent-glow); }
+      .store-logo { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--color-bg); box-shadow: 0 0 0 2px var(--color-border); transition: all 0.3s ease; }
+      &:hover .store-logo { transform: scale(1.05); box-shadow: 0 0 0 2px var(--color-accent); }
       
       .store-info { 
-        display: flex; flex-direction: column; gap: 6px; align-items: center; 
-        h4 { font-size: 1.25rem; font-weight: 900; color: var(--color-text-primary); } 
-        .store-tag { font-size: 0.72rem; font-weight: 800; color: var(--color-accent); text-transform: uppercase; background: var(--color-accent-dim); border: 1px solid rgba(37, 211, 102, 0.15); padding: 3px 10px; border-radius: 20px; } 
-        .store-desc { font-size: 0.82rem; color: var(--color-text-secondary); line-height: 1.45; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; min-height: 38px; } 
+        display: flex; flex-direction: column; gap: 8px; align-items: center; 
+        h4 { font-size: 1.2rem; font-weight: 800; color: var(--color-text-primary); margin: 0; } 
+        .store-tag { font-size: 0.7rem; font-weight: 850; color: var(--color-accent); text-transform: uppercase; background: var(--color-accent-dim); border: 1px solid rgba(37, 211, 102, 0.2); padding: 4px 12px; border-radius: 20px; letter-spacing: 0.05em; } 
+        .store-desc { font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.5; margin: 0; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; min-height: 40px; } 
       }
       .btn { 
-        border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 750; border: 1px solid var(--color-border); background: var(--color-bg-surface); color: var(--color-text-primary); width: 100%; transition: all 0.2s;
+        border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 750; border: 1px solid var(--color-border); background: var(--color-bg-surface); color: var(--color-text-primary); width: 100%; transition: all 0.2s; padding: 10px;
         &:hover {
-          background: var(--color-text-primary); color: var(--color-bg); border-color: var(--color-text-primary);
+          background: var(--color-accent); color: #000; border-color: var(--color-accent);
         }
       }
     }
@@ -709,6 +752,8 @@ export class MarketplaceHomeComponent implements OnInit {
   globalCoupons: any[] = [];
   // Search Results
   searchResults: any[] = [];
+  copiedCode: string | null = null;
+  isCartBouncing = false;
 
   // Carousel slider indices
   activeBannerIndex = 0;
@@ -737,7 +782,12 @@ export class MarketplaceHomeComponent implements OnInit {
 
     // Subscribe to Cart changes
     this.marketplaceService.cart$.subscribe(items => {
-      this.cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
+      const newCount = items.reduce((sum, item) => sum + item.quantity, 0);
+      if (newCount > this.cartCount) {
+        this.isCartBouncing = true;
+        setTimeout(() => this.isCartBouncing = false, 300);
+      }
+      this.cartCount = newCount;
     });
 
     // Subscribe to Wishlist changes
@@ -871,7 +921,9 @@ export class MarketplaceHomeComponent implements OnInit {
   // Coupon actions
   copyCouponCode(code: string, slug?: string) {
     navigator.clipboard.writeText(code).then(() => {
+      this.copiedCode = code;
       this.toastService.success(`Coupon code "${code}" copied to clipboard!`, 'Copied!');
+      setTimeout(() => this.copiedCode = null, 2000); // Fade after 2 seconds
       if (slug) {
         setTimeout(() => this.router.navigate(['/store', slug]), 800);
       }

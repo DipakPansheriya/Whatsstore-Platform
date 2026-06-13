@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../shared/services/api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Animations } from '../shared/animations/animations';
 
 interface ProductItem {
   _id?: string;
@@ -19,6 +20,7 @@ interface ProductItem {
   selector: 'app-products',
   standalone: true,
   imports: [FormsModule, CommonModule],
+  animations: [Animations.staggerList],
   template: `
     <div class="products-scaffold animate-fade-in-up">
       <!-- Header -->
@@ -71,9 +73,9 @@ interface ProductItem {
           </div>
 
           <!-- Product Grid -->
-          <div *ngIf="products.length > 0" [class]="viewMode === 'grid' ? 'product-grid' : 'product-list-view'">
+          <div *ngIf="products.length > 0" [class]="viewMode === 'grid' ? 'product-grid' : 'product-list-view'" [@staggerList]="products.length">
             @for (product of products; track product._id) {
-              <div class="product-card glass-card" [class.dimmed]="!product.isAvailable">
+              <div class="product-card glass-card animate-item" [class.dimmed]="!product.isAvailable">
                 <div class="image-wrapper">
                   <img [src]="product.images[0] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=300&auto=format&fit=crop'" 
                        [alt]="product.title" loading="lazy">

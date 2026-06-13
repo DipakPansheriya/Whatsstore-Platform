@@ -101,9 +101,9 @@ import { FormsModule } from '@angular/forms';
 
       <!-- Mock Payment Modal -->
       <div class="modal-overlay" *ngIf="selectedPlan">
-        <div class="modal-card">
+        <div class="modal-card modal-scale-in">
           <div class="modal-header">
-            <h3>Complete Your Subscription</h3>
+            <h3>Complete your purchase</h3>
             <button class="btn-close" (click)="closePaymentModal()">×</button>
           </div>
           <div class="modal-body">

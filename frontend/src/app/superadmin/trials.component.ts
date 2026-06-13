@@ -65,8 +65,8 @@ import { environment } from '../../environments/environment.development';
   `,
   styles: [`
     .sa-subscriptions { display: flex; flex-direction: column; gap: var(--space-xl); }
-    .dash-header h1 { font-size: 2rem; margin-bottom: var(--space-xs); background: linear-gradient(to right, var(--color-text-primary), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .subs-list { padding: var(--space-xl); border-top: 1px solid rgba(139, 92, 246, 0.2); }
+    .dash-header h1 { font-size: 2rem; margin-bottom: var(--space-xs); background: linear-gradient(to right, var(--color-text-primary), #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .subs-list { padding: var(--space-xl); border-top: 1px solid var(--color-border); }
     .table-responsive { overflow-x: auto; }
     .sa-table { width: 100%; border-collapse: collapse; text-align: left; }
     .sa-table th { padding: 12px; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }
@@ -75,10 +75,10 @@ import { environment } from '../../environments/environment.development';
     .date-col { font-size: 0.85rem; color: var(--color-text-secondary); }
     .date-col small { font-weight: 600; color: var(--color-text-primary); }
     .badge { padding: 4px 10px; background: var(--color-bg-surface); border-radius: 20px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; }
-    .badge-primary { background: rgba(139, 92, 246, 0.2); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
-    .badge-danger { background: rgba(239, 68, 68, 0.15); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+    .badge-primary { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.2); }
+    .badge-danger { background: rgba(239, 68, 68, 0.1); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.2); }
     .btn-sm { padding: 6px 12px; border: none; border-radius: 4px; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: 0.2s; margin-right: 4px; }
-    .btn-primary { background: rgba(139, 92, 246, 0.2); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
+    .btn-primary { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.2); }
     .btn-sm:hover { opacity: 0.8; }
     .text-center { text-align: center; }
     .text-muted { color: var(--color-text-secondary); }

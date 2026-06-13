@@ -5,13 +5,13 @@ import { Title, Meta } from '@angular/platform-browser';
 import { ScrollService } from './shared/services/scroll.service';
 import { ThemeService } from './shared/services/theme.service';
 import { ThemeToggleComponent } from './shared/components/theme-toggle.component';
-import { DirectionToggleComponent } from './shared/components/direction-toggle.component';
+
 import { ToastsComponent } from './shared/components/toasts.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, ThemeToggleComponent, DirectionToggleComponent, ToastsComponent],
+  imports: [RouterOutlet, RouterLink, ThemeToggleComponent, ToastsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

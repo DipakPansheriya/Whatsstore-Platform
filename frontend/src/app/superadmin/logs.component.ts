@@ -50,8 +50,8 @@ import { environment } from '../../environments/environment.development';
   `,
   styles: [`
     .sa-logs { display: flex; flex-direction: column; gap: var(--space-xl); }
-    .dash-header h1 { font-size: 2rem; margin-bottom: var(--space-xs); background: linear-gradient(to right, var(--color-text-primary), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .logs-list { padding: var(--space-xl); border-top: 1px solid rgba(139, 92, 246, 0.2); }
+    .dash-header h1 { font-size: 2rem; margin-bottom: var(--space-xs); background: linear-gradient(to right, var(--color-text-primary), #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .logs-list { padding: var(--space-xl); border-top: 1px solid var(--color-border); }
     .table-responsive { overflow-x: auto; }
     .sa-table { width: 100%; border-collapse: collapse; text-align: left; }
     .sa-table th { padding: 12px; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }

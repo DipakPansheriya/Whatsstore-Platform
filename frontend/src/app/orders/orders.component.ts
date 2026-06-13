@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../shared/services/api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Animations } from '../shared/animations/animations';
 
 interface OrderItem {
   product: {
@@ -33,6 +34,7 @@ interface OrderRecord {
   selector: 'app-orders',
   standalone: true,
   imports: [FormsModule, CommonModule],
+  animations: [Animations.staggerList],
   template: `
     <div class="orders-scaffold animate-fade-in-up">
       <!-- Header -->
@@ -81,9 +83,9 @@ interface OrderRecord {
 
         <!-- Orders Table Grid -->
         <div *ngIf="getFilteredOrders().length > 0" class="orders-list">
-          <div [class]="viewMode === 'grid' ? 'orders-grid' : 'orders-list-view'">
+          <div [class]="viewMode === 'grid' ? 'orders-grid' : 'orders-list-view'" [@staggerList]="getFilteredOrders().length">
             @for (order of getFilteredOrders(); track order._id) {
-              <div class="order-card card">
+              <div class="order-card card animate-item">
                 <div class="order-card-header">
                   <div>
                     <span class="order-id">#{{ order._id.slice(-6).toUpperCase() }}</span>

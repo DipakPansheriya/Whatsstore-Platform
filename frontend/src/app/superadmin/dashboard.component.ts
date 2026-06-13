@@ -2,13 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
+import { Animations } from '../shared/animations/animations';
 
 @Component({
   selector: 'app-superadmin-dashboard',
   standalone: true,
   imports: [CommonModule],
+  animations: [Animations.staggerList],
   template: `
-    <div class="sa-dashboard fade-in">
+    <div class="sa-dashboard animate-fade-in-up">
       <header class="dash-header">
         <div>
           <h1>Platform Overview</h1>
@@ -16,8 +18,8 @@ import { environment } from '../../environments/environment.development';
         </div>
       </header>
 
-      <div class="kpi-grid" *ngIf="stats">
-        <div class="kpi-card glass-card">
+      <div class="kpi-grid" *ngIf="stats" [@staggerList]="stats ? 'loaded' : 'init'">
+        <div class="kpi-card glass-card animate-item">
           <div class="kpi-header">
             <h3>Total Stores</h3>
             <span class="icon">🏪</span>
@@ -26,7 +28,7 @@ import { environment } from '../../environments/environment.development';
           <div class="kpi-trend positive">↑ Live DB</div>
         </div>
 
-        <div class="kpi-card glass-card">
+        <div class="kpi-card glass-card animate-item">
           <div class="kpi-header">
             <h3>Active Subscriptions</h3>
             <span class="icon">💳</span>
@@ -35,7 +37,7 @@ import { environment } from '../../environments/environment.development';
           <div class="kpi-trend positive">↑ Live DB</div>
         </div>
 
-        <div class="kpi-card glass-card">
+        <div class="kpi-card glass-card animate-item">
           <div class="kpi-header">
             <h3>Monthly Revenue (MRR)</h3>
             <span class="icon">💰</span>
@@ -44,7 +46,7 @@ import { environment } from '../../environments/environment.development';
           <div class="kpi-trend positive">↑ Live DB</div>
         </div>
 
-        <div class="kpi-card glass-card">
+        <div class="kpi-card glass-card animate-item">
           <div class="kpi-header">
             <h3>New Signups (7d)</h3>
             <span class="icon">🔥</span>
@@ -64,7 +66,7 @@ import { environment } from '../../environments/environment.development';
     .dash-header h1 {
       font-size: 2rem;
       margin-bottom: var(--space-xs);
-      background: linear-gradient(to right, var(--color-text-primary), #a78bfa);
+      background: linear-gradient(to right, var(--color-text-primary), #8b5cf6);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }

@@ -6,6 +6,7 @@ import { RouterLink } from '@angular/router';
 import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/marketplace.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
+import { Animations } from '../../shared/animations/animations';
 
 interface GroupedCart {
   businessId: string;
@@ -20,6 +21,7 @@ interface GroupedCart {
   selector: 'app-marketplace-cart',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
+  animations: [Animations.staggerList],
   template: `
     <div class="marketplace-wrapper animate-fade-in-up">
       <!-- Premium Glass Header -->
@@ -54,8 +56,8 @@ interface GroupedCart {
 
         <div class="cart-layout" *ngIf="cartItems.length > 0">
           <!-- Left Column: Stores Split Grids -->
-          <div class="cart-left">
-            <div *ngFor="let group of groupedGroups; trackBy: trackGroup" class="store-group-card card">
+          <div class="cart-left" [@staggerList]="groupedGroups.length">
+            <div *ngFor="let group of groupedGroups; trackBy: trackGroup" class="store-group-card card animate-item">
               <div class="group-header">
                 <div class="store-meta">
                   <span class="store-badge">🏪 Merchant</span>

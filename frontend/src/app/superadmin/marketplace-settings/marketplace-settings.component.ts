@@ -123,7 +123,7 @@ interface CategoryItem {
   styles: [`
     .sa-marketplace { display: flex; flex-direction: column; gap: var(--space-xl); }
     .dash-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: var(--space-md); }
-    .dash-header h1 { font-size: 2rem; margin-bottom: var(--space-xs); background: linear-gradient(to right, var(--color-text-primary), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .dash-header h1 { font-size: 2rem; margin-bottom: var(--space-xs); background: linear-gradient(to right, var(--color-text-primary), #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .subtitle { color: var(--color-text-secondary); font-size: 0.95rem; }
     
     .btn-primary { background: var(--color-accent); color: #000; border: none; padding: 12px 24px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: all 0.2s; }
