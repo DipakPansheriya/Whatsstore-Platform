@@ -17,6 +17,7 @@ const business_routes_1 = __importDefault(require("./business/business.routes"))
 const products_routes_1 = __importDefault(require("./products/products.routes"));
 const orders_routes_1 = __importDefault(require("./orders/orders.routes"));
 const reviews_routes_1 = __importDefault(require("./reviews/reviews.routes"));
+const notifications_routes_1 = __importDefault(require("./notifications/notifications.routes"));
 const analytics_routes_1 = __importDefault(require("./analytics/analytics.routes"));
 const superadmin_routes_1 = __importDefault(require("./superadmin/superadmin.routes"));
 const plan_routes_1 = __importDefault(require("./plans/plan.routes"));
@@ -74,6 +75,7 @@ app.use('/api/business', business_routes_1.default);
 app.use('/api/products', products_routes_1.default);
 app.use('/api/orders', orders_routes_1.default);
 app.use('/api/reviews', reviews_routes_1.default);
+app.use('/api/notifications', notifications_routes_1.default);
 app.use('/api/analytics', analytics_routes_1.default);
 app.use('/api/superadmin', superadmin_routes_1.default);
 app.use('/api/plans', plan_routes_1.default);

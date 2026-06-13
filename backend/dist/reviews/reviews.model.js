@@ -39,5 +39,6 @@ const ReviewSchema = new mongoose_1.Schema({
     rating: { type: Number, required: true, min: 1, max: 5 },
     name: { type: String, required: true, trim: true },
     comment: { type: String, required: true, trim: true },
+    status: { type: String, enum: ['PENDING', 'APPROVED', 'REJECTED'], default: 'PENDING' },
 }, { timestamps: { createdAt: true, updatedAt: false } });
 exports.default = mongoose_1.default.model('Review', ReviewSchema);

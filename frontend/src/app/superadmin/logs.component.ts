@@ -50,14 +50,14 @@ import { environment } from '../../environments/environment.development';
   `,
   styles: [`
     .sa-logs { display: flex; flex-direction: column; gap: var(--space-xl); }
-    .dash-header h1 { font-size: 2rem; margin-bottom: var(--space-xs); background: linear-gradient(to right, #fff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .dash-header h1 { font-size: 2rem; margin-bottom: var(--space-xs); background: linear-gradient(to right, var(--color-text-primary), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .logs-list { padding: var(--space-xl); border-top: 1px solid rgba(139, 92, 246, 0.2); }
     .table-responsive { overflow-x: auto; }
     .sa-table { width: 100%; border-collapse: collapse; text-align: left; }
-    .sa-table th { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--color-text-secondary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }
-    .sa-table td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; }
-    .sa-table tbody tr:hover { background: rgba(255,255,255,0.02); }
-    .badge { padding: 4px 10px; background: rgba(255,255,255,0.1); border-radius: 4px; font-size: 0.75rem; font-family: monospace; }
+    .sa-table th { padding: 12px; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }
+    .sa-table td { padding: 12px; border-bottom: 1px solid var(--color-border); font-size: 0.9rem; }
+    .sa-table tbody tr:hover { background: var(--color-bg-surface); }
+    .badge { padding: 4px 10px; background: var(--color-bg-surface); border-radius: 4px; font-size: 0.75rem; font-family: monospace; }
     .d-block { display: block; }
     .text-center { text-align: center; }
     .text-muted { color: var(--color-text-secondary); }

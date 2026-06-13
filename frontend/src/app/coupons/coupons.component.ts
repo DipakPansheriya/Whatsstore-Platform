@@ -9,6 +9,7 @@ interface CouponItem {
   code: string;
   discountType: 'percentage' | 'fixed';
   discountValue: number;
+  startDate?: string;
   expiryDate?: string;
   isActive: boolean;
   visibility?: 'PUBLIC' | 'PRIVATE';
@@ -84,8 +85,11 @@ interface CouponItem {
                     </div>
                   </div>
                   <div class="ticket-body">
+                    <p class="expiry-text" *ngIf="coupon.startDate">
+                      🟢 Starts: {{ coupon.startDate | date:'dd/MM/yyyy' }}
+                    </p>
                     <p class="expiry-text">
-                      📅 Expiry: {{ coupon.expiryDate ? (coupon.expiryDate | date:'mediumDate') : 'Never Expires' }}
+                      📅 Expiry: {{ coupon.expiryDate ? (coupon.expiryDate | date:'dd/MM/yyyy') : 'Never Expires' }}
                     </p>
                   </div>
                   <div class="ticket-footer">
@@ -122,6 +126,13 @@ interface CouponItem {
               <div class="form-group">
                 <label for="c-val">Discount Value *</label>
                 <input id="c-val" type="number" name="discountValue" [(ngModel)]="formCoupon.discountValue" placeholder="e.g. 10" min="0" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="c-start">Start Date (Optional)</label>
+                <input id="c-start" type="date" name="startDate" [(ngModel)]="formCoupon.startDate">
               </div>
 
               <div class="form-group">
@@ -170,13 +181,13 @@ interface CouponItem {
   styles: [`
     .coupons-scaffold { max-width: 1000px; margin: 0 auto; padding: var(--space-md) 0; }
     .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl); }
-    .page-header h1 { font-size: 2.2rem; font-weight: 900; margin: var(--space-xs) 0; color: #fff; }
+    .page-header h1 { font-size: 2.2rem; font-weight: 900; margin: var(--space-xs) 0; color: var(--color-text-primary); }
     .page-header p { color: var(--color-text-secondary); }
     .badge { padding: 4px 12px; background: rgba(255,255,255,0.05); border-radius: 20px; font-size: 0.75rem; font-weight: 700; color: var(--color-accent); }
     
     .loading-state, .empty-state {
       text-align: center; padding: var(--space-3xl);
-      h3 { font-size: 1.5rem; color: #fff; margin-bottom: 8px; }
+      h3 { font-size: 1.5rem; color: var(--color-text-primary); margin-bottom: 8px; }
       p { color: var(--color-text-secondary); margin-bottom: var(--space-xl); }
       .empty-icon { font-size: 4rem; }
     }
@@ -188,8 +199,8 @@ interface CouponItem {
     .coupon-card {
       display: flex;
       border-radius: var(--radius-lg);
-      border: 1px solid rgba(255,255,255,0.06);
-      background: rgba(17,19,25,0.45);
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-card-glass);
       backdrop-filter: blur(20px);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
@@ -231,7 +242,7 @@ interface CouponItem {
       .discount-label {
         font-size: 0.75rem;
         font-weight: 800;
-        color: #fff;
+        color: var(--color-text-secondary);
         letter-spacing: 0.1em;
         margin-top: 4px;
         opacity: 0.8;
@@ -248,10 +259,10 @@ interface CouponItem {
         position: absolute;
         width: 16px;
         height: 16px;
-        background: #06070a;
+        background: var(--color-bg);
         border-radius: 50%;
         left: -9px;
-        border: 1px solid rgba(255,255,255,0.06);
+        border: 1px solid var(--color-border);
         box-sizing: border-box;
         
         &.top-notch {
@@ -281,12 +292,12 @@ interface CouponItem {
       .coupon-code {
         font-size: 1.15rem;
         font-weight: 900;
-        color: #fff;
+        color: var(--color-text-primary);
         letter-spacing: 0.05em;
-        background: rgba(255,255,255,0.05);
+        background: var(--color-bg-surface);
         padding: 4px 8px;
         border-radius: var(--radius-sm);
-        border: 1px solid rgba(255,255,255,0.08);
+        border: 1px solid var(--color-border);
       }
     }
     
@@ -348,13 +359,13 @@ interface CouponItem {
     
     .btn-action {
       flex: 1; padding: 8px; border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 700; cursor: pointer; text-align: center; border: 1px solid transparent; background: transparent;
-      &.btn-edit { border-color: rgba(255,255,255,0.08); color: #fff; &:hover { background: rgba(255,255,255,0.05); } }
+      &.btn-edit { border-color: var(--color-border); color: var(--color-text-primary); &:hover { background: var(--color-bg-surface); } }
       &.btn-delete { color: #ef4444; &:hover { background: rgba(239, 68, 68, 0.1); } }
     }
 
     /* Form Panels */
-    .form-container { padding: var(--space-2xl); background: rgba(17,19,25,0.45); border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-lg); }
-    .form-title { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: var(--space-xl); }
+    .form-container { padding: var(--space-2xl); background: var(--color-bg-card-glass); border: 1px solid var(--color-border); border-radius: var(--radius-lg); }
+    .form-title { font-size: 1.5rem; font-weight: 800; color: var(--color-text-primary); margin-bottom: var(--space-xl); }
     .coupon-form { display: flex; flex-direction: column; gap: var(--space-lg); }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
     @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
@@ -362,7 +373,7 @@ interface CouponItem {
       display: flex; flex-direction: column; gap: 6px;
       label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-secondary); }
       input, select {
-        padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-md); color: #fff; outline: none; font-size: 0.95rem;
+        padding: 12px; background: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); color: var(--color-text-primary); outline: none; font-size: 0.95rem;
         &:focus { border-color: var(--color-accent); }
       }
     }
@@ -372,7 +383,7 @@ interface CouponItem {
     /* Switch Slider */
     .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
     .switch input { opacity: 0; width: 0; height: 0; }
-    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .3s; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--color-border); transition: .3s; }
     .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .3s; }
     input:checked + .slider { background-color: #25d366; }
     input:checked + .slider:before { transform: translateX(20px); }
@@ -380,13 +391,13 @@ interface CouponItem {
     .slider.round:before { border-radius: 50%; }
 
     .toggle-labels { display: flex; flex-direction: column; }
-    .lbl-main { font-size: 0.9rem; font-weight: 700; color: #fff; }
+    .lbl-main { font-size: 0.9rem; font-weight: 700; color: var(--color-text-primary); }
     .lbl-sub { font-size: 0.75rem; color: var(--color-text-secondary); }
 
-    .form-actions { display: flex; justify-content: flex-end; gap: var(--space-md); margin-top: var(--space-xl); border-top: 1px solid rgba(255,255,255,0.05); padding-top: var(--space-lg); }
+    .form-actions { display: flex; justify-content: flex-end; gap: var(--space-md); margin-top: var(--space-xl); border-top: 1px solid var(--color-border); padding-top: var(--space-lg); }
     .btn { padding: 12px 24px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.95rem; cursor: pointer; }
     .btn-primary { background: var(--color-accent); color: #000; border: none; &:hover { opacity: 0.9; } }
-    .btn-ghost { background: transparent; border: 1px solid rgba(255,255,255,0.08); color: #fff; &:hover { background: rgba(255,255,255,0.04); } }
+    .btn-ghost { background: transparent; border: 1px solid var(--color-border); color: var(--color-text-primary); &:hover { background: var(--color-bg-surface); } }
     .alert { padding: 12px; border-radius: var(--radius-md); font-size: 0.9rem; margin-bottom: var(--space-md); }
     .alert-success { background: rgba(37,211,102,0.1); color: #25d366; border: 1px solid rgba(37,211,102,0.2); }
     .alert-danger { background: rgba(239,68,68,0.1); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); }
@@ -403,6 +414,7 @@ export class CouponsComponent implements OnInit {
     code: '',
     discountType: 'percentage',
     discountValue: 10,
+    startDate: '',
     expiryDate: '',
     isActive: true,
     visibility: 'PRIVATE',
@@ -441,6 +453,7 @@ export class CouponsComponent implements OnInit {
       code: '',
       discountType: 'percentage',
       discountValue: 10,
+      startDate: '',
       expiryDate: '',
       isActive: true,
       visibility: 'PRIVATE',
@@ -454,13 +467,18 @@ export class CouponsComponent implements OnInit {
     this.showForm = true;
     this.editingCoupon = coupon;
     let expDate = '';
+    let stDate = '';
     if (coupon.expiryDate) {
       expDate = coupon.expiryDate.split('T')[0];
+    }
+    if (coupon.startDate) {
+      stDate = coupon.startDate.split('T')[0];
     }
     this.formCoupon = {
       code: coupon.code,
       discountType: coupon.discountType,
       discountValue: coupon.discountValue,
+      startDate: stDate,
       expiryDate: expDate,
       isActive: coupon.isActive,
       visibility: coupon.visibility || 'PRIVATE',
@@ -490,6 +508,7 @@ export class CouponsComponent implements OnInit {
       code: this.formCoupon.code,
       discountType: this.formCoupon.discountType,
       discountValue: this.formCoupon.discountValue,
+      startDate: this.formCoupon.startDate || undefined,
       expiryDate: this.formCoupon.expiryDate || undefined,
       isActive: this.formCoupon.isActive,
       visibility: this.formCoupon.displayOnStore ? 'PUBLIC' : 'PRIVATE',

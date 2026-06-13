@@ -17,6 +17,16 @@ import { ThemeToggleComponent } from '../../shared/components/theme-toggle.compo
       <div class="bg-orb orb-2"></div>
       <div class="bg-orb orb-3"></div>
 
+      <div class="global-top-bar">
+        <a routerLink="/" class="back-home-link">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 5l-7 7 7 7"/>
+          </svg>
+          Back to home
+        </a>
+        <app-theme-toggle></app-theme-toggle>
+      </div>
+
       <div class="auth-container">
 
         <!-- Left Panel: Brand / Visual Side -->
@@ -79,17 +89,6 @@ import { ThemeToggleComponent } from '../../shared/components/theme-toggle.compo
 
         <!-- Right Panel: Form -->
         <div class="right-panel">
-
-          <!-- Top bar: back link + theme toggle -->
-          <div class="auth-top-bar">
-            <a routerLink="/" class="back-home-link">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 12H5M12 5l-7 7 7 7"/>
-              </svg>
-              Back to home
-            </a>
-            <app-theme-toggle></app-theme-toggle>
-          </div>
 
           <div class="form-wrapper">
             <div class="form-header">
@@ -475,13 +474,16 @@ import { ThemeToggleComponent } from '../../shared/components/theme-toggle.compo
       }
     }
 
-    /* Top bar row: back link on left, toggle on right */
-    .auth-top-bar {
+    /* Top bar row */
+    .global-top-bar {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
-      flex-shrink: 0;
+      z-index: 10;
     }
 
     /* Back to home pill */

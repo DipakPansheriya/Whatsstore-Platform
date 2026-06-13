@@ -64,7 +64,7 @@ import { environment } from '../../environments/environment.development';
     .dash-header h1 {
       font-size: 2rem;
       margin-bottom: var(--space-xs);
-      background: linear-gradient(to right, #fff, #a78bfa);
+      background: linear-gradient(to right, var(--color-text-primary), #a78bfa);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -99,7 +99,7 @@ import { environment } from '../../environments/environment.development';
       font-size: 2.5rem;
       font-family: var(--font-heading);
       font-weight: 700;
-      color: #fff;
+      color: var(--color-text-primary);
     }
     .kpi-trend {
       font-size: 0.85rem;

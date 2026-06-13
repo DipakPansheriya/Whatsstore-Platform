@@ -8,6 +8,7 @@ export interface IProduct extends Document {
   discountPrice?: number;
   images: string[];
   category: string;
+  subCategory?: string;
   stock: number;
   lowStockThreshold: number;
   isAvailable: boolean;
@@ -24,6 +25,7 @@ const ProductSchema = new Schema<IProduct>(
     discountPrice:     { type: Number, min: 0 },
     images:            { type: [String], default: [] },
     category:          { type: String, default: 'General' },
+    subCategory:       { type: String, default: '' },
     stock:             { type: Number, default: 0, min: 0 },
     lowStockThreshold: { type: Number, default: 3, min: 0 },
     isAvailable:       { type: Boolean, default: true },

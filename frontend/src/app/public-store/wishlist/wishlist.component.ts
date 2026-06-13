@@ -71,8 +71,8 @@ interface ProductItem {
   styles: [`
     .wishlist-wrapper {
       min-height: 100vh;
-      background: #08090c;
-      color: #e2e8f0;
+      background: var(--color-bg);
+      color: var(--color-text-primary);
       padding: var(--space-2xl) 0;
     }
     .container {
@@ -91,13 +91,13 @@ interface ProductItem {
         margin-bottom: var(--space-md);
         &:hover { color: #25d366; }
       }
-      h1 { font-size: 2.2rem; font-weight: 800; color: #fff; }
+      h1 { font-size: 2.2rem; font-weight: 800; color: var(--color-text-primary); }
       p { color: var(--color-text-secondary); }
     }
     .loading-state, .empty-state {
       text-align: center;
       padding: var(--space-3xl);
-      h3 { font-size: 1.5rem; color: #fff; margin-bottom: 8px; }
+      h3 { font-size: 1.5rem; color: var(--color-text-primary); margin-bottom: 8px; }
       p { color: var(--color-text-secondary); margin-bottom: var(--space-xl); }
       .empty-icon { font-size: 4rem; margin-bottom: var(--space-md); }
     }
@@ -112,28 +112,28 @@ interface ProductItem {
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.05);
-      background: rgba(17, 19, 25, 0.45);
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-card-glass);
       border-radius: var(--radius-lg);
       transition: all var(--transition-normal);
       &:hover {
-        border-color: #25d366;
+        border-color: var(--color-accent);
         transform: translateY(-4px);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        box-shadow: 0 15px 35px var(--color-accent-glow);
       }
     }
 
     .image-box {
       height: 200px;
       position: relative;
-      background: #111317;
+      background: var(--color-bg-surface);
       img { width: 100%; height: 100%; object-fit: cover; }
       .btn-remove-wishlist {
         position: absolute;
         top: 10px; right: 10px;
         width: 32px; height: 32px;
-        background: rgba(0,0,0,0.6);
-        border: 1px solid rgba(255,255,255,0.15);
+        background: var(--color-bg-card-glass);
+        border: 1px solid var(--color-border);
         color: #ef4444;
         border-radius: 50%;
         font-size: 0.95rem;
@@ -144,7 +144,7 @@ interface ProductItem {
         transition: all 0.2s;
         &:hover {
           background: #ef4444;
-          color: #fff;
+          color: white;
           transform: scale(1.1);
         }
       }
@@ -155,13 +155,13 @@ interface ProductItem {
       display: flex; flex-direction: column; gap: 6px;
     }
     .card-category { font-size: 0.75rem; color: var(--color-text-secondary); text-transform: uppercase; font-weight: 700; }
-    .card-title { font-size: 1.15rem; font-weight: 800; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .card-title { font-size: 1.15rem; font-weight: 800; color: var(--color-text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-md); }
     .price { font-size: 1.3rem; font-weight: 900; color: #25d366; }
     .btn-whatsapp {
-      background: #25d366; color: #000; border: none; padding: 8px 16px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;
+      background: var(--color-accent); color: #000; border: none; padding: 8px 16px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;
       &:hover { opacity: 0.9; }
-      &:disabled { background: rgba(255,255,255,0.05); color: var(--color-text-muted); cursor: not-allowed; }
+      &:disabled { background: var(--color-bg-surface); color: var(--color-text-muted); cursor: not-allowed; }
     }
   `]
 })

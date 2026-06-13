@@ -225,7 +225,7 @@ interface ProductItem {
       margin: var(--space-xs) 0;
       font-size: 2.2rem;
       font-weight: 900;
-      color: #fff;
+      color: var(--color-text-primary);
     }
     .page-header p {
       color: var(--color-text-secondary);
@@ -262,7 +262,7 @@ interface ProductItem {
     .empty-state h3 {
       margin-bottom: var(--space-sm);
       font-weight: 800;
-      color: #fff;
+      color: var(--color-text-primary);
     }
     .empty-state p {
       color: var(--color-text-secondary);
@@ -278,8 +278,8 @@ interface ProductItem {
       flex-direction: column;
       overflow: hidden;
       padding: 0;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      background: rgba(17, 19, 25, 0.45);
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-card-glass);
       &:hover {
         border-color: rgba(37, 211, 102, 0.35);
         transform: translateY(-4px);
@@ -296,7 +296,7 @@ interface ProductItem {
       height: 200px;
       position: relative;
       overflow: hidden;
-      background: #111317;
+      background: var(--color-bg-surface);
       img {
         width: 100%;
         height: 100%;
@@ -321,10 +321,10 @@ interface ProductItem {
       letter-spacing: 0.05em;
     }
     .category-badge {
-      background: rgba(8, 9, 13, 0.8);
-      color: #fff;
+      background: var(--color-bg-card-glass);
+      color: var(--color-text-primary);
       backdrop-filter: blur(4px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--color-border);
     }
     .featured-badge {
       background: linear-gradient(135deg, #ffc857, #ff9f1c);
@@ -341,7 +341,7 @@ interface ProductItem {
     .card-title {
       font-size: 1.15rem;
       font-weight: 800;
-      color: #fff;
+      color: var(--color-text-primary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -412,8 +412,8 @@ interface ProductItem {
       transition: all var(--transition-fast);
       outline: none;
       &:hover {
-        background: rgba(255,255,255,0.03);
-        color: #fff;
+        background: var(--color-bg-surface);
+        color: var(--color-text-primary);
       }
       &.btn-delete {
         color: var(--color-danger);
@@ -426,8 +426,8 @@ interface ProductItem {
     }
     .form-container {
       padding: var(--space-2xl);
-      background: rgba(17, 19, 25, 0.65);
-      border-color: rgba(255, 255, 255, 0.08);
+      background: var(--color-bg-card-glass);
+      border-color: var(--color-border);
     }
     .form-title {
       font-size: 1.4rem;
@@ -468,7 +468,7 @@ interface ProductItem {
     .form-group textarea,
     .form-group select {
       padding: 12px 14px;
-      background: rgba(8, 9, 13, 0.4);
+      background: var(--color-bg-surface);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
       color: var(--color-text-primary);
@@ -479,7 +479,7 @@ interface ProductItem {
       &:focus {
         border-color: var(--color-accent);
         box-shadow: 0 0 12px rgba(37, 211, 102, 0.2);
-        background: rgba(8, 9, 13, 0.6);
+        background: var(--color-bg-card);
       }
     }
     .url-adder {
@@ -501,7 +501,7 @@ interface ProductItem {
       overflow: hidden;
       border: 1px solid var(--color-border);
       position: relative;
-      background: #111;
+      background: var(--color-bg-surface);
       img {
         width: 100%;
         height: 100%;
@@ -545,7 +545,7 @@ interface ProductItem {
       align-items: center;
       gap: var(--space-md);
       padding: var(--space-md);
-      background: rgba(8, 9, 13, 0.3);
+      background: var(--color-bg-surface);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
     }
@@ -557,7 +557,7 @@ interface ProductItem {
     .lbl-main {
       font-weight: 700;
       font-size: 0.9rem;
-      color: #fff;
+      color: var(--color-text-primary);
     }
     .lbl-sub {
       font-size: 0.75rem;
@@ -571,7 +571,7 @@ interface ProductItem {
     }
     .view-toggle {
       display: flex;
-      background: rgba(8, 9, 13, 0.4);
+      background: var(--color-bg-surface);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
       padding: 4px;
@@ -588,9 +588,9 @@ interface ProductItem {
       border-radius: var(--radius-sm);
       cursor: pointer;
       transition: all var(--transition-fast);
-      &:hover { color: #fff; }
+      &:hover { color: var(--color-text-primary); }
       &.active {
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--color-bg-card);
         color: var(--color-accent);
       }
     }
@@ -697,7 +697,7 @@ interface ProductItem {
       position: absolute;
       cursor: pointer;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-color: rgba(255,255,255,0.1);
+      background-color: var(--color-border);
       transition: .4s;
       border-radius: 34px;
     }

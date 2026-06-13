@@ -8,6 +8,8 @@ import { WishlistService } from '../../shared/services/wishlist.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 import { ThemeToggleComponent } from '../../shared/components/theme-toggle.component';
+import { DirectionToggleComponent } from '../../shared/components/direction-toggle.component';
+import { ToastService } from '../../shared/services/toast.service';
 
 interface ProductItem {
   _id: string;
@@ -33,7 +35,7 @@ interface ReviewRecord {
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, ThemeToggleComponent],
+  imports: [CommonModule, RouterLink, FormsModule, ThemeToggleComponent, DirectionToggleComponent],
   template: `
     <div *ngIf="loading" class="loading-state">
       <span class="spinner">📦</span> Loading product details...
@@ -58,13 +60,19 @@ interface ReviewRecord {
           </a>
           
           <nav class="store-nav">
-            <a [routerLink]="['/store', slug]" class="nav-link-btn">Products</a>
+            <a [routerLink]="['/store', slug]" class="nav-link-btn">
+              <span class="label-text">Products</span>
+            </a>
             <a [routerLink]="['/store', slug, 'wishlist']" class="nav-link-btn wishlist-link">
-              ❤️ Wishlist <span class="nav-badge" *ngIf="wishlistCount > 0">{{ wishlistCount }}</span>
+              ❤️ <span class="label-text">Wishlist</span> <span class="nav-badge" *ngIf="wishlistCount > 0">{{ wishlistCount }}</span>
+            </a>
+            <a [routerLink]="['/store', slug, 'track']" class="nav-link-btn">
+              <span class="label-text">Track Order</span>
             </a>
           </nav>
 
           <div class="header-actions">
+            <app-direction-toggle></app-direction-toggle>
             <app-theme-toggle></app-theme-toggle>
             <!-- Cart Button with Hover Dropdown -->
             <div class="cart-dropdown-wrapper" (mouseenter)="showCartDropdown = true" (mouseleave)="showCartDropdown = false">
@@ -272,7 +280,7 @@ interface ReviewRecord {
                 </div>
 
                 <div *ngIf="reviewError" class="alert alert-danger">❌ {{ reviewError }}</div>
-                <div *ngIf="reviewSuccess" class="alert alert-success">✅ Review submitted successfully!</div>
+                <div *ngIf="reviewSuccess" class="alert alert-success">✅ Review submitted successfully! It will be visible once approved by the store owner.</div>
 
                 <button type="submit" class="btn btn-primary btn-submit-rev" [disabled]="submittingReview">
                   {{ submittingReview ? 'Submitting Review...' : '🚀 Submit Review' }}
@@ -454,8 +462,8 @@ interface ReviewRecord {
     
     .detail-wrapper {
       min-height: 100vh;
-      background: #08090c;
-      color: #e2e8f0;
+      background: var(--color-bg);
+      color: var(--color-text-primary);
       padding: var(--space-xl) 0;
       padding-top: 90px;
     }
@@ -471,10 +479,10 @@ interface ReviewRecord {
       top: 0; left: 0; right: 0;
       height: 70px;
       z-index: 100;
-      background: rgba(17, 19, 25, 0.7);
+      background: var(--color-bg-card-glass);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid var(--color-border);
     }
     .header-container {
       max-width: 1200px;
@@ -490,7 +498,7 @@ interface ReviewRecord {
       align-items: center;
       gap: 10px;
       text-decoration: none;
-      color: #fff;
+      color: var(--color-text-primary);
       font-weight: 800;
       font-size: 1.25rem;
     }
@@ -512,7 +520,21 @@ interface ReviewRecord {
       font-weight: 600;
       font-size: 0.95rem;
       transition: color 0.2s;
-      &:hover { color: #fff; }
+      &:hover { color: var(--color-text-primary); }
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    @media (max-width: 600px) {
+      .header-container { padding: 0 var(--space-md); }
+      .store-nav { gap: 10px; }
+      .header-actions { gap: 10px; }
+      .store-brand { font-size: 1.1rem; }
+      .nav-link-btn span.label-text { display: none; }
+      .cart-btn { padding: 6px 12px; }
     }
     .wishlist-link {
       display: flex;
@@ -528,9 +550,9 @@ interface ReviewRecord {
       border-radius: 10px;
     }
     .cart-btn {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #fff;
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-primary);
       font-weight: 700;
       padding: 8px 18px;
       border-radius: var(--radius-md);
@@ -539,7 +561,7 @@ interface ReviewRecord {
       align-items: center;
       gap: 6px;
       transition: all 0.2s;
-      &:hover { background: var(--color-accent); color: #000; }
+      &:hover { background: var(--color-accent); color: var(--color-on-accent); border-color: var(--color-accent); }
     }
     .cart-badge {
       background: #25d366;
@@ -560,8 +582,8 @@ interface ReviewRecord {
       width: 320px;
       margin-top: 10px;
       padding: var(--space-md);
-      background: rgba(17, 19, 25, 0.95);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--color-bg-card-glass);
+      border: 1px solid var(--color-border);
       z-index: 200;
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
@@ -578,7 +600,7 @@ interface ReviewRecord {
       align-items: center;
       gap: 10px;
       padding-bottom: 8px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid var(--color-border);
       &:last-child { border-bottom: none; }
     }
     .dropdown-img {
@@ -591,7 +613,7 @@ interface ReviewRecord {
       display: flex; flex-direction: column;
     }
     .dropdown-name {
-      font-size: 0.85rem; font-weight: 700; color: #fff;
+      font-size: 0.85rem; font-weight: 700; color: var(--color-text-primary);
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .dropdown-qty { font-size: 0.75rem; color: var(--color-text-secondary); }
@@ -600,7 +622,7 @@ interface ReviewRecord {
       &:hover { color: #ef4444; }
     }
     .cart-dropdown-footer {
-      border-top: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid var(--color-border);
       padding-top: var(--space-sm);
       display: flex; flex-direction: column; gap: 8px;
     }
@@ -633,25 +655,29 @@ interface ReviewRecord {
       }
     }
     .gallery-card {
-      background: rgba(17, 19, 25, 0.45);
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+      background: var(--color-bg-card-glass);
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
       padding: var(--space-md);
     }
     .active-image {
-      height: 420px;
+      aspect-ratio: 1 / 1;
+      width: 100%;
       border-radius: var(--radius-md);
       overflow: hidden;
-      background: #0f1115;
-      border: 1px solid rgba(255,255,255,0.04);
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
       position: relative;
       cursor: zoom-in;
     }
     .gallery-main-img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       transition: transform 0.1s ease-out;
     }
     .zoom-hint-icon {
@@ -667,18 +693,24 @@ interface ReviewRecord {
       .active-image { height: 280px; }
     }
     .thumbnails-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+      display: flex;
       gap: var(--space-sm);
       margin-top: var(--space-sm);
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-border) transparent;
+      &::-webkit-scrollbar { height: 6px; }
+      &::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
     }
     .thumb-btn {
+      flex: 0 0 70px;
       height: 70px;
       border-radius: var(--radius-sm);
       overflow: hidden;
       border: 2px solid transparent;
       padding: 0;
-      background: #0f1115;
+      background: var(--color-bg-surface);
       cursor: pointer;
       transition: all var(--transition-normal);
       img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
@@ -691,9 +723,9 @@ interface ReviewRecord {
     }
 
     .info-card {
-      background: rgba(17, 19, 25, 0.45);
+      background: var(--color-bg-card-glass);
       backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
       padding: var(--space-2xl);
       display: flex;
@@ -706,9 +738,9 @@ interface ReviewRecord {
       align-items: center;
     }
     .wishlist-detail-btn {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #fff;
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-primary);
       padding: 6px 12px;
       border-radius: var(--radius-pill);
       font-size: 0.85rem;
@@ -719,7 +751,7 @@ interface ReviewRecord {
       gap: 4px;
       transition: all 0.2s;
       &:hover { background: rgba(239, 68, 68, 0.1); border-color: #ef4444; }
-      &.in-wishlist { background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #fff; }
+      &.in-wishlist { background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: var(--color-text-primary); }
     }
     .category-tag {
       font-size: 0.8rem;
@@ -740,17 +772,17 @@ interface ReviewRecord {
     .product-title {
       font-size: 2.25rem;
       font-weight: 800;
-      color: #fff;
+      color: var(--color-text-primary);
       line-height: 1.2;
     }
     .price-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid var(--color-border);
       padding-bottom: var(--space-md);
     }
-    .price { font-size: 2rem; font-weight: 800; color: #fff; }
+    .price { font-size: 2rem; font-weight: 800; color: var(--color-text-primary); }
     .stock-badge {
       font-size: 0.8rem; font-weight: 600; color: var(--color-accent);
       background: var(--color-accent-dim); border: 1px solid var(--color-accent-glow);
@@ -789,16 +821,16 @@ interface ReviewRecord {
     /* Qty Selector */
     .qty-selector {
       display: flex; align-items: center; gap: 4px;
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      background: var(--color-bg-surface); border: 1px solid var(--color-border);
       border-radius: 4px; overflow: hidden;
     }
     .qty-btn {
-      background: transparent; border: none; color: #fff; width: 32px; height: 32px;
+      background: transparent; border: none; color: var(--color-text-primary); width: 32px; height: 32px;
       cursor: pointer; font-weight: 800; font-size: 1.1rem;
-      &:hover:not([disabled]) { background: rgba(255,255,255,0.08); }
+      &:hover:not([disabled]) { background: var(--color-border); }
       &:disabled { color: var(--color-text-muted); cursor: not-allowed; }
     }
-    .qty-val { font-size: 1rem; font-weight: 700; width: 32px; text-align: center; color: #fff; }
+    .qty-val { font-size: 1rem; font-weight: 700; width: 32px; text-align: center; color: var(--color-text-primary); }
 
     .btn-whatsapp-large {
       background: var(--color-accent); color: #000; border: none; padding: 16px;
@@ -848,30 +880,30 @@ interface ReviewRecord {
       display: flex; flex-direction: column; gap: var(--space-xl);
     }
     .reviews-title-block {
-      h2 { font-size: 1.8rem; font-weight: 800; color: #fff; margin-bottom: var(--space-xs); }
+      h2 { font-size: 1.8rem; font-weight: 800; color: var(--color-text-primary); margin-bottom: var(--space-xs); }
       p { font-size: 0.95rem; color: var(--color-text-secondary); }
     }
     
     /* Dynamic Summary Card */
     .rating-summary-card {
       display: grid; grid-template-columns: 1fr 1.5fr; gap: var(--space-2xl);
-      padding: var(--space-xl); background: rgba(17, 19, 25, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.06); border-radius: var(--radius-lg);
+      padding: var(--space-xl); background: var(--color-bg-card-glass);
+      border: 1px solid var(--color-border); border-radius: var(--radius-lg);
       align-items: center;
       @media (max-width: 600px) { grid-template-columns: 1fr; text-align: center; }
     }
     .summary-left-score {
       display: flex; flex-direction: column; align-items: center; gap: 8px;
-      border-right: 1px solid rgba(255, 255, 255, 0.08); padding-right: var(--space-xl);
-      @media (max-width: 600px) { border-right: none; padding-right: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: var(--space-lg); }
-      .big-score-num { font-size: 4.5rem; font-weight: 900; color: #fff; line-height: 1; }
+      border-right: 1px solid var(--color-border); padding-right: var(--space-xl);
+      @media (max-width: 600px) { border-right: none; padding-right: 0; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-lg); }
+      .big-score-num { font-size: 4.5rem; font-weight: 900; color: var(--color-text-primary); line-height: 1; }
       .stars-gold-row { color: #ffc857; font-size: 1.4rem; letter-spacing: 2px; }
       .based-count { font-size: 0.85rem; color: var(--color-text-secondary); }
     }
     .summary-right-distribution { display: flex; flex-direction: column; gap: 10px; }
     .dist-row { display: flex; align-items: center; gap: var(--space-md); font-size: 0.9rem; color: var(--color-text-secondary); }
     .dist-label { width: 35px; font-weight: 600; text-align: right; }
-    .dist-track { flex: 1; height: 8px; background: rgba(255,255,255,0.05); border-radius: var(--radius-pill); overflow: hidden; }
+    .dist-track { flex: 1; height: 8px; background: var(--color-border); border-radius: var(--radius-pill); overflow: hidden; }
     .dist-fill { height: 100%; background: linear-gradient(90deg, #ffc857, var(--color-accent)); border-radius: var(--radius-pill); }
     .dist-count-label { width: 25px; text-align: left; font-weight: 600; color: var(--color-text-primary); }
 
@@ -882,9 +914,9 @@ interface ReviewRecord {
     }
     
     .review-form-wrapper {
-      background: rgba(17, 19, 25, 0.45); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: var(--radius-lg);
+      background: var(--color-bg-card-glass); border: 1px solid var(--color-border); border-radius: var(--radius-lg);
       padding: var(--space-xl); display: flex; flex-direction: column; gap: var(--space-md);
-      h3 { font-size: 1.25rem; color: #fff; }
+      h3 { font-size: 1.25rem; color: var(--color-text-primary); }
       .form-hint { font-size: 0.8rem; color: var(--color-text-secondary); }
     }
     .sub-form { display: flex; flex-direction: column; gap: var(--space-md); }
@@ -892,9 +924,9 @@ interface ReviewRecord {
       display: flex; flex-direction: column; gap: 6px;
       label { font-size: 0.85rem; font-weight: 600; color: var(--color-text-secondary); }
       input, select, textarea {
-        padding: 14px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 14px; background: var(--color-bg-surface); border: 1px solid var(--color-border);
         border-radius: var(--radius-md); color: var(--color-text-primary); font-size: 0.95rem; outline: none;
-        &:focus { border-color: var(--color-accent); background: rgba(255, 255, 255, 0.04); }
+        &:focus { border-color: var(--color-accent); background: var(--color-bg-card); }
       }
     }
     .star-rating-selector { display: flex; gap: var(--space-xs); }
@@ -930,11 +962,11 @@ interface ReviewRecord {
     }
     .buyer-info {
       flex: 1; display: flex; flex-direction: column; gap: 2px;
-      strong { font-size: 0.95rem; color: #fff; }
+      strong { font-size: 0.95rem; color: var(--color-text-primary); }
       .verified-badge { font-size: 0.75rem; color: #25d366; font-weight: 600; }
     }
     .buyer-stars { color: #ffc857; font-size: 0.95rem; }
-    .review-text-comment { font-size: 0.95rem; color: #cbd5e1; line-height: 1.6; font-style: italic; border-left: 2px solid var(--color-accent); padding-left: var(--space-sm); }
+    .review-text-comment { font-size: 0.95rem; color: var(--color-text-secondary); line-height: 1.6; font-style: italic; border-left: 2px solid var(--color-accent); padding-left: var(--space-sm); }
 
     /* Cart Drawer (Sidebar/Drawer) */
     .cart-drawer-overlay {
@@ -948,19 +980,19 @@ interface ReviewRecord {
     .cart-drawer {
       width: 100%; max-width: 480px;
       height: 100%;
-      background: #0f111a;
-      border-left: 1px solid rgba(255,255,255,0.08);
+      background: var(--color-bg-card);
+      border-left: 1px solid var(--color-border);
       display: flex; flex-direction: column;
       padding: 0;
     }
     .drawer-header {
       padding: var(--space-lg);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid var(--color-border);
       display: flex; align-items: center; justify-content: space-between;
-      h3 { font-size: 1.25rem; font-weight: 800; color: #fff; margin: 0; }
+      h3 { font-size: 1.25rem; font-weight: 800; color: var(--color-text-primary); margin: 0; }
       .btn-close {
         background: transparent; border: none; color: var(--color-text-secondary);
-        font-size: 2rem; cursor: pointer; &:hover { color: #fff; }
+        font-size: 2rem; cursor: pointer; &:hover { color: var(--color-text-primary); }
       }
     }
     .drawer-body {
@@ -981,34 +1013,87 @@ interface ReviewRecord {
     .drawer-item {
       display: flex; gap: var(--space-md);
       padding-bottom: var(--space-md);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid var(--color-border);
     }
     .drawer-img {
       width: 64px; height: 64px; object-fit: cover;
-      border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.05);
+      border-radius: var(--radius-md); border: 1px solid var(--color-border);
     }
     .drawer-info {
       flex: 1; display: flex; flex-direction: column; gap: 4px;
-      .item-name { font-weight: 800; color: #fff; font-size: 0.95rem; }
+      .item-name { font-weight: 800; color: var(--color-text-primary); font-size: 0.95rem; }
       .item-price { color: var(--color-text-secondary); font-size: 0.9rem; }
     }
     
+    .purchase-actions {
+      display: flex; flex-direction: column; gap: var(--space-md); margin-top: var(--space-xl);
+      padding-top: var(--space-xl); border-top: 1px dashed var(--color-border);
+    }
+    
+    .qty-control {
+      display: flex; align-items: center; justify-content: space-between;
+      .qty-label { font-size: 0.95rem; font-weight: 700; color: var(--color-text-secondary); }
+    }
+
     .qty-selector {
       display: flex; align-items: center; gap: 4px; margin-top: 4px;
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 4px; width: fit-content; overflow: hidden;
+      background: var(--color-bg-surface); border: 1px solid var(--color-border);
+      border-radius: var(--radius-pill); width: fit-content; overflow: hidden; padding: 2px 6px;
     }
+    
     .qty-btn {
-      background: transparent; border: none; color: #fff; width: 26px; height: 26px;
-      cursor: pointer; font-weight: 800; font-size: 0.95rem;
-      &:hover:not([disabled]) { background: rgba(255,255,255,0.08); }
+      background: transparent; border: none; color: var(--color-text-primary); width: 28px; height: 28px;
+      cursor: pointer; font-weight: 800; font-size: 1.1rem;
+      &:hover:not([disabled]) { background: var(--color-border); color: var(--color-accent); }
       &:disabled { color: var(--color-text-muted); cursor: not-allowed; }
     }
-    .qty-val { font-size: 0.9rem; font-weight: 700; width: 24px; text-align: center; color: #fff; }
+    
+    .qty-val { font-size: 1.05rem; font-weight: 800; width: 30px; text-align: center; color: var(--color-text-primary); }
+
+    .btn-whatsapp-large {
+      background: linear-gradient(135deg, var(--color-accent) 0%, #16a34a 100%);
+      color: #000; border: none; padding: 16px 24px; font-size: 1.1rem; font-weight: 900; border-radius: var(--radius-lg); cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
+      &:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(37, 211, 102, 0.45); }
+    }
+
+    /* Mobile Sticky Bottom Bar for Purchase Actions */
+    @media (max-width: 900px) {
+      .detail-wrapper {
+        padding-bottom: 120px; /* spacing for fixed bar */
+      }
+      .purchase-actions {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: 0;
+        padding: 15px 20px;
+        background: var(--color-bg-card-glass);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid var(--color-border);
+        box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+        z-index: 100;
+        border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        flex-direction: row;
+        align-items: center;
+        padding-bottom: env(safe-area-inset-bottom, 15px);
+      }
+      .qty-control {
+        flex: 0 0 auto;
+        .qty-label { display: none; }
+      }
+      .btn-whatsapp-large {
+        flex: 1;
+        padding: 14px 16px;
+        font-size: 1rem;
+      }
+    }
 
     .item-actions {
       display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between;
-      .item-subtotal { font-weight: 800; color: #fff; font-size: 1rem; }
+      .item-subtotal { font-weight: 800; color: var(--color-text-primary); font-size: 1rem; }
       .btn-remove {
         background: transparent; border: none; color: var(--color-text-secondary); cursor: pointer;
         font-size: 0.8rem; &:hover { color: #ef4444; }
@@ -1017,8 +1102,8 @@ interface ReviewRecord {
 
     /* Coupon section */
     .coupon-section {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.05);
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
       padding: var(--space-md);
       margin-bottom: var(--space-xl);
@@ -1026,11 +1111,11 @@ interface ReviewRecord {
     .coupon-input {
       display: flex; gap: 8px;
       input {
-        flex: 1; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08);
-        color: #fff; border-radius: var(--radius-sm); outline: none; font-size: 0.9rem;
+        flex: 1; padding: 10px; background: var(--color-bg-card); border: 1px solid var(--color-border);
+        color: var(--color-text-primary); border-radius: var(--radius-sm); outline: none; font-size: 0.9rem;
         &:focus { border-color: var(--color-accent); }
       }
-      .btn-ghost { padding: 10px 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm); font-size: 0.9rem; }
+      .btn-ghost { padding: 10px 16px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 0.9rem; }
     }
     .coupon-feedback {
       margin-top: 8px; font-size: 0.8rem; padding: 8px 12px; border-radius: var(--radius-sm);
@@ -1040,32 +1125,32 @@ interface ReviewRecord {
 
     .cart-summary {
       display: flex; flex-direction: column; gap: var(--space-sm);
-      background: rgba(255,255,255,0.02); border-radius: var(--radius-md);
+      background: var(--color-bg-surface); border-radius: var(--radius-md);
       padding: var(--space-md); margin-bottom: var(--space-xl);
-      border: 1px solid rgba(255,255,255,0.05);
+      border: 1px solid var(--color-border);
     }
     .summary-row {
       display: flex; justify-content: space-between; font-size: 0.95rem; color: var(--color-text-secondary);
       &.discount { color: #25d366; }
       &.total {
-        border-top: 1px solid rgba(255,255,255,0.08); padding-top: 8px;
-        font-weight: 800; color: #fff; font-size: 1.15rem;
+        border-top: 1px solid var(--color-border); padding-top: 8px;
+        font-weight: 800; color: var(--color-text-primary); font-size: 1.15rem;
       }
     }
 
     /* Checkout Details */
     .drawer-checkout {
-      border-top: 1px solid rgba(255,255,255,0.08);
+      border-top: 1px solid var(--color-border);
       padding-top: var(--space-xl);
-      h4 { font-size: 1.1rem; font-weight: 800; color: #fff; margin-bottom: var(--space-md); }
+      h4 { font-size: 1.1rem; font-weight: 800; color: var(--color-text-primary); margin-bottom: var(--space-md); }
     }
     .checkout-form { display: flex; flex-direction: column; gap: var(--space-md); }
     .form-group {
       display: flex; flex-direction: column; gap: 4px;
       label { font-size: 0.8rem; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; }
       input, textarea {
-        padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08);
-        border-radius: var(--radius-sm); color: #fff; outline: none; font-size: 0.95rem;
+        padding: 12px; background: var(--color-bg-surface); border: 1px solid var(--color-border);
+        border-radius: var(--radius-sm); color: var(--color-text-primary); outline: none; font-size: 0.95rem;
         transition: border 0.2s;
         &:focus { border-color: var(--color-accent); }
       }
@@ -1086,8 +1171,8 @@ interface ReviewRecord {
     .available-offers-widget {
       margin: var(--space-md) 0;
       padding: var(--space-md);
-      background: rgba(255, 255, 255, 0.01);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
       display: flex;
       flex-direction: column;
@@ -1110,9 +1195,9 @@ interface ReviewRecord {
     }
     .mini-ticket {
       display: flex;
-      border: 1px solid rgba(37, 211, 102, 0.15);
+      border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
-      background: rgba(17, 19, 25, 0.5);
+      background: var(--color-bg-card);
       position: relative;
       overflow: visible;
       box-sizing: border-box;
@@ -1146,7 +1231,7 @@ interface ReviewRecord {
       .disc-lbl {
         font-size: 0.65rem;
         font-weight: 800;
-        color: #fff;
+        color: var(--color-text-secondary);
         opacity: 0.7;
         margin-top: 2px;
       }
@@ -1161,7 +1246,7 @@ interface ReviewRecord {
         position: absolute;
         width: 12px;
         height: 12px;
-        background: #08090c;
+        background: var(--color-bg-surface);
         border-radius: 50%;
         left: -7px;
         border: 1px solid rgba(37, 211, 102, 0.15);
@@ -1193,11 +1278,11 @@ interface ReviewRecord {
       .coupon-code {
         font-size: 0.9rem;
         font-weight: 900;
-        color: #fff;
-        background: rgba(255,255,255,0.04);
+        color: var(--color-text-primary);
+        background: var(--color-bg-surface);
         padding: 2px 6px;
         border-radius: var(--radius-sm);
-        border: 1px dashed rgba(255,255,255,0.1);
+        border: 1px dashed var(--color-border);
       }
       .copy-btn {
         font-size: 0.7rem;
@@ -1205,11 +1290,11 @@ interface ReviewRecord {
         padding: 3px 8px;
         border-radius: var(--radius-sm);
         cursor: pointer;
-        border: 1px solid rgba(255,255,255,0.06);
-        background: rgba(255,255,255,0.02);
-        color: #fff;
+        border: 1px solid var(--color-border);
+        background: var(--color-bg-surface);
+        color: var(--color-text-primary);
         transition: all 0.2s ease;
-        &:hover { background: rgba(255,255,255,0.06); }
+        &:hover { background: var(--color-border); }
       }
     }
     .mini-ticket .expiry-text {
@@ -1249,11 +1334,11 @@ export class ProductDetailComponent implements OnInit {
   productId = '';
   loading = true;
   notFound = false;
-  
+
   business: any = null;
   product: ProductItem | null = null;
   activeImage = '';
-  
+
   reviews: ReviewRecord[] = [];
   newReview: ReviewRecord = { name: '', rating: 5, comment: '' };
   submittingReview = false;
@@ -1297,12 +1382,13 @@ export class ProductDetailComponent implements OnInit {
   checkoutError = '';
 
   constructor(
-    private route: ActivatedRoute, 
+    private route: ActivatedRoute,
     private api: ApiService,
     private cartService: CartService,
     private wishlistService: WishlistService,
-    private http: HttpClient
-  ) {}
+    private http: HttpClient,
+    private toastService: ToastService
+  ) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -1546,12 +1632,20 @@ export class ProductDetailComponent implements OnInit {
   }
 
   addToCart(productId: string) {
+    if (!this.product || this.product.stock <= 0) {
+      this.toastService.error('Product is out of stock', 'Unavailable');
+      return;
+    }
+
     this.cartService.addToCart(this.slug, productId, this.buyQuantity).subscribe({
       next: () => {
         this.showCartDrawer = true; // Open drawer immediately
         this.buyQuantity = 1; // Reset selection quantity
+        this.toastService.success(`Added to cart`, 'Cart Updated');
       },
-      error: (err) => alert(err.message || 'Failed to add item to cart')
+      error: (err) => {
+        this.toastService.error(err.message || 'Failed to add item to cart', 'Error');
+      }
     });
   }
 
@@ -1562,9 +1656,8 @@ export class ProductDetailComponent implements OnInit {
   }
 
   removeFromCart(productId: string) {
-    this.cartService.removeFromCart(this.slug, productId).subscribe({
-      error: (err) => alert(err.message || 'Failed to remove item')
-    });
+    this.cartService.removeFromCart(this.slug, productId);
+    this.toastService.info('Item removed from cart', 'Cart Updated');
   }
 
   // Coupon calculations
@@ -1608,6 +1701,7 @@ export class ProductDetailComponent implements OnInit {
   copyCoupon(code: string) {
     navigator.clipboard.writeText(code).then(() => {
       this.copiedCouponCode = code;
+      this.toastService.success(`Coupon code "${code}" copied to clipboard!`, 'Copied!');
       if (this.business) {
         this.api.post('analytics/track', { businessId: this.business._id, event: 'coupon_copy', couponCode: code }).subscribe();
       }
