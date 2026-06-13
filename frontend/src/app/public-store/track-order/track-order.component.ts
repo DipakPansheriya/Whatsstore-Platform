@@ -142,8 +142,8 @@ interface OrderRecord {
   styles: [`
     .tracking-wrapper {
       min-height: 100vh;
-      background: #08090c;
-      color: #e2e8f0;
+      background: var(--color-bg);
+      color: var(--color-text-primary);
       padding: var(--space-2xl) 0;
     }
     .container { max-width: 1000px; margin: 0 auto; padding: 0 var(--space-lg); }
@@ -159,28 +159,28 @@ interface OrderRecord {
         margin-bottom: var(--space-md);
         &:hover { color: #25d366; }
       }
-      h1 { font-size: 2.2rem; font-weight: 800; color: #fff; }
+      h1 { font-size: 2.2rem; font-weight: 800; color: var(--color-text-primary); }
       p { color: var(--color-text-secondary); }
     }
 
     .loading-state, .empty-state {
       text-align: center; padding: var(--space-3xl);
-      h3 { font-size: 1.5rem; color: #fff; }
+      h3 { font-size: 1.5rem; color: var(--color-text-primary); }
       p { color: var(--color-text-secondary); margin-bottom: var(--space-xl); }
       .empty-icon { font-size: 4rem; margin-bottom: var(--space-md); }
     }
 
     .status-card {
       padding: var(--space-2xl);
-      background: rgba(17, 19, 25, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: var(--color-bg-card-glass);
+      border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
       margin-bottom: var(--space-xl);
       display: flex; flex-direction: column; align-items: center; gap: var(--space-md);
     }
     
     .order-ref { font-size: 0.85rem; color: var(--color-text-secondary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; }
-    .status-title { font-size: 1.8rem; font-weight: 800; color: #fff; margin: 0; }
+    .status-title { font-size: 1.8rem; font-weight: 800; color: var(--color-text-primary); margin: 0; }
     
     .status-val {
       padding: 4px 14px; border-radius: var(--radius-pill); font-size: 1.2rem; font-weight: 900;
@@ -200,18 +200,18 @@ interface OrderRecord {
     .step {
       display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; z-index: 2;
       .step-dot {
-        width: 48px; height: 48px; border-radius: 50%; background: #111317; border: 2px solid rgba(255,255,255,0.1);
+        width: 48px; height: 48px; border-radius: 50%; background: var(--color-bg-surface); border: 2px solid var(--color-border);
         display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--color-text-muted);
         transition: all 0.3s;
       }
       .step-label { font-size: 0.85rem; font-weight: 700; color: var(--color-text-secondary); }
       &.active {
         .step-dot { border-color: #25d366; background: #25d366; color: #000; box-shadow: 0 0 15px rgba(37, 211, 102, 0.45); }
-        .step-label { color: #fff; }
+        .step-label { color: var(--color-text-primary); }
       }
     }
     .step-connector {
-      flex: 1; height: 3px; background: rgba(255,255,255,0.08); margin: 0 -15px; position: relative; top: -14px; z-index: 1;
+      flex: 1; height: 3px; background: var(--color-border); margin: 0 -15px; position: relative; top: -14px; z-index: 1;
       &.filled { background: #25d366; box-shadow: 0 0 8px rgba(37, 211, 102, 0.3); }
     }
 
@@ -225,21 +225,21 @@ interface OrderRecord {
     }
 
     .items-card, .customer-card {
-      background: rgba(17, 19, 25, 0.45); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: var(--radius-lg); padding: var(--space-xl);
-      h3 { font-size: 1.25rem; font-weight: 800; color: #fff; margin-bottom: var(--space-md); border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; }
+      background: var(--color-bg-card-glass); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-xl);
+      h3 { font-size: 1.25rem; font-weight: 800; color: var(--color-text-primary); margin-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); padding-bottom: 8px; }
     }
     
     .items-list { display: flex; flex-direction: column; gap: var(--space-md); margin-bottom: var(--space-lg); }
     .item-row { display: flex; justify-content: space-between; align-items: center; }
     .item-details {
       display: flex; align-items: center; gap: 12px;
-      .item-img { width: 50px; height: 50px; border-radius: var(--radius-sm); object-fit: cover; border: 1px solid rgba(255,255,255,0.05); }
-      .item-name { display: block; font-weight: 700; color: #fff; font-size: 0.95rem; }
+      .item-img { width: 50px; height: 50px; border-radius: var(--radius-sm); object-fit: cover; border: 1px solid var(--color-border); }
+      .item-name { display: block; font-weight: 700; color: var(--color-text-primary); font-size: 0.95rem; }
       .item-qty-price { font-size: 0.8rem; color: var(--color-text-secondary); }
     }
-    .item-subtotal { font-weight: 800; color: #fff; }
+    .item-subtotal { font-weight: 800; color: var(--color-text-primary); }
     .total-row {
-      display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: var(--space-md); font-weight: 800;
+      display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--color-border); padding-top: var(--space-md); font-weight: 800;
       .price-val { font-size: 1.4rem; color: #25d366; font-family: var(--font-heading); }
     }
 
@@ -247,7 +247,7 @@ interface OrderRecord {
     .info-item {
       display: flex; flex-direction: column; gap: 4px;
       .lbl { font-size: 0.8rem; color: var(--color-text-secondary); text-transform: uppercase; font-weight: 700; }
-      .val { font-weight: 700; color: #fff; font-size: 1rem; }
+      .val { font-weight: 700; color: var(--color-text-primary); font-size: 1rem; }
       .notes { font-style: italic; color: #cbd5e1; }
     }
   `]

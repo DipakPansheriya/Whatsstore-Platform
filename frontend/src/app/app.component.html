@@ -37,6 +37,7 @@
 
     <!-- CTA Buttons -->
     <div class="nav-actions">
+      <app-direction-toggle></app-direction-toggle>
       <app-theme-toggle></app-theme-toggle>
       <a routerLink="/auth/login" class="btn btn-ghost btn-sm" id="nav-login-btn">Log In</a>
       <a routerLink="/auth/register" class="btn btn-primary btn-sm" id="nav-signup-btn">
@@ -68,7 +69,10 @@
       }
     </ul>
     <div class="mobile-actions">
-      <app-theme-toggle [showLabel]="true" style="margin-bottom: 12px; width: 100%; display: flex; justify-content: center;"></app-theme-toggle>
+      <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; width: 100%;">
+        <app-direction-toggle [showLabel]="true" style="flex: 1; display: flex; justify-content: center;"></app-direction-toggle>
+        <app-theme-toggle [showLabel]="true" style="flex: 1; display: flex; justify-content: center;"></app-theme-toggle>
+      </div>
       <a routerLink="/auth/login" class="btn btn-ghost" (click)="closeMobileMenu()">Log In</a>
       <a routerLink="/auth/register" class="btn btn-primary" (click)="closeMobileMenu()">Get Started Free</a>
     </div>
@@ -162,3 +166,6 @@
   </div>
 </footer>
 }
+
+<!-- GLOBAL TOASTS -->
+<app-toasts></app-toasts>

@@ -99,7 +99,7 @@ import { environment } from '../../environments/environment.development';
   styles: [`
     .sa-users { display: flex; flex-direction: column; gap: var(--space-xl); }
     .dash-header { display: flex; justify-content: space-between; align-items: flex-end; }
-    .dash-header h1 { font-size: 2rem; margin-bottom: var(--space-xs); background: linear-gradient(to right, #fff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .dash-header h1 { font-size: 2rem; margin-bottom: var(--space-xs); background: linear-gradient(to right, var(--color-text-primary), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .btn-primary { background: var(--color-accent); color: #000; border: none; padding: 10px 20px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: all 0.2s; }
     .btn-primary:hover:not([disabled]) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); }
     .btn-primary[disabled] { opacity: 0.7; cursor: not-allowed; }
@@ -108,7 +108,7 @@ import { environment } from '../../environments/environment.development';
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-md); margin-bottom: var(--space-lg); }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
     .form-group label { font-size: 0.85rem; color: var(--color-text-secondary); }
-    .form-group input { padding: 10px 14px; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius-sm); color: #fff; }
+    .form-group input { padding: 10px 14px; background: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-sm); color: var(--color-text-primary); }
     .form-group input:focus { outline: none; border-color: var(--color-accent); }
     .form-actions { display: flex; align-items: center; gap: var(--space-md); justify-content: flex-end; }
     .error-msg { color: var(--color-danger); font-size: 0.9rem; }
@@ -116,13 +116,13 @@ import { environment } from '../../environments/environment.development';
     
     .table-responsive { overflow-x: auto; }
     .sa-table { width: 100%; border-collapse: collapse; text-align: left; }
-    .sa-table th { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--color-text-secondary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }
-    .sa-table td { padding: 16px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem; }
-    .sa-table tbody tr:hover { background: rgba(255,255,255,0.02); }
-    .badge { padding: 4px 10px; background: rgba(255,255,255,0.1); border-radius: 20px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; }
+    .sa-table th { padding: 12px; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }
+    .sa-table td { padding: 16px 12px; border-bottom: 1px solid var(--color-border); font-size: 0.95rem; }
+    .sa-table tbody tr:hover { background: var(--color-bg-surface); }
+    .badge { padding: 4px 10px; background: var(--color-bg-surface); border-radius: 20px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; }
     .badge-primary { background: rgba(139, 92, 246, 0.2); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
     .btn-icon { background: transparent; border: none; font-size: 1.1rem; cursor: pointer; padding: 6px; border-radius: 6px; transition: 0.2s; }
-    .btn-icon:hover { background: rgba(255,255,255,0.1); }
+    .btn-icon:hover { background: var(--color-bg-surface); }
     .btn-icon.delete:hover { background: rgba(239, 68, 68, 0.2); }
     .text-center { text-align: center; }
     .text-muted { color: var(--color-text-secondary); }

@@ -127,6 +127,10 @@ export const routes: Routes = [
         path: 'coupons',
         loadComponent: () => import('./coupons/coupons.component').then(m => m.CouponsComponent),
       },
+      {
+        path: 'reviews',
+        loadComponent: () => import('./reviews/reviews.component').then(m => m.ReviewsComponent),
+      },
     ],
   },
 

@@ -11,6 +11,9 @@ export class ThemeService {
   private themeSubject = new BehaviorSubject<'light' | 'dark' | 'system'>('dark');
   theme$ = this.themeSubject.asObservable();
 
+  private dirSubject = new BehaviorSubject<'ltr' | 'rtl'>('ltr');
+  dir$ = this.dirSubject.asObservable();
+
   constructor(
     private themeStorage: ThemeStorage,
     private authService: AuthService,
@@ -39,6 +42,29 @@ export class ThemeService {
   initTheme(): void {
     const stored = this.themeStorage.getTheme();
     this.setTheme(stored, false);
+    
+    // Initialize Direction
+    if (isPlatformBrowser(this.platformId)) {
+      const storedDir = localStorage.getItem('sf_dir') as 'ltr' | 'rtl' || 'ltr';
+      this.setDirection(storedDir);
+    }
+  }
+
+  get currentDirection(): 'ltr' | 'rtl' {
+    return this.dirSubject.value;
+  }
+
+  setDirection(dir: 'ltr' | 'rtl'): void {
+    this.dirSubject.next(dir);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('sf_dir', dir);
+      document.documentElement.setAttribute('dir', dir);
+    }
+  }
+
+  toggleDirection(): void {
+    const newDir = this.currentDirection === 'ltr' ? 'rtl' : 'ltr';
+    this.setDirection(newDir);
   }
 
   setTheme(theme: 'light' | 'dark' | 'system', syncWithBackend = true): void {

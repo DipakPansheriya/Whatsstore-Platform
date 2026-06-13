@@ -212,7 +212,7 @@ interface LayoutConfig {
       margin: var(--space-xs) 0;
       font-size: 2.2rem;
       font-weight: 900;
-      color: #fff;
+      color: var(--color-text-primary);
     }
     .page-header p {
       color: var(--color-text-secondary);
@@ -249,8 +249,8 @@ interface LayoutConfig {
       flex-direction: column;
       gap: var(--space-xl);
       padding: var(--space-2xl);
-      background: rgba(17, 19, 25, 0.65);
-      border-color: rgba(255, 255, 255, 0.08);
+      background: var(--color-bg-card-glass);
+      border-color: var(--color-border);
     }
     .section-card {
       display: flex;
@@ -285,7 +285,7 @@ interface LayoutConfig {
     .form-group select,
     .form-group textarea {
       padding: 12px;
-      background: rgba(8, 9, 13, 0.4);
+      background: var(--color-bg-surface);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
       color: var(--color-text-primary);
@@ -296,7 +296,7 @@ interface LayoutConfig {
       &:focus {
         border-color: var(--color-accent);
         box-shadow: 0 0 12px rgba(37, 211, 102, 0.25);
-        background: rgba(8, 9, 13, 0.6);
+        background: var(--color-bg-card);
       }
     }
     .field-hint {

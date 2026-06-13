@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/marketplace.service';
+
+import { ToastService } from '../../shared/services/toast.service';
 
 @Component({
   selector: 'app-marketplace-home',
@@ -42,8 +44,29 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
           </div>
         </section>
 
+        <!-- Zepto-style Skeleton Loader -->
+        <div *ngIf="loading" class="skeleton-wrapper animate-fade-in-up">
+          <div class="skeleton-hero shimmer"></div>
+          <div class="skeleton-section">
+            <div class="skeleton-title shimmer"></div>
+            <div class="skeleton-categories scroll-x">
+              <div class="skeleton-pill shimmer" *ngFor="let i of [1,2,3,4,5,6]"></div>
+            </div>
+          </div>
+          <div class="skeleton-section">
+            <div class="skeleton-title shimmer"></div>
+            <div class="skeleton-grid">
+              <div class="skeleton-card" *ngFor="let i of [1,2,3,4]">
+                <div class="skeleton-img shimmer"></div>
+                <div class="skeleton-text shimmer" style="width: 70%; margin-top: 10px;"></div>
+                <div class="skeleton-text shimmer" style="width: 40%; margin-top: 5px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Categories Slider -->
-        <section class="categories-section">
+        <section class="categories-section" *ngIf="!loading">
           <h2 class="section-title">Browse Categories</h2>
           <div class="categories-grid scroll-x">
             <button (click)="selectCategory('all')" [class.active]="selectedCategory === 'all'" class="category-pill">
@@ -79,54 +102,63 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
         </section>
 
         <!-- Search Results View -->
-        <div class="search-results-wrapper" *ngIf="isSearching">
-          <div class="results-header">
-            <h3>🔍 Search Results for "{{ searchQuery }}" <span *ngIf="selectedCategory !== 'all'">in {{ selectedCategory }}</span> ({{ searchResults.length }} items)</h3>
-            <button (click)="clearSearch()" class="btn btn-ghost btn-xs">✕ Clear Search</button>
-          </div>
+        <div class="search-results-layout" *ngIf="isSearching">
 
-          <div *ngIf="loadingSearch" class="loading-state">
-            <span class="spinner">⏳</span> Fetching matching products...
-          </div>
-
-          <div *ngIf="!loadingSearch && searchResults.length === 0" class="empty-state card">
-            <div class="empty-icon">📦</div>
-            <h3>No products found</h3>
-            <p>Try refining your search terms or selecting a different category.</p>
-          </div>
-
-          <div *ngIf="!loadingSearch && searchResults.length > 0" class="products-grid">
-            @for (prod of searchResults; track prod._id) {
-              <div class="product-card card">
-                <div class="image-box" [routerLink]="['/marketplace/product', prod._id]">
-                  <img [src]="prod.images[0] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=300&auto=format&fit=crop'" [alt]="prod.title">
-                  <span class="store-badge-tag">{{ prod.business?.name }}</span>
-                  <button class="wishlist-btn" [class.active]="isInWishlist(prod._id)" (click)="toggleWishlist($event, prod)">❤️</button>
-                </div>
-                <div class="card-body">
-                  <span class="prod-cat">{{ prod.category }}</span>
-                  <h4 class="prod-title" [routerLink]="['/marketplace/product', prod._id]">{{ prod.title }}</h4>
-                  <div class="offer-badges-row" *ngIf="prod.coupons?.length > 0">
-                    <span class="coupon-badge-pill">🏷️ Code: {{ prod.coupons[0].code }}</span>
-                  </div>
-                  <div class="card-footer">
-                    <span class="price">₹{{ prod.price }}</span>
-                    <button (click)="addToCart(prod)" class="btn btn-sm btn-accent-cart" [disabled]="prod.stock === 0">
-                      {{ prod.stock > 0 ? '🛒 Add' : 'Sold Out' }}
-                    </button>
-                  </div>
-                </div>
+          <!-- Main Results Area -->
+          <div class="search-results-main">
+            <div class="results-header">
+              <div class="results-title-row">
+                <h3 *ngIf="searchQuery">🔍 Results for "{{ searchQuery }}" <span *ngIf="selectedCategory !== 'all'">in {{ selectedCategory }}</span> ({{ searchResults.length }})</h3>
+                <h3 *ngIf="!searchQuery">🔍 {{ selectedCategory === 'all' ? 'All Products' : 'Products in ' + selectedCategory }} ({{ searchResults.length }})</h3>
               </div>
-            }
+              <div class="results-actions-row">
+                <button (click)="clearSearch()" class="btn btn-ghost btn-sm">✕ Clear Search</button>
+              </div>
+            </div>
+
+            <div *ngIf="loadingSearch" class="loading-state">
+              <span class="spinner">⏳</span> Fetching matching products...
+            </div>
+
+            <div *ngIf="!loadingSearch && searchResults.length === 0" class="empty-state card">
+              <div class="empty-icon">📦</div>
+              <h3>No products found</h3>
+              <p>Try refining your search terms or adjusting filters.</p>
+            </div>
+
+            <div *ngIf="!loadingSearch && searchResults.length > 0" class="products-grid">
+              @for (prod of searchResults; track prod._id) {
+                <div class="product-card card">
+                  <div class="image-box" [routerLink]="['/marketplace/product', prod._id]">
+                    <img [src]="prod.images[0] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=300&auto=format&fit=crop'" [alt]="prod.title">
+                    <span class="store-badge-tag">{{ prod.business?.name }}</span>
+                    <button class="wishlist-btn" [class.active]="isInWishlist(prod._id)" (click)="toggleWishlist($event, prod)">❤️</button>
+                  </div>
+                  <div class="card-body">
+                    <span class="prod-cat">{{ prod.category }}</span>
+                    <h4 class="prod-title" [routerLink]="['/marketplace/product', prod._id]">{{ prod.title }}</h4>
+                    <div class="offer-badges-row" *ngIf="prod.coupons?.length > 0">
+                      <span class="coupon-badge-pill">🏷️ Code: {{ prod.coupons[0].code }}</span>
+                    </div>
+                    <div class="card-footer">
+                      <span class="price">₹{{ prod.price }}</span>
+                      <button (click)="addToCart(prod)" class="btn btn-sm btn-accent-cart" [disabled]="prod.stock === 0">
+                        {{ prod.stock > 0 ? '🛒 Add' : 'Sold Out' }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
           </div>
         </div>
 
         <!-- Default Homepage View (Only shown when q/search is empty) -->
         <div class="default-home-sections animate-fade-in-up" *ngIf="!isSearching">
-          <!-- Featured Stores -->
+          <!-- Featured Stores (RTL Auto Scroll Carousel) -->
           <section class="home-section" *ngIf="featuredStores.length > 0">
             <h2 class="section-title">🔥 Featured Stores</h2>
-            <div class="stores-scroll-grid scroll-x">
+            <div class="stores-container scroll-x">
               @for (store of featuredStores; track store._id) {
                 <div class="store-card glass-card">
                   <img class="store-logo" [src]="store.logoUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=100&auto=format&fit=crop'" [alt]="store.name">
@@ -172,26 +204,13 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
             <h2 class="section-title">🎉 Hot Merchant Coupons</h2>
             <div class="offers-container scroll-x">
               @for (cp of globalCoupons; track cp._id) {
-                <div class="offer-ticket glass-card">
-                  <div class="offer-tab">
-                    <span class="discount-value">{{ cp.discountType === 'percentage' ? cp.discountValue + '%' : '₹' + cp.discountValue }}</span>
-                    <span class="discount-label">OFF</span>
-                  </div>
-                  <div class="offer-divider">
-                    <div class="notch top-notch"></div>
-                    <div class="notch bottom-notch"></div>
-                  </div>
-                  <div class="offer-content">
-                    <div class="offer-header">
-                      <span class="coupon-code">{{ cp.code }}</span>
-                      <span class="ticket-icon">🎟️</span>
-                    </div>
-                    <p class="offer-description">Shop directly on <strong>{{ cp.business?.name }}</strong> storefront.</p>
-                    <div class="offer-footer">
-                      <a [routerLink]="['/store', cp.business?.websiteSlug]" class="btn btn-sm copy-btn" style="background: rgba(37,211,102,0.1); color: #25d366;">
-                        Visit Store
-                      </a>
-                    </div>
+                <div class="offer-pill" (click)="copyCouponCode(cp.code, cp.business?.websiteSlug)" title="Click to copy code and visit store">
+                  <div class="offer-pill-bg"></div>
+                  <div class="offer-pill-content">
+                    <span class="offer-pill-discount">{{ cp.discountType === 'percentage' ? cp.discountValue + '%' : '₹' + cp.discountValue }} OFF</span>
+                    <span class="offer-pill-divider"></span>
+                    <span class="offer-pill-code">{{ cp.code }}</span>
+                    <span class="offer-pill-store">&#64; {{ cp.business?.name }}</span>
                   </div>
                 </div>
               }
@@ -228,6 +247,27 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
     </div>
   `,
   styles: [`
+    /* Skeleton Loaders */
+    .skeleton-wrapper { display: flex; flex-direction: column; gap: 30px; padding: 20px 0; }
+    .shimmer {
+      background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: var(--radius-md);
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .skeleton-hero { height: 250px; border-radius: var(--radius-xl); margin-bottom: 20px; }
+    .skeleton-section { margin-bottom: 30px; }
+    .skeleton-title { height: 28px; width: 250px; margin-bottom: 15px; }
+    .skeleton-categories { display: flex; gap: 12px; }
+    .skeleton-pill { height: 40px; width: 120px; border-radius: var(--radius-md); }
+    .skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+    .skeleton-card { background: var(--color-bg-card); padding: 15px; border-radius: var(--radius-xl); border: 1px solid var(--color-border); }
+    .skeleton-img { height: 180px; border-radius: var(--radius-lg); }
+    .skeleton-text { height: 16px; border-radius: 4px; }
     .marketplace-wrapper {
       min-height: 100vh;
       background: radial-gradient(circle at top right, rgba(37, 211, 102, 0.06) 0%, rgba(139, 92, 246, 0.02) 40%, var(--color-bg) 100%);
@@ -464,12 +504,18 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
       &.active { background: var(--color-accent); width: 24px; border-radius: 4px; box-shadow: 0 0 8px var(--color-accent-glow); }
     }
 
-    /* Results Header */
-    .results-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: var(--space-xl); border-bottom: 1px solid var(--color-border); padding-bottom: 16px;
-      h3 { font-size: 1.45rem; font-weight: 850; color: var(--color-text-primary); letter-spacing: -0.01em; }
+    /* Search Results Layout */
+    .search-results-layout {
+      display: flex; flex-direction: column; gap: var(--space-xl);
     }
+    .search-results-main { width: 100%; }
+    
+    .results-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: var(--space-xl); border-bottom: 1px solid var(--color-border); padding-bottom: 16px;
+      h3 { font-size: 1.45rem; font-weight: 850; color: var(--color-text-primary); letter-spacing: -0.01em; margin: 0; }
+    }
+    .results-actions-row { display: flex; gap: 10px; }
     .loading-state, .empty-state {
       text-align: center; padding: var(--space-3xl) 0;
       background: var(--color-bg-card);
@@ -548,10 +594,16 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
       }
     }
 
-    /* Featured Stores styling */
+    /* Featured Stores Horizontal Scroll */
     .home-section { margin-bottom: var(--space-3xl); }
     .section-title { font-size: 1.6rem; font-weight: 950; color: var(--color-text-primary); margin-bottom: var(--space-xl); letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; }
-    .stores-scroll-grid { display: flex; gap: 18px; padding-bottom: 12px; }
+    
+    .stores-container {
+      display: flex;
+      gap: 18px;
+      padding-bottom: 16px;
+    }
+
     .store-card {
       min-width: 270px; max-width: 290px; padding: var(--space-xl); border-radius: var(--radius-xl); 
       background: var(--color-bg-card); 
@@ -582,44 +634,63 @@ import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/m
       }
     }
 
-    /* Coupons carousel section */
-    .offers-container { display: flex; gap: var(--space-lg); padding-bottom: var(--space-md); }
-    .offer-ticket {
-      min-width: 300px; max-width: 320px; display: flex; border: 1px solid rgba(37, 211, 102, 0.15); border-radius: var(--radius-xl); background: var(--color-bg-card); position: relative; overflow: visible; box-sizing: border-box;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    /* Coupons Pill section */
+    .offers-container { 
+      display: flex; 
+      gap: 12px; 
+      padding-bottom: 12px; 
+    }
+    .offer-pill {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 12px 22px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(37, 211, 102, 0.15) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+
       &:hover {
-        border-color: rgba(37, 211, 102, 0.35);
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px -5px var(--color-accent-glow);
+        transform: translateY(-2px);
+        border-color: rgba(139, 92, 246, 0.6);
+        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+        .offer-pill-bg { opacity: 1; }
       }
     }
-    .offer-tab {
-      width: 90px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(37, 211, 102, 0.03); border-top-left-radius: var(--radius-xl); border-bottom-left-radius: var(--radius-xl); padding: var(--space-sm); box-sizing: border-box;
-      .discount-value { font-size: 1.6rem; font-weight: 950; color: var(--color-accent); text-shadow: 0 0 10px var(--color-accent-glow); line-height: 1; text-align: center; }
-      .discount-label { font-size: 0.68rem; font-weight: 850; color: var(--color-text-primary); opacity: 0.7; margin-top: 3px; }
+    .offer-pill-bg {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(37, 211, 102, 0.25) 100%);
+      opacity: 0; transition: opacity 0.3s;
     }
-    .offer-divider {
-      position: relative; width: 2px; border-left: 2px dashed rgba(37, 211, 102, 0.2); margin: 10px 0;
-      .notch { position: absolute; width: 14px; height: 14px; background: var(--color-bg); border-radius: 50%; left: -8px; border: 1px solid rgba(37, 211, 102, 0.15); box-sizing: border-box; &.top-notch { top: -18px; } &.bottom-notch { bottom: -18px; } }
+    .offer-pill-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .offer-content {
-      flex: 1; padding: var(--space-md); display: flex; flex-direction: column; gap: 8px; box-sizing: border-box; justify-content: space-between;
+    .offer-pill-discount {
+      font-size: 1rem;
+      font-weight: 900;
+      color: #8b5cf6;
+      text-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
     }
-    .offer-header {
-      display: flex; justify-content: space-between; align-items: center;
-      .coupon-code { font-size: 0.85rem; font-weight: 900; color: var(--color-text-primary); background: var(--color-bg-surface); padding: 3px 8px; border-radius: 6px; border: 1px dashed var(--color-border); }
-      .ticket-icon { font-size: 1.15rem; opacity: 0.9; }
+    .offer-pill-divider {
+      width: 1px; height: 16px; background: rgba(255,255,255,0.2);
     }
-    .offer-description { font-size: 0.82rem; color: var(--color-text-secondary); margin: 0; line-height: 1.4; }
-    .offer-footer {
-      display: flex; align-items: center; justify-content: flex-end; margin-top: 6px;
-      .btn { 
-        font-size: 0.72rem; font-weight: 850; padding: 6px 12px; border-radius: 6px; cursor: pointer; border: 1px solid rgba(37, 211, 102, 0.2); 
-        background: var(--color-accent-dim); color: var(--color-accent); transition: all 0.2s;
-        &:hover {
-          background: var(--color-accent); color: #000; border-color: var(--color-accent); box-shadow: 0 0 10px var(--color-accent-glow);
-        }
-      }
+    .offer-pill-code {
+      font-size: 0.95rem;
+      font-weight: 850;
+      color: var(--color-text-primary);
+      letter-spacing: 0.05em;
+    }
+    .offer-pill-store {
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+      font-weight: 700;
     }
   `]
 })
@@ -628,6 +699,7 @@ export class MarketplaceHomeComponent implements OnInit {
   selectedCategory = 'all';
   isSearching = false;
   loadingSearch = false;
+  loading = true; // Initial full-page loader
 
   categories: any[] = [];
   banners: any[] = [];
@@ -635,6 +707,7 @@ export class MarketplaceHomeComponent implements OnInit {
   featuredProducts: any[] = [];
   trendingProducts: any[] = [];
   globalCoupons: any[] = [];
+  // Search Results
   searchResults: any[] = [];
 
   // Carousel slider indices
@@ -646,11 +719,21 @@ export class MarketplaceHomeComponent implements OnInit {
   wishlistCount = 0;
   cartCount = 0;
 
-  constructor(private marketplaceService: MarketplaceService) { }
+  constructor(
+    private marketplaceService: MarketplaceService,
+    private toastService: ToastService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
-    this.fetchHomeData();
-    this.fetchConfig();
+    this.loading = true;
+    Promise.all([
+      this.fetchHomeData(),
+      this.fetchConfig()
+    ]).then(() => {
+      // Simulate slight delay to show loader (optional, remove in prod if desired)
+      setTimeout(() => this.loading = false, 600);
+    });
 
     // Subscribe to Cart changes
     this.marketplaceService.cart$.subscribe(items => {
@@ -663,32 +746,40 @@ export class MarketplaceHomeComponent implements OnInit {
     });
   }
 
-  fetchHomeData() {
-    this.marketplaceService.getHomeData().subscribe({
-      next: (res) => {
-        if (res.success) {
-          this.banners = res.banners || [];
-          this.featuredStores = res.featuredStores || [];
-          this.featuredProducts = res.featuredProducts || [];
-          this.trendingProducts = res.trendingProducts || [];
-          this.globalCoupons = res.globalCoupons || [];
+  fetchHomeData(): Promise<void> {
+    return new Promise((resolve) => {
+      this.marketplaceService.getHomeData().subscribe({
+        next: (res) => {
+          if (res.success) {
+            this.banners = res.banners || [];
+            this.featuredStores = res.featuredStores || [];
+            this.featuredProducts = res.featuredProducts || [];
+            this.trendingProducts = res.trendingProducts || [];
+            this.globalCoupons = res.globalCoupons || [];
 
-          if (this.banners.length > 0) {
-            this.activeBanner = this.banners[0];
-            this.startBannerRotation();
+            if (this.banners.length > 0) {
+              this.activeBanner = this.banners[0];
+              this.startBannerRotation();
+            }
           }
-        }
-      }
+          resolve();
+        },
+        error: () => resolve()
+      });
     });
   }
 
-  fetchConfig() {
-    this.marketplaceService.getConfig().subscribe({
-      next: (res) => {
-        if (res.success && res.config) {
-          this.categories = res.config.categories || [];
-        }
-      }
+  fetchConfig(): Promise<void> {
+    return new Promise((resolve) => {
+      this.marketplaceService.getConfig().subscribe({
+        next: (res) => {
+          if (res.success && res.config) {
+            this.categories = res.config.categories || [];
+          }
+          resolve();
+        },
+        error: () => resolve()
+      });
     });
   }
 
@@ -775,6 +866,16 @@ export class MarketplaceHomeComponent implements OnInit {
     } else {
       this.marketplaceService.addToWishlist(prod);
     }
+  }
+
+  // Coupon actions
+  copyCouponCode(code: string, slug?: string) {
+    navigator.clipboard.writeText(code).then(() => {
+      this.toastService.success(`Coupon code "${code}" copied to clipboard!`, 'Copied!');
+      if (slug) {
+        setTimeout(() => this.router.navigate(['/store', slug]), 800);
+      }
+    });
   }
 
   ngOnDestroy() {

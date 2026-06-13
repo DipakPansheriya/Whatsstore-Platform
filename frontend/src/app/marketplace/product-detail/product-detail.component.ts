@@ -87,47 +87,48 @@ import { environment } from '../../../environments/environment.development';
               <p class="description-text">{{ product.description || 'No description provided.' }}</p>
             </div>
 
-            <!-- Store Information Card -->
-            <div class="store-info-card glass-card" *ngIf="product.business">
-              <div class="store-info-header">
-                <img class="mini-logo" [src]="product.business.logoUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=60&auto=format&fit=crop'" alt="Store Logo">
-                <div>
-                  <h4 class="store-name">{{ product.business.name }}</h4>
-                  <span class="store-cat">{{ product.business.category }}</span>
+            <div class="meta-cards-row" [class.single]="!product.business || coupons.length === 0">
+              <!-- Store Information Card -->
+              <div class="store-info-card glass-card" *ngIf="product.business">
+                <div class="store-info-header">
+                  <img class="mini-logo" [src]="product.business.logoUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=60&auto=format&fit=crop'" alt="Store Logo">
+                  <div>
+                    <h4 class="store-name">{{ product.business.name }}</h4>
+                    <span class="store-cat">{{ product.business.category }}</span>
+                  </div>
+                </div>
+                <p class="store-address" *ngIf="product.business.address">📍 {{ product.business.address }}</p>
+                
+                <div class="store-actions">
+                  <a [routerLink]="['/store', product.business.websiteSlug]" class="btn btn-primary btn-sm w-full" style="text-align: center;">Visit Storefront</a>
                 </div>
               </div>
-              <p class="store-address" *ngIf="product.business.address">📍 Address: {{ product.business.address }}</p>
-              
-              <div class="store-actions">
-                <a [routerLink]="['/store', product.business.websiteSlug]" class="btn btn-primary btn-sm">Visit Storefront</a>
-                <a [href]="'https://wa.me/' + product.business.whatsappNumber" target="_blank" class="btn btn-ghost btn-sm">Message Merchant</a>
-              </div>
-            </div>
 
-            <!-- Available Coupons -->
-            <div class="available-offers-widget" *ngIf="coupons.length > 0">
-              <h4 class="widget-title">🎁 Available Offers at {{ product.business?.name }}</h4>
-              <div class="mini-tickets-list">
-                @for (cp of coupons; track cp._id) {
-                  <div class="mini-ticket glass-card">
-                    <div class="mini-tab">
-                      <span class="disc-val">{{ cp.discountType === 'percentage' ? cp.discountValue + '%' : '₹' + cp.discountValue }}</span>
-                      <span class="disc-lbl">OFF</span>
-                    </div>
-                    <div class="mini-divider">
-                      <div class="notch top-notch"></div>
-                      <div class="notch bottom-notch"></div>
-                    </div>
-                    <div class="mini-content">
-                      <div class="code-and-icon">
-                        <span class="coupon-code">{{ cp.code }}</span>
-                        <button (click)="copyCoupon(cp.code)" class="btn btn-sm copy-btn" [style.background]="copiedCode === cp.code ? '#25d366' : 'rgba(255,255,255,0.05)'" [style.color]="copiedCode === cp.code ? '#000' : '#fff'">
-                          {{ copiedCode === cp.code ? '✓ Copied' : '📋 Copy' }}
-                        </button>
+              <!-- Available Coupons -->
+              <div class="available-offers-widget" *ngIf="coupons.length > 0">
+                <h4 class="widget-title">🎁 Available Offers at {{ product.business?.name }}</h4>
+                <div class="mini-tickets-list">
+                  @for (cp of coupons; track cp._id) {
+                    <div class="mini-ticket glass-card">
+                      <div class="mini-tab">
+                        <span class="disc-val">{{ cp.discountType === 'percentage' ? cp.discountValue + '%' : '₹' + cp.discountValue }}</span>
+                        <span class="disc-lbl">OFF</span>
+                      </div>
+                      <div class="mini-divider">
+                        <div class="notch top-notch"></div>
+                        <div class="notch bottom-notch"></div>
+                      </div>
+                      <div class="mini-content">
+                        <div class="code-and-icon">
+                          <span class="coupon-code">{{ cp.code }}</span>
+                          <button (click)="copyCoupon(cp.code)" class="btn btn-sm copy-btn" [style.background]="copiedCode === cp.code ? '#25d366' : 'var(--color-bg-surface)'" [style.color]="copiedCode === cp.code ? '#000' : 'var(--color-text-primary)'">
+                            {{ copiedCode === cp.code ? '✓ Copied' : '📋 Copy' }}
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                }
+                  }
+                </div>
               </div>
             </div>
 
@@ -194,11 +195,11 @@ import { environment } from '../../../environments/environment.development';
       top: 0; left: 0; right: 0;
       height: 70px;
       z-index: 100;
-      background: rgba(10, 11, 16, 0.85);
+      background: var(--color-bg-card-glass);
       backdrop-filter: blur(30px);
       -webkit-backdrop-filter: blur(30px);
       border-bottom: 1px solid var(--color-border);
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     }
     .header-container {
       max-width: 1200px;
@@ -212,7 +213,7 @@ import { environment } from '../../../environments/environment.development';
     .brand-title {
       font-size: 1.4rem;
       font-weight: 950;
-      color: #fff;
+      color: var(--color-text-primary);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -244,7 +245,7 @@ import { environment } from '../../../environments/environment.development';
       gap: 6px;
       transition: all 0.25s ease;
       
-      &:hover { color: #fff; background: rgba(255,255,255,0.05); }
+      &:hover { color: var(--color-text-primary); background: var(--color-bg-surface); }
     }
     .nav-badge, .cart-badge {
       font-size: 0.75rem;
@@ -256,8 +257,8 @@ import { environment } from '../../../environments/environment.development';
     .cart-badge { background: var(--color-accent); color: #000; box-shadow: 0 0 10px rgba(37, 211, 102, 0.25); }
     .cart-btn {
       border: 1px solid var(--color-border);
-      background: rgba(255,255,255,0.04);
-      color: #fff;
+      background: var(--color-bg-surface);
+      color: var(--color-text-primary);
       &:hover { 
         background: var(--color-accent); 
         color: #000; 
@@ -277,11 +278,11 @@ import { environment } from '../../../environments/environment.development';
     }
     .loading-state, .empty-state {
       text-align: center; padding: var(--space-3xl) 0;
-      background: rgba(255, 255, 255, 0.01);
-      border: 1px dashed rgba(255, 255, 255, 0.08);
+      background: var(--color-bg-card);
+      border: 1px dashed var(--color-border);
       border-radius: var(--radius-lg);
       .spinner { font-size: 2.2rem; display: block; margin-bottom: 12px; }
-      h3 { font-weight: 850; color: #fff; margin-bottom: var(--space-sm); }
+      h3 { font-weight: 850; color: var(--color-text-primary); margin-bottom: var(--space-sm); }
       p { color: var(--color-text-secondary); }
     }
  
@@ -295,13 +296,16 @@ import { environment } from '../../../environments/environment.development';
       @media (max-width: 800px) { grid-template-columns: 1fr; gap: var(--space-lg); }
     }
     .gallery-card {
+      position: sticky;
+      top: 100px;
+      height: fit-content;
       padding: var(--space-md); 
-      background: rgba(10, 11, 16, 0.4); 
+      background: var(--color-bg-card); 
       border: 1px solid var(--color-border); 
       border-radius: var(--radius-xl);
     }
     .active-image {
-      height: 440px; border-radius: var(--radius-lg); overflow: hidden; background: #0b0c10; border: 1px solid var(--color-border);
+      height: 440px; border-radius: var(--radius-lg); overflow: hidden; background: var(--color-bg-surface); border: 1px solid var(--color-border);
       img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; &:hover { transform: scale(1.03); } }
       @media (max-width: 500px) { height: 280px; }
     }
@@ -309,7 +313,7 @@ import { environment } from '../../../environments/environment.development';
       display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: var(--space-sm); margin-top: var(--space-sm);
     }
     .thumb-btn {
-      height: 75px; border-radius: var(--radius-md); overflow: hidden; border: 2px solid transparent; padding: 0; background: #0b0c10; cursor: pointer;
+      height: 75px; border-radius: var(--radius-md); overflow: hidden; border: 2px solid transparent; padding: 0; background: var(--color-bg-surface); cursor: pointer;
       img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: opacity 0.2s; }
       &:hover { img { opacity: 0.9; } }
       &.selected { border-color: var(--color-accent); img { opacity: 1; } }
@@ -317,95 +321,125 @@ import { environment } from '../../../environments/environment.development';
  
     .info-card {
       padding: var(--space-2xl); 
-      background: rgba(10, 11, 16, 0.4); 
+      background: var(--color-bg-card); 
       border: 1px solid var(--color-border); 
       border-radius: var(--radius-xl); 
       display: flex; 
       flex-direction: column; 
       gap: var(--space-md);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     }
     .info-top-row { display: flex; justify-content: space-between; align-items: center; }
     .category-tag { font-size: 0.8rem; text-transform: uppercase; color: #8b5cf6; font-weight: 800; letter-spacing: 0.08em; }
     .wishlist-toggle-btn {
-      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #fff; padding: 8px 18px; border-radius: var(--radius-pill); font-size: 0.85rem; font-weight: 750; cursor: pointer; transition: all 0.25s ease;
-      &:hover { background: rgba(239,68,68,0.1); border-color: var(--color-danger); }
+      background: var(--color-bg-surface); border: 1px solid var(--color-border); color: var(--color-text-primary); padding: 8px 18px; border-radius: var(--radius-pill); font-size: 0.85rem; font-weight: 750; cursor: pointer; transition: all 0.25s ease;
+      &:hover { background: rgba(239,68,68,0.1); border-color: var(--color-danger); color: var(--color-danger); }
       &.in-wishlist { background: rgba(239,68,68,0.15); border-color: var(--color-danger); color: var(--color-danger); }
     }
-    .product-title { font-size: 2.3rem; font-weight: 900; color: #fff; line-height: 1.2; letter-spacing: -0.02em; }
-    .price-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: var(--space-md); }
-    .price { font-size: 2.2rem; font-weight: 900; color: #fff; font-family: var(--font-heading); }
+    .product-title { font-size: 2.3rem; font-weight: 900; color: var(--color-text-primary); line-height: 1.2; letter-spacing: -0.02em; }
+    .price-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-md); }
+    .price { font-size: 2.2rem; font-weight: 900; color: var(--color-text-primary); font-family: var(--font-heading); }
     .stock-badge {
       font-size: 0.82rem; font-weight: 800; color: var(--color-accent); background: rgba(37,211,102,0.06); border: 1px solid rgba(37,211,102,0.2); padding: 6px 14px; border-radius: var(--radius-pill);
       &.out { color: var(--color-danger); background: rgba(239,68,68,0.06); border-color: rgba(239,68,68,0.2); }
     }
     
     .info-heading { font-size: 0.85rem; text-transform: uppercase; color: var(--color-text-secondary); font-weight: 800; margin-bottom: var(--space-xs); letter-spacing: 0.05em; }
-    .description-text { font-size: 0.98rem; color: #cbd5e1; line-height: 1.65; }
+    
+    /* Description Pre line Formatting */
+    .description-section {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .description-text { 
+      font-size: 0.98rem; 
+      color: var(--color-text-secondary); 
+      line-height: 1.65;
+      white-space: pre-line;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
  
-    /* Store Info */
-    .store-info-card {
-      padding: var(--space-lg); border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: rgba(0,0,0,0.2); display: flex; flex-direction: column; gap: var(--space-sm);
+    /* Meta Cards Row */
+    .meta-cards-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+      margin: var(--space-md) 0;
+      @media (max-width: 600px) {
+        grid-template-columns: 1fr;
+      }
+      &.single {
+        grid-template-columns: 1fr;
+      }
+    }
+ 
+    /* Store Info & Offers Shared Cards */
+    .store-info-card, .available-offers-widget {
+      padding: var(--space-lg); border: 1px dashed var(--color-border); border-radius: var(--radius-lg); background: var(--color-bg-surface); display: flex; flex-direction: column; gap: var(--space-md); box-sizing: border-box; height: 100%;
     }
     .store-info-header {
       display: flex; gap: 12px; align-items: center;
       .mini-logo { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-accent); box-shadow: 0 0 10px rgba(37, 211, 102, 0.2); }
-      .store-name { font-size: 1.1rem; font-weight: 850; color: #fff; }
-      .store-cat { font-size: 0.72rem; color: var(--color-accent); font-weight: 800; text-transform: uppercase; background: rgba(37,211,102,0.05); padding: 2px 8px; border-radius: 10px; }
+      .store-name { font-size: 1.1rem; font-weight: 850; color: var(--color-text-primary); margin: 0; }
+      .store-cat { font-size: 0.72rem; color: var(--color-accent); font-weight: 800; text-transform: uppercase; background: rgba(37,211,102,0.05); padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 4px; }
     }
-    .store-address { font-size: 0.82rem; color: var(--color-text-secondary); }
-    .store-actions { display: flex; gap: var(--space-sm); .btn { font-size: 0.85rem; font-weight: 750; padding: 10px 18px; } }
+    .store-address { font-size: 0.82rem; color: var(--color-text-secondary); margin: 0; flex: 1; }
+    .store-actions { display: flex; gap: var(--space-sm); width: 100%; .btn { font-size: 0.85rem; font-weight: 750; padding: 10px 18px; flex: 1; justify-content: center; } }
  
     /* Purchase controls */
+    .purchase-actions {
+      display: flex; flex-direction: column; gap: var(--space-md);
+      margin-top: var(--space-sm);
+    }
     .qty-selector-block { display: flex; align-items: center; gap: 16px; font-size: 0.95rem; font-weight: 800; color: var(--color-text-secondary); }
-    .qty-control { display: flex; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-sm); overflow: hidden; }
-    .qty-btn { background: transparent; border: none; color: #fff; width: 34px; height: 34px; cursor: pointer; font-weight: 850; &:hover:not([disabled]) { background: rgba(255,255,255,0.06); } &:disabled { opacity: 0.3; cursor: not-allowed; } }
-    .qty-val { font-size: 1rem; font-weight: 800; width: 34px; text-align: center; color: #fff; }
+    .qty-control { display: flex; align-items: center; background: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-sm); overflow: hidden; }
+    .qty-btn { background: transparent; border: none; color: var(--color-text-primary); width: 34px; height: 34px; cursor: pointer; font-weight: 850; &:hover:not([disabled]) { background: var(--color-border); } &:disabled { opacity: 0.3; cursor: not-allowed; } }
+    .qty-val { font-size: 1rem; font-weight: 800; width: 34px; text-align: center; color: var(--color-text-primary); }
     .btn-whatsapp-order { 
       background: linear-gradient(135deg, var(--color-accent) 0%, #1ebd5d 100%); 
       color: #000; border: none; padding: 14px; font-weight: 900; font-size: 1.1rem; border-radius: var(--radius-md); box-shadow: 0 4px 15px rgba(37, 211, 102, 0.25); cursor: pointer; transition: all 0.2s;
+      display: flex; justify-content: center; align-items: center;
       &:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45); }
     }
     .sold-out-alert { font-weight: 800; color: var(--color-danger); text-align: center; padding: 12px; background: rgba(239,68,68,0.06); border-radius: var(--radius-sm); border: 1px solid rgba(239, 68, 68, 0.15); }
  
     /* Available Offers widget */
     .available-offers-widget {
-      margin: var(--space-xs) 0; padding: var(--space-lg); background: rgba(255, 255, 255, 0.01); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: var(--radius-lg); display: flex; flex-direction: column; gap: var(--space-sm); box-sizing: border-box;
       .widget-title { font-size: 0.85rem; font-weight: 850; color: var(--color-accent); margin: 0; text-transform: uppercase; letter-spacing: 0.05em; }
     }
-    .mini-tickets-list { display: flex; flex-direction: column; gap: var(--space-sm); }
+    .mini-tickets-list { display: flex; flex-direction: column; gap: var(--space-sm); flex: 1; }
     .mini-ticket { 
-      display: flex; border: 1px solid rgba(37, 211, 102, 0.15); border-radius: var(--radius-xl); background: rgba(10, 11, 16, 0.5); position: relative; overflow: visible; box-sizing: border-box; 
+      display: flex; border: 1px solid rgba(37, 211, 102, 0.15); border-radius: var(--radius-xl); background: var(--color-bg-card); position: relative; overflow: visible; box-sizing: border-box; 
       transition: all 0.2s;
       &:hover { border-color: rgba(37, 211, 102, 0.3); }
     }
     .mini-tab {
       width: 70px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(37, 211, 102, 0.04); border-top-left-radius: var(--radius-xl); border-bottom-left-radius: var(--radius-xl); padding: var(--space-sm); box-sizing: border-box;
       .disc-val { font-size: 1.15rem; font-weight: 950; color: var(--color-accent); text-shadow: 0 0 8px rgba(37, 211, 102, 0.25); line-height: 1; text-align: center; }
-      .disc-lbl { font-size: 0.65rem; font-weight: 850; color: #fff; opacity: 0.7; margin-top: 2px; }
+      .disc-lbl { font-size: 0.65rem; font-weight: 850; color: var(--color-text-secondary); margin-top: 2px; }
     }
     .mini-divider {
       position: relative; width: 2px; border-left: 2px dashed rgba(37, 211, 102, 0.2); margin: 8px 0;
-      .notch { position: absolute; width: 12px; height: 12px; background: #05060b; border-radius: 50%; left: -7px; border: 1px solid rgba(37, 211, 102, 0.15); box-sizing: border-box; &.top-notch { top: -15px; } &.bottom-notch { bottom: -15px; } }
+      .notch { position: absolute; width: 12px; height: 12px; background: var(--color-bg); border-radius: 50%; left: -7px; border: 1px solid rgba(37, 211, 102, 0.15); box-sizing: border-box; &.top-notch { top: -15px; } &.bottom-notch { bottom: -15px; } }
     }
     .mini-content { flex: 1; padding: var(--space-sm) var(--space-md); display: flex; flex-direction: column; justify-content: center; box-sizing: border-box; }
     .code-and-icon {
       display: flex; justify-content: space-between; align-items: center; gap: 8px;
-      .coupon-code { font-size: 0.85rem; font-weight: 900; color: #fff; background: rgba(255,255,255,0.06); padding: 3px 8px; border-radius: 6px; border: 1px dashed rgba(255,255,255,0.12); }
+      .coupon-code { font-size: 0.85rem; font-weight: 900; color: var(--color-text-primary); background: var(--color-bg-surface); padding: 3px 8px; border-radius: 6px; border: 1px dashed var(--color-border); }
       .copy-btn { 
-        font-size: 0.72rem; font-weight: 850; padding: 4px 10px; border-radius: 6px; cursor: pointer; border: 1px solid rgba(255,255,255,0.08); 
-        background: rgba(255,255,255,0.03); color: #fff; transition: all 0.2s;
-        &:hover { background: rgba(255,255,255,0.08); } 
+        font-size: 0.72rem; font-weight: 850; padding: 4px 10px; border-radius: 6px; cursor: pointer; border: 1px solid var(--color-border); 
+        background: var(--color-bg-surface); color: var(--color-text-primary); transition: all 0.2s;
+        &:hover { background: var(--color-border); } 
       }
     }
  
     /* Reviews */
     .reviews-section { margin-top: var(--space-3xl); }
-    .empty-reviews { padding: var(--space-2xl); text-align: center; border: 1px dashed rgba(255,255,255,0.08); border-radius: var(--radius-lg); background: rgba(255,255,255,0.01); .empty-stars { color: rgba(255,255,255,0.03); font-size: 2rem; display: block; margin-bottom: 8px; } }
+    .empty-reviews { padding: var(--space-2xl); text-align: center; border: 1px dashed var(--color-border); border-radius: var(--radius-lg); background: var(--color-bg-card); .empty-stars { color: var(--color-border); font-size: 2rem; display: block; margin-bottom: 8px; } }
     .reviews-feed { display: flex; flex-direction: column; gap: var(--space-md); }
     .review-item-card {
       padding: var(--space-xl); 
-      background: rgba(10, 11, 16, 0.4); 
+      background: var(--color-bg-card); 
       border: 1px solid var(--color-border); 
       border-radius: var(--radius-xl); 
       display: flex; flex-direction: column; gap: 12px;
@@ -421,7 +455,7 @@ import { environment } from '../../../environments/environment.development';
     }
     .buyer-info { flex: 1; display: flex; flex-direction: column; .verified-badge { font-size: 0.72rem; color: var(--color-accent); font-weight: 700; } }
     .buyer-stars { color: #ffc857; text-shadow: 0 0 8px rgba(255, 200, 87, 0.4); font-size: 0.95rem; letter-spacing: 2px; }
-    .review-text-comment { font-size: 0.96rem; color: #cbd5e1; font-style: italic; border-left: 3px solid var(--color-accent); padding-left: 10px; line-height: 1.5; }
+    .review-text-comment { font-size: 0.96rem; color: var(--color-text-secondary); font-style: italic; border-left: 3px solid var(--color-accent); padding-left: 10px; line-height: 1.5; }
   `]
 })
 export class ProductDetailComponent implements OnInit {

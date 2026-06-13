@@ -3,6 +3,8 @@ import { MarketplaceConfig, MarketplaceSearchLog } from './marketplace.model';
 import Business from '../business/business.model';
 import Product from '../products/products.model';
 import Coupon from '../coupons/coupon.model';
+import Order from '../orders/orders.model';
+import Review from '../reviews/reviews.model';
 
 // Helper to seed and return default config if none exists
 const getOrCreateConfig = async () => {
@@ -47,22 +49,88 @@ export const getMarketplaceHome = async (req: Request, res: Response): Promise<v
   try {
     const config = await getOrCreateConfig();
 
-    // Populate featured stores & products (only if published/available)
-    const populatedConfig = await config.populate([
+    // Dynamic Featured Stores Calculation
+    // Score = Total Orders + Total Revenue (scaled) + Total Products Sold + Store Rating
+    const storeStats = await Order.aggregate([
+      { $match: { status: { $ne: 'CANCELLED' } } },
+      { $unwind: "$items" },
       {
-        path: 'featuredStores',
-        match: { isPublished: true },
-        select: 'name logoUrl websiteSlug category description phone'
+        $group: {
+          _id: "$business",
+          ordersCount: { $addToSet: "$_id" }, // count distinct orders
+          totalRevenue: { $sum: { $multiply: ["$items.price", "$items.quantity"] } },
+          productsSold: { $sum: "$items.quantity" }
+        }
       },
       {
-        path: 'featuredProducts',
-        match: { isAvailable: true },
-        populate: {
-          path: 'business',
-          select: 'name logoUrl websiteSlug'
+        $project: {
+          business: "$_id",
+          totalOrders: { $size: "$ordersCount" },
+          totalRevenue: 1,
+          productsSold: 1
         }
       }
     ]);
+
+    const reviewStats = await Review.aggregate([
+      { $match: { status: 'APPROVED' } },
+      { $lookup: { from: 'products', localField: 'product', foreignField: '_id', as: 'prod' } },
+      { $unwind: "$prod" },
+      {
+        $group: {
+          _id: "$prod.business",
+          avgRating: { $avg: "$rating" }
+        }
+      }
+    ]);
+
+    const allStores = await Business.find({ isPublished: true }).select('name logoUrl websiteSlug category description phone');
+    const featuredStores = allStores.map(store => {
+      const stats = storeStats.find(s => s._id.toString() === store._id.toString());
+      const rev = reviewStats.find(r => r._id.toString() === store._id.toString());
+
+      const orders = stats?.totalOrders || 0;
+      const revenue = stats?.totalRevenue || 0;
+      const sold = stats?.productsSold || 0;
+      const rating = rev?.avgRating || 0;
+
+      // Calculate score (scaled revenue down so it doesn't vastly overpower other metrics)
+      const score = orders + (revenue / 100) + sold + (rating * 10);
+
+      return {
+        ...store.toObject(),
+        stats: { orders, revenue, sold, rating },
+        score
+      };
+    })
+      .sort((a, b) => b.stats.orders - a.stats.orders)
+      .slice(0, 10); // top 10 stores
+
+    // Dynamic Curated Products (Highest Quantity Sold)
+    const topProductsAgg = await Order.aggregate([
+      { $match: { status: { $ne: 'CANCELLED' } } },
+      { $unwind: "$items" },
+      {
+        $group: {
+          _id: "$items.product",
+          quantitySold: { $sum: "$items.quantity" }
+        }
+      },
+      { $sort: { quantitySold: -1 } },
+      { $limit: 12 }
+    ]);
+
+    const topProductIds = topProductsAgg.map(p => p._id);
+    let featuredProductsRaw = await Product.find({ _id: { $in: topProductIds }, isAvailable: true })
+      .populate('business', 'name logoUrl websiteSlug');
+
+    const featuredProducts = featuredProductsRaw.map(p => {
+      const agg = topProductsAgg.find(a => a._id.toString() === p._id.toString());
+      return {
+        ...p.toObject(),
+        salesCount: agg?.quantitySold || 0
+      };
+    }).sort((a, b) => b.salesCount - a.salesCount);
 
     // Fetch published stores IDs for filtering other sections
     const activeBusinesses = await Business.find({ isPublished: true }).select('_id');
@@ -95,10 +163,10 @@ export const getMarketplaceHome = async (req: Request, res: Response): Promise<v
 
     res.json({
       success: true,
-      banners: populatedConfig.banners,
-      categories: populatedConfig.categories,
-      featuredStores: populatedConfig.featuredStores,
-      featuredProducts: populatedConfig.featuredProducts,
+      banners: config.banners,
+      categories: config.categories,
+      featuredStores,
+      featuredProducts,
       trendingProducts,
       globalCoupons
     });
@@ -125,7 +193,7 @@ export const searchMarketplace = async (req: Request, res: Response): Promise<vo
     };
 
     if (category && category.toLowerCase() !== 'all') {
-      filter.category = new RegExp('^' + category.trim() + '$', 'i');
+      filter.category = new RegExp(category.trim(), 'i');
     }
 
     let products = [];

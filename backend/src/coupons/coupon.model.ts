@@ -5,6 +5,7 @@ export interface ICoupon extends Document {
   code: string;
   discountType: 'percentage' | 'fixed';
   discountValue: number;
+  startDate?: Date;
   expiryDate?: Date;
   isActive: boolean;
   visibility: 'PUBLIC' | 'PRIVATE';
@@ -19,6 +20,7 @@ const CouponSchema = new Schema<ICoupon>(
     code:          { type: String, required: true, uppercase: true, trim: true },
     discountType:  { type: String, enum: ['percentage', 'fixed'], required: true },
     discountValue: { type: Number, required: true, min: 0 },
+    startDate:     { type: Date },
     expiryDate:    { type: Date },
     isActive:      { type: Boolean, default: true },
     visibility:     { type: String, enum: ['PUBLIC', 'PRIVATE'], default: 'PRIVATE' },

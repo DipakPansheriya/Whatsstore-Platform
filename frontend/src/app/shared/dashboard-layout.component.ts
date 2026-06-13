@@ -6,11 +6,12 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { SubscriptionService } from './services/subscription.service';
 import { ThemeToggleComponent } from './components/theme-toggle.component';
+import { DirectionToggleComponent } from './components/direction-toggle.component';
 
 @Component({
   selector: 'app-dashboard-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe, CommonModule, ThemeToggleComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe, CommonModule, ThemeToggleComponent, DirectionToggleComponent],
   template: `
     <div class="dash-layout">
       <!-- Sidebar -->
@@ -55,12 +56,54 @@ import { ThemeToggleComponent } from './components/theme-toggle.component';
             </div>
           </div>
           <div class="navbar-right" *ngIf="auth.currentUser$ | async as user">
+            <!-- Direction Toggle -->
+            <app-direction-toggle></app-direction-toggle>
+
+            <!-- Theme Toggle -->
             <app-theme-toggle></app-theme-toggle>
 
-            <button class="icon-btn">
-              <span class="bell-icon">🔔</span>
-              <span class="badge-dot"></span>
-            </button>
+            <!-- Notification Bell -->
+            <div class="notifications-wrapper" (clickOutside)="notificationsOpen = false">
+              <button class="icon-btn" (click)="toggleNotifications($event)">
+                <span class="bell-icon">🔔</span>
+                <span class="badge-dot" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+              </button>
+              
+              <!-- Zepto-style Notifications Panel -->
+              <div class="notif-panel glass-card" *ngIf="notificationsOpen" (click)="$event.stopPropagation()">
+                <div class="notif-header">
+                  <h4>Notifications</h4>
+                  <button class="btn-read-all" *ngIf="unreadCount > 0" (click)="markAllRead()">Mark all read</button>
+                </div>
+                
+                <div class="notif-body">
+                  <div class="notif-empty" *ngIf="notifications.length === 0">
+                    <span class="empty-emoji">📭</span>
+                    <p>No new notifications</p>
+                  </div>
+                  
+                  <div class="notif-list" *ngIf="notifications.length > 0">
+                    @for (notif of notifications; track notif._id) {
+                      <div class="notif-item" [class.unread]="!notif.isRead" (click)="markAsRead(notif)">
+                        <div class="notif-icon-box">
+                          <span *ngIf="notif.type === 'REVIEW_PENDING'">⭐</span>
+                          <span *ngIf="notif.type === 'NEW_ORDER'">🛒</span>
+                          <span *ngIf="notif.type === 'SYSTEM'">⚙️</span>
+                          <span *ngIf="!['REVIEW_PENDING', 'NEW_ORDER', 'SYSTEM'].includes(notif.type)">📬</span>
+                        </div>
+                        <div class="notif-content">
+                          <h5>{{ notif.title }}</h5>
+                          <p>{{ notif.message }}</p>
+                          <span class="notif-time">{{ notif.createdAt | date:'short' }}</span>
+                        </div>
+                        <div class="notif-dot" *ngIf="!notif.isRead"></div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="user-profile-widget">
               <div class="user-profile">
               <span class="user-name">{{ user.name }}</span>
@@ -433,7 +476,7 @@ import { ThemeToggleComponent } from './components/theme-toggle.component';
       gap: 12px;
     }
     .banner-icon { font-size: 1.25rem; }
-    .banner-text { color: #fca5a5; font-weight: 500; font-size: 0.95rem; }
+    .banner-text { color: var(--color-danger); font-weight: 500; font-size: 0.95rem; }
     .btn-upgrade {
       background: var(--color-danger);
       color: #fff;
@@ -496,8 +539,50 @@ import { ThemeToggleComponent } from './components/theme-toggle.component';
     }
     .icon-btn:hover { background: var(--color-bg-card); border-color: var(--color-border-hover); }
     .badge-dot {
-      position: absolute; top: 10px; right: 10px; width: 8px; height: 8px; background: var(--color-danger); border-radius: 50%; border: 2px solid var(--color-bg-card);
+      position: absolute; top: -5px; right: -5px; background: var(--color-danger); color: var(--color-bg);
+      font-size: 0.65rem; font-weight: 800; min-width: 18px; height: 18px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--color-bg-card);
     }
+
+    /* Zepto-Style Notifications */
+    .notifications-wrapper { position: relative; }
+    .notif-panel {
+      position: absolute; top: 50px; right: 0; width: 340px; max-height: 450px;
+      display: flex; flex-direction: column;
+      border-radius: var(--radius-xl); border: 1px solid var(--color-border);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.5); z-index: 1000;
+      animation: slideDown 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+      overflow: hidden;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .notif-header {
+      padding: 16px 20px; border-bottom: 1px solid var(--color-border);
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--color-bg-surface);
+    }
+    .notif-header h4 { margin: 0; font-size: 1.1rem; font-weight: 800; color: var(--color-text-primary); }
+    .btn-read-all {
+      background: transparent; border: none; color: var(--color-accent); font-size: 0.8rem; font-weight: 700; cursor: pointer;
+      &:hover { text-decoration: underline; }
+    }
+    .notif-body { flex: 1; overflow-y: auto; padding: 10px 0; max-height: 380px; }
+    .notif-empty { text-align: center; padding: 30px; color: var(--color-text-secondary); .empty-emoji { font-size: 2.5rem; display: block; margin-bottom: 10px; opacity: 0.5; } }
+    .notif-item {
+      display: flex; gap: 15px; padding: 14px 20px; cursor: pointer; transition: background 0.2s; position: relative;
+      &:hover { background: var(--color-bg-surface); }
+      &.unread { background: rgba(37,211,102,0.05); }
+    }
+    .notif-icon-box {
+      width: 40px; height: 40px; border-radius: 50%; background: var(--color-bg-surface); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;
+    }
+    .notif-content { flex: 1; display: flex; flex-direction: column; gap: 4px; padding-right: 15px; }
+    .notif-content h5 { margin: 0; font-size: 0.9rem; font-weight: 800; color: var(--color-text-primary); }
+    .notif-content p { margin: 0; font-size: 0.8rem; color: var(--color-text-secondary); line-height: 1.3; }
+    .notif-time { font-size: 0.7rem; color: var(--color-text-muted); margin-top: 4px; }
+    .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-accent); position: absolute; right: 20px; top: 50%; transform: translateY(-50%); box-shadow: 0 0 8px var(--color-accent-glow); }
+
     .user-profile-widget {
       display: flex; align-items: center; gap: 12px; padding: 6px 12px 6px 16px; border-radius: 50px; background: var(--color-bg-surface); border: 1px solid var(--color-border); cursor: pointer; transition: all var(--transition-normal);
     }
@@ -553,6 +638,7 @@ export class DashboardLayoutComponent implements OnInit {
     { label: 'Products', path: '/admin/products', icon: '📦', exact: false },
     { label: 'Orders', path: '/admin/orders', icon: '🛒', exact: false },
     { label: 'Coupons', path: '/admin/coupons', icon: '🎟️', exact: false },
+    { label: 'Reviews', path: '/admin/reviews', icon: '⭐', exact: false },
     { label: 'Website Builder', path: '/admin/builder', icon: '🎨', exact: false },
     { label: 'Settings', path: '/admin/settings', icon: '⚙️', exact: false },
   ];
@@ -560,6 +646,11 @@ export class DashboardLayoutComponent implements OnInit {
   subscriptionStatus: string | null = null;
   subscription: any = null;
   loadingSubscription = true;
+
+  // Notifications state
+  notificationsOpen = false;
+  notifications: any[] = [];
+  unreadCount = 0;
 
   constructor(
     public auth: AuthService,
@@ -575,6 +666,53 @@ export class DashboardLayoutComponent implements OnInit {
     this.subService.subscription$.subscribe(sub => {
       this.subscription = sub;
       this.loadingSubscription = false;
+    });
+
+    if (this.auth.isLoggedIn()) {
+      this.fetchNotifications();
+    }
+  }
+
+  // Notification Methods
+  toggleNotifications(event: Event) {
+    event.stopPropagation();
+    this.notificationsOpen = !this.notificationsOpen;
+  }
+
+  fetchNotifications() {
+    const headers = { Authorization: `Bearer ${this.auth.getToken()}` };
+    this.http.get<any>(`${environment.apiUrl}/notifications`, { headers }).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.notifications = res.notifications;
+          this.unreadCount = res.unreadCount;
+        }
+      }
+    });
+  }
+
+  markAsRead(notif: any) {
+    if (notif.isRead) return;
+    const headers = { Authorization: `Bearer ${this.auth.getToken()}` };
+    this.http.put<any>(`${environment.apiUrl}/notifications/${notif._id}/read`, {}, { headers }).subscribe({
+      next: (res) => {
+        if (res.success) {
+          notif.isRead = true;
+          this.unreadCount = Math.max(0, this.unreadCount - 1);
+        }
+      }
+    });
+  }
+
+  markAllRead() {
+    const headers = { Authorization: `Bearer ${this.auth.getToken()}` };
+    this.http.put<any>(`${environment.apiUrl}/notifications/read-all`, {}, { headers }).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.notifications.forEach(n => n.isRead = true);
+          this.unreadCount = 0;
+        }
+      }
     });
   }
 

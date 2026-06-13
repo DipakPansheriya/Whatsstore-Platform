@@ -8,6 +8,7 @@ import { WishlistService } from '../shared/services/wishlist.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { ThemeToggleComponent } from '../shared/components/theme-toggle.component';
+import { DirectionToggleComponent } from '../shared/components/direction-toggle.component';
 
 interface BusinessProfile {
   _id: string;
@@ -47,7 +48,7 @@ interface ProductItem {
 @Component({
   selector: 'app-public-store',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, ThemeToggleComponent],
+  imports: [CommonModule, RouterLink, FormsModule, ThemeToggleComponent, DirectionToggleComponent],
   template: `
     <div *ngIf="loading" class="loading-state">
       <span class="spinner">🏪</span> Loading storefront...
@@ -72,13 +73,19 @@ interface ProductItem {
           </a>
           
           <nav class="store-nav">
-            <a href="#products-section" class="nav-link-btn">Products</a>
+            <a [routerLink]="['/store', slug]" class="nav-link-btn">
+              <span class="label-text">Products</span>
+            </a>
             <a [routerLink]="['/store', slug, 'wishlist']" class="nav-link-btn wishlist-link">
-              ❤️ Wishlist <span class="nav-badge" *ngIf="wishlistCount > 0">{{ wishlistCount }}</span>
+              ❤️ <span class="label-text">Wishlist</span> <span class="nav-badge" *ngIf="wishlistCount > 0">{{ wishlistCount }}</span>
+            </a>
+            <a [routerLink]="['/store', slug, 'track']" class="nav-link-btn">
+              <span class="label-text">Track Order</span>
             </a>
           </nav>
-
+          
           <div class="header-actions">
+            <app-direction-toggle></app-direction-toggle>
             <app-theme-toggle></app-theme-toggle>
             <!-- Cart Button with Hover Dropdown -->
             <div class="cart-dropdown-wrapper" (mouseenter)="showCartDropdown = true" (mouseleave)="showCartDropdown = false">
@@ -478,6 +485,20 @@ interface ProductItem {
       font-size: 0.95rem;
       transition: color 0.2s;
       &:hover { color: var(--color-text-primary); }
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    @media (max-width: 600px) {
+      .header-container { padding: 0 var(--space-md); }
+      .store-nav { gap: 10px; }
+      .header-actions { gap: 10px; }
+      .store-brand { font-size: 1.1rem; }
+      .nav-link-btn span.label-text { display: none; }
+      .cart-btn { padding: 6px 12px; }
     }
     .wishlist-link {
       display: flex;

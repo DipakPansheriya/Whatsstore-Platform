@@ -56,17 +56,17 @@ import { environment } from '../../environments/environment.development';
   styles: [`
     .sa-stores { display: flex; flex-direction: column; gap: var(--space-xl); }
     .dash-header { display: flex; justify-content: space-between; align-items: flex-end; }
-    .dash-header h1 { font-size: 2rem; margin-bottom: var(--space-xs); background: linear-gradient(to right, #fff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .dash-header h1 { font-size: 2rem; margin-bottom: var(--space-xs); background: linear-gradient(to right, var(--color-text-primary), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .stores-list { padding: var(--space-xl); border-top: 1px solid rgba(139, 92, 246, 0.2); }
     .stores-list h3 { margin-bottom: var(--space-lg); font-size: 1.25rem; }
     .table-responsive { overflow-x: auto; }
     .sa-table { width: 100%; border-collapse: collapse; text-align: left; }
-    .sa-table th { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--color-text-secondary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }
-    .sa-table td { padding: 16px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.95rem; }
-    .sa-table tbody tr:hover { background: rgba(255,255,255,0.02); }
-    .url-slug { padding: 4px 8px; background: rgba(255,255,255,0.05); border-radius: 4px; font-family: monospace; font-size: 0.85rem; color: var(--color-accent); }
+    .sa-table th { padding: 12px; border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; }
+    .sa-table td { padding: 16px 12px; border-bottom: 1px solid var(--color-border); font-size: 0.95rem; }
+    .sa-table tbody tr:hover { background: var(--color-bg-surface); }
+    .url-slug { padding: 4px 8px; background: var(--color-bg-surface); border-radius: 4px; font-family: monospace; font-size: 0.85rem; color: var(--color-accent); }
     .btn-icon { background: transparent; border: none; font-size: 1.1rem; cursor: pointer; padding: 6px; border-radius: 6px; transition: 0.2s; }
-    .btn-icon:hover { background: rgba(255,255,255,0.1); }
+    .btn-icon:hover { background: var(--color-bg-surface); }
     .btn-icon.delete:hover { background: rgba(239, 68, 68, 0.2); }
     .text-center { text-align: center; }
     .text-muted { color: var(--color-text-secondary); }

@@ -36,7 +36,7 @@ interface OrderRecord {
   template: `
     <div class="orders-scaffold animate-fade-in-up">
       <!-- Header -->
-      <header class="page-header">
+      <header class="page-header" *ngIf="!selectedOrder">
         <div>
           <span class="badge">Sales Tracking</span>
           <h1>Customer Orders</h1>
@@ -49,7 +49,7 @@ interface OrderRecord {
       <div *ngIf="successMsg" class="alert alert-success">✅ {{ successMsg }}</div>
 
       <!-- Main Layout -->
-      <div class="content-wrapper" *ngIf="!loading">
+      <div class="content-wrapper" *ngIf="!loading && !selectedOrder">
         
         <!-- Status Tabs Filtering -->
         <div class="filters-header">
@@ -123,32 +123,40 @@ interface OrderRecord {
       </div>
 
       <!-- Loading State -->
-      <div *ngIf="loading" class="loading-state">
+      <div *ngIf="loading && !selectedOrder" class="loading-state">
         <span class="spinner">⏳</span> Fetching customer orders...
       </div>
 
-      <!-- Order Detail Dialog Modal Overlay -->
-      <div class="modal-overlay" *ngIf="selectedOrder">
-        <div class="modal-card card">
-          <header class="modal-header">
-            <h3>Order Details #{{ selectedOrder._id.slice(-6).toUpperCase() }}</h3>
-            <button (click)="closeDetailModal()" class="btn-close">×</button>
-          </header>
+      <!-- Order Detail Page View -->
+      <div class="order-detail-page animate-fade-in-up" *ngIf="selectedOrder">
+        <header class="detail-page-header">
+          <button (click)="closeDetailModal()" class="btn btn-ghost btn-back">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to Orders
+          </button>
+          <div class="title-row">
+            <h2>Order #{{ selectedOrder._id.slice(-6).toUpperCase() }}</h2>
+            <span [className]="'status-badge ' + selectedOrder.status">{{ selectedOrder.status }}</span>
+          </div>
+        </header>
 
-          <div class="modal-scrollable">
+        <div class="detail-page-content">
+          <div class="detail-card glass-card">
             <!-- Customer Segment -->
-            <div class="modal-section">
+            <div class="detail-section">
               <h4>Customer Information</h4>
               <div class="details-grid">
-                <div><strong>Name:</strong> {{ selectedOrder.customerName }}</div>
-                <div><strong>Phone:</strong> {{ selectedOrder.customerPhone }}</div>
-                <div><strong>WhatsApp:</strong> {{ selectedOrder.customerWhatsapp }}</div>
-                <div *ngIf="selectedOrder.notes"><strong>Notes:</strong> {{ selectedOrder.notes }}</div>
+                <div><span class="info-label">Name:</span> <span class="info-val">{{ selectedOrder.customerName }}</span></div>
+                <div><span class="info-label">Phone:</span> <span class="info-val">{{ selectedOrder.customerPhone }}</span></div>
+                <div><span class="info-label">WhatsApp:</span> <span class="info-val">{{ selectedOrder.customerWhatsapp }}</span></div>
+                <div *ngIf="selectedOrder.notes"><span class="info-label">Notes:</span> <span class="info-val">{{ selectedOrder.notes }}</span></div>
               </div>
             </div>
 
             <!-- Items Purchased -->
-            <div class="modal-section">
+            <div class="detail-section">
               <h4>Purchased Products</h4>
               <div class="items-list">
                 @for (item of selectedOrder.items; track item.product?._id) {
@@ -163,31 +171,25 @@ interface OrderRecord {
               </div>
 
               <!-- Coupon & Discount breakdown -->
-              <div class="discount-breakdown" *ngIf="selectedOrder.couponCode" style="margin-top: 10px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 4px; border: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <div class="discount-breakdown" *ngIf="selectedOrder.couponCode">
+                <div class="breakdown-row">
                   <span>Coupon Applied:</span>
-                  <span style="font-weight: 700; color: #25d366;">{{ selectedOrder.couponCode }}</span>
+                  <span class="coupon-val">{{ selectedOrder.couponCode }}</span>
                 </div>
-                <div style="display: flex; justify-content: space-between;">
+                <div class="breakdown-row">
                   <span>Discount Applied:</span>
-                  <span style="font-weight: 700; color: #ef4444;">-₹{{ selectedOrder.discountAmount }}</span>
+                  <span class="discount-val">-₹{{ selectedOrder.discountAmount }}</span>
                 </div>
               </div>
 
-              <div class="modal-total">
+              <div class="detail-total">
                 <span>Total Amount:</span>
                 <span class="total-price">₹{{ selectedOrder.totalAmount }}</span>
               </div>
             </div>
 
-            <!-- WhatsApp Message Preview -->
-            <div class="modal-section">
-              <h4>WhatsApp Summary Message</h4>
-              <textarea readonly style="width: 100%; min-height: 100px; padding: 8px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.08); color: #ccc; font-size: 0.8rem; font-family: monospace; border-radius: 4px; resize: none;" [value]="getWhatsAppSummaryText(selectedOrder)"></textarea>
-            </div>
-
-            <!-- Manage status -->
-            <div class="modal-section">
+            <!-- Manage status & WhatsApp -->
+            <div class="detail-section">
               <h4>Update Order Status</h4>
               <div class="status-updater">
                 <select name="status" [(ngModel)]="selectedOrder.status" (change)="onStatusChange(selectedOrder)">
@@ -201,6 +203,12 @@ interface OrderRecord {
                   🟢 Notify Customer
                 </button>
               </div>
+            </div>
+
+            <!-- WhatsApp Message Preview -->
+            <div class="detail-section">
+              <h4>WhatsApp Summary Message</h4>
+              <textarea readonly class="wa-preview" [value]="getWhatsAppSummaryText(selectedOrder)"></textarea>
             </div>
           </div>
         </div>
@@ -221,7 +229,7 @@ interface OrderRecord {
       margin: var(--space-xs) 0;
       font-size: 2.2rem;
       font-weight: 900;
-      color: #fff;
+      color: var(--color-text-primary);
     }
     .page-header p {
       color: var(--color-text-secondary);
@@ -250,7 +258,7 @@ interface OrderRecord {
     .empty-state {
       text-align: center;
       padding: var(--space-3xl);
-      h3 { font-weight: 800; color: #fff; margin-bottom: var(--space-xs); }
+      h3 { font-weight: 800; color: var(--color-text-primary); margin-bottom: var(--space-xs); }
       p { color: var(--color-text-secondary); }
     }
     .empty-icon {
@@ -278,7 +286,7 @@ interface OrderRecord {
     }
     .view-toggle {
       display: flex;
-      background: rgba(8, 9, 13, 0.4);
+      background: var(--color-bg-surface);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
       padding: 4px;
@@ -296,9 +304,9 @@ interface OrderRecord {
       border-radius: var(--radius-sm);
       cursor: pointer;
       transition: all var(--transition-fast);
-      &:hover { color: #fff; }
+      &:hover { color: var(--color-text-primary); }
       &.active {
-        background: rgba(255, 255, 255, 0.1);
+        background: var(--color-bg-card);
         color: var(--color-accent);
       }
     }
@@ -395,12 +403,12 @@ interface OrderRecord {
       white-space: nowrap;
       &:hover {
         color: var(--color-text-primary);
-        background: rgba(255,255,255,0.03);
+        background: var(--color-bg-surface);
       }
       &.active {
-        color: #fff;
-        background: rgba(255, 255, 255, 0.04);
-        border-color: rgba(255, 255, 255, 0.08);
+        color: var(--color-text-primary);
+        background: var(--color-bg-card);
+        border-color: var(--color-border);
         &.pending { border-color: var(--color-warning); color: var(--color-warning); background: rgba(245, 158, 11, 0.05); }
         &.confirmed { border-color: var(--color-info); color: var(--color-info); background: rgba(6, 182, 212, 0.05); }
         &.processing { border-color: var(--color-accent); color: var(--color-accent); background: rgba(37, 211, 102, 0.05); }
@@ -419,8 +427,8 @@ interface OrderRecord {
       display: flex;
       flex-direction: column;
       gap: var(--space-md);
-      border: 1px solid rgba(255,255,255,0.05);
-      background: rgba(17, 19, 25, 0.45);
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-card-glass);
       &:hover {
         border-color: var(--color-border-hover);
       }
@@ -437,7 +445,7 @@ interface OrderRecord {
       font-family: var(--font-heading);
       font-size: 1.1rem;
       display: block;
-      color: #fff;
+      color: var(--color-text-primary);
     }
     .order-date {
       font-size: 0.75rem;
@@ -477,7 +485,7 @@ interface OrderRecord {
     }
     .info-val {
       font-weight: 600;
-      color: #fff;
+      color: var(--color-text-primary);
       &.total {
         color: var(--color-accent);
         font-weight: 800;
@@ -522,76 +530,70 @@ interface OrderRecord {
       }
     }
 
-    /* Modal dialog popups */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(8px);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: var(--space-md);
-    }
-    .modal-card {
-      width: 100%;
-      max-width: 550px;
-      max-height: 90vh;
+    /* Order Detail Page View */
+    .order-detail-page {
       display: flex;
       flex-direction: column;
-      padding: 0;
-      overflow: hidden;
-      background: rgba(17, 19, 25, 0.9);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      gap: var(--space-xl);
     }
-    .modal-header {
-      height: 60px;
-      padding: 0 var(--space-lg);
-      border-bottom: 1px solid var(--color-border);
+    .detail-page-header {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      h3 {
-        font-size: 1.25rem;
-        font-weight: 800;
-        color: #fff;
-      }
+      flex-direction: column;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
     }
-    .btn-close {
-      background: transparent;
-      border: none;
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
       color: var(--color-text-secondary);
-      font-size: 1.75rem;
-      cursor: pointer;
-      line-height: 1;
-      transition: color var(--transition-fast);
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      width: fit-content;
+      transition: all var(--transition-fast);
       &:hover {
-        color: #fff;
+        color: var(--color-text-primary);
+        border-color: var(--color-text-primary);
       }
     }
-    .modal-scrollable {
-      padding: var(--space-lg);
-      overflow-y: auto;
+    .title-row {
       display: flex;
-      flex-direction: column;
-      gap: var(--space-lg);
+      align-items: center;
+      gap: var(--space-md);
+      h2 {
+        font-size: 2rem;
+        font-weight: 900;
+        color: var(--color-text-primary);
+        margin: 0;
+      }
     }
-    .modal-section {
+    .detail-page-content {
+      max-width: 800px;
+    }
+    .detail-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-xl);
       display: flex;
       flex-direction: column;
-      gap: var(--space-sm);
-      border-bottom: 1px solid var(--color-border);
-      padding-bottom: var(--space-md);
+      gap: var(--space-xl);
+    }
+    .detail-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      border-bottom: 1px dashed var(--color-border);
+      padding-bottom: var(--space-xl);
       &:last-child {
         border-bottom: none;
         padding-bottom: 0;
       }
       h4 {
-        font-size: 0.85rem;
+        font-size: 1rem;
         color: var(--color-accent);
         text-transform: uppercase;
         letter-spacing: 0.05em;
@@ -600,74 +602,130 @@ interface OrderRecord {
     }
     .details-grid {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 6px;
-      font-size: 0.9rem;
-      color: var(--color-text-secondary);
-      strong { color: #fff; }
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: var(--space-md);
+      div {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .info-label {
+        font-size: 0.8rem;
+        color: var(--color-text-secondary);
+        font-weight: 600;
+      }
+      .info-val {
+        font-size: 1rem;
+        color: var(--color-text-primary);
+        font-weight: 500;
+      }
     }
     .items-list {
       display: flex;
       flex-direction: column;
-      gap: var(--space-xs);
+      gap: var(--space-md);
     }
     .item-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: var(--space-xs) 0;
-      border-bottom: 1px solid rgba(255,255,255,0.02);
+      padding: var(--space-sm) 0;
+      border-bottom: 1px solid var(--color-border);
+      &:last-child {
+        border-bottom: none;
+      }
     }
     .item-info {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 4px;
     }
     .item-title {
       font-weight: 700;
-      font-size: 0.95rem;
-      color: #fff;
+      font-size: 1.05rem;
+      color: var(--color-text-primary);
     }
     .item-qty {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: var(--color-text-secondary);
     }
     .item-total {
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: #fff;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--color-text-primary);
     }
-    .modal-total {
+    .discount-breakdown {
+      margin-top: var(--space-sm);
+      padding: var(--space-md);
+      background: var(--color-bg-surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      font-size: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .coupon-val { font-weight: 700; color: var(--color-accent); }
+      .discount-val { font-weight: 700; color: var(--color-danger); }
+    }
+    .detail-total {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding-top: var(--space-md);
       font-weight: 800;
-      font-size: 1.1rem;
-      color: #fff;
+      font-size: 1.25rem;
+      color: var(--color-text-primary);
+      border-top: 2px dashed var(--color-border);
     }
     .total-price {
       color: var(--color-accent);
-      font-size: 1.35rem;
+      font-size: 1.75rem;
       font-family: var(--font-heading);
     }
     .status-updater {
       display: flex;
-      gap: var(--space-sm);
+      gap: var(--space-md);
       select {
         flex: 1;
-        padding: 11px;
-        background: rgba(8, 9, 13, 0.4);
+        padding: 12px 16px;
+        background: var(--color-bg-surface);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         color: var(--color-text-primary);
-        font-size: 0.9rem;
+        font-size: 1rem;
         font-weight: 600;
         outline: none;
+        cursor: pointer;
         &:focus {
           border-color: var(--color-accent);
+          box-shadow: 0 0 0 2px rgba(37, 211, 102, 0.2);
         }
       }
+      .btn-whatsapp {
+        padding: 12px 24px;
+        font-size: 1rem;
+      }
+      @media (max-width: 600px) {
+        flex-direction: column;
+      }
+    }
+    .wa-preview {
+      width: 100%;
+      min-height: 120px;
+      padding: var(--space-md);
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      font-size: 0.85rem;
+      font-family: monospace;
+      border-radius: var(--radius-md);
+      resize: vertical;
+      line-height: 1.5;
     }
   `]
 })

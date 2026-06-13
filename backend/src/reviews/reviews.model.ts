@@ -5,6 +5,7 @@ export interface IReview extends Document {
   rating: number;
   name: string;
   comment: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
   createdAt: Date;
 }
 
@@ -14,6 +15,7 @@ const ReviewSchema = new Schema<IReview>(
     rating:  { type: Number, required: true, min: 1, max: 5 },
     name:    { type: String, required: true, trim: true },
     comment: { type: String, required: true, trim: true },
+    status:  { type: String, enum: ['PENDING', 'APPROVED', 'REJECTED'], default: 'PENDING' },
   },
   { timestamps: { createdAt: true, updatedAt: false } }
 );
