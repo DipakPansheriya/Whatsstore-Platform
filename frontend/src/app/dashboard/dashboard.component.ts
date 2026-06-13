@@ -4,11 +4,13 @@ import { AuthService } from '../shared/services/auth.service';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
+import { Animations } from '../shared/animations/animations';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [RouterLink, AsyncPipe, CommonModule],
+  animations: [Animations.staggerList],
   template: `
     <div class="dashboard-page">
       <div class="container">
@@ -20,45 +22,45 @@ import { environment } from '../../environments/environment.development';
           </div>
         </header>
 
-        <div class="stats-grid">
+        <div class="stats-grid" [@staggerList]="dashboardStats ? 'loaded' : 'init'">
           <!-- 1. Store Views -->
-          <div class="stat-card glass-card">
+          <div class="stat-card glass-card animate-item">
             <div class="stat-icon-wrapper">👁️</div>
             <div class="stat-value">{{ dashboardStats?.pageViews || 0 }}</div>
             <div class="stat-label">Store Views</div>
           </div>
           <!-- 2. WhatsApp Clicks -->
-          <div class="stat-card glass-card">
+          <div class="stat-card glass-card animate-item">
             <div class="stat-icon-wrapper">💬</div>
             <div class="stat-value">{{ dashboardStats?.whatsappClicks || 0 }}</div>
             <div class="stat-label">WhatsApp Clicks</div>
           </div>
           <!-- 3. Total Products -->
-          <div class="stat-card glass-card">
+          <div class="stat-card glass-card animate-item">
             <div class="stat-icon-wrapper">📦</div>
             <div class="stat-value">{{ dashboardStats?.totalProducts || 0 }}</div>
             <div class="stat-label">Total Products</div>
           </div>
           <!-- 4. Total Orders -->
-          <div class="stat-card glass-card">
+          <div class="stat-card glass-card animate-item">
             <div class="stat-icon-wrapper">🛒</div>
             <div class="stat-value">{{ dashboardStats?.totalOrders || 0 }}</div>
             <div class="stat-label">Total Orders</div>
           </div>
           <!-- 5. Total Revenue -->
-          <div class="stat-card glass-card">
+          <div class="stat-card glass-card animate-item">
             <div class="stat-icon-wrapper">📈</div>
             <div class="stat-value">₹{{ dashboardStats?.totalSales || 0 }}</div>
             <div class="stat-label">Total Revenue</div>
           </div>
           <!-- 6. Cart Abandonment Rate -->
-          <div class="stat-card glass-card">
+          <div class="stat-card glass-card animate-item">
             <div class="stat-icon-wrapper">💔</div>
             <div class="stat-value">{{ dashboardStats?.cartAbandonmentRate || 0 }}%</div>
             <div class="stat-label">Cart Abandonment</div>
           </div>
           <!-- 7. Monthly Growth -->
-          <div class="stat-card glass-card">
+          <div class="stat-card glass-card animate-item">
             <div class="stat-icon-wrapper">🚀</div>
             <div class="stat-value" [style.color]="(dashboardStats?.monthlyGrowth || 0) < 0 ? '#ef4444' : '#25d366'">
               {{ (dashboardStats?.monthlyGrowth || 0) >= 0 ? '+' : '' }}{{ dashboardStats?.monthlyGrowth || 0 }}%
@@ -132,11 +134,11 @@ import { environment } from '../../environments/environment.development';
 
         <!-- Coupon Performance Leaderboard Widget -->
         <div class="widget-card glass-card" style="margin-top: var(--space-xl);" *ngIf="couponSummary.length > 0">
-          <h2 class="widget-title" style="margin-top: 0; margin-bottom: var(--space-lg); font-size: 1.35rem; font-weight: 800; color: #fff;">🎟️ Coupon Performance Leaderboard</h2>
+          <h2 class="widget-title" style="margin-top: 0; margin-bottom: var(--space-lg); font-size: 1.35rem; font-weight: 800;">🎟️ Coupon Performance Leaderboard</h2>
           <div style="overflow-x: auto;">
             <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
               <thead>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.08); color: var(--color-text-secondary);">
+                <tr style="border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary);">
                   <th style="padding: 12px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;">Coupon Code</th>
                   <th style="padding: 12px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;">Times Used</th>
                   <th style="padding: 12px; font-weight: 700; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em;">Direct Discounts</th>
@@ -146,16 +148,16 @@ import { environment } from '../../environments/environment.development';
               </thead>
               <tbody>
                 @for (cp of couponSummary; track cp.code) {
-                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); color: #fff;">
-                    <td style="padding: 14px 12px;"><span style="background: rgba(37,211,102,0.1); border: 1px dashed rgba(37,211,102,0.3); color: #25d366; font-weight: 800; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; letter-spacing: 0.05em;">{{ cp.code }}</span></td>
+                  <tr style="border-bottom: 1px solid var(--color-border); color: var(--color-text-primary);">
+                    <td style="padding: 14px 12px;"><span style="background: var(--color-accent-dim); border: 1px dashed rgba(37,211,102,0.3); color: var(--color-accent); font-weight: 800; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; letter-spacing: 0.05em;">{{ cp.code }}</span></td>
                     <td style="padding: 14px 12px; font-weight: 700;">{{ cp.useCount }} sales</td>
-                    <td style="padding: 14px 12px; color: #ef4444; font-weight: 700;">-₹{{ cp.discount }}</td>
-                    <td style="padding: 14px 12px; color: #25d366; font-weight: 800;">₹{{ cp.revenue }}</td>
+                    <td style="padding: 14px 12px; color: var(--color-danger); font-weight: 700;">-₹{{ cp.discount }}</td>
+                    <td style="padding: 14px 12px; color: var(--color-accent); font-weight: 800;">₹{{ cp.revenue }}</td>
                     <td style="padding: 14px 12px;">
                       <div style="display: flex; align-items: center; gap: 8px;">
                         <span style="font-weight: 700; width: 45px;">{{ cp.conversionRate }}%</span>
-                        <div style="width: 70px; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden;">
-                          <div style="height: 100%; background: #25d366;" [style.width]="cp.conversionRate + '%'"></div>
+                        <div style="width: 70px; height: 6px; background: var(--color-border); border-radius: 3px; overflow: hidden;">
+                          <div style="height: 100%; background: var(--color-accent);" [style.width]="cp.conversionRate + '%'"></div>
                         </div>
                       </div>
                     </td>
@@ -227,14 +229,14 @@ import { environment } from '../../environments/environment.development';
       font-size: 1.8rem;
       width: 48px;
       height: 48px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: var(--color-bg-surface);
+      border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .stat-value { font-size: 2.2rem; font-weight: 800; font-family: var(--font-heading); color: #fff; line-height: 1; }
+    .stat-value { font-size: 2.2rem; font-weight: 800; font-family: var(--font-heading); color: var(--color-text-primary); line-height: 1; }
     .stat-label { font-size: 0.85rem; color: var(--color-text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
 
     /* Dashboard widgets layout */
@@ -250,14 +252,14 @@ import { environment } from '../../environments/environment.development';
       border-radius: var(--radius-lg);
     }
     .widget-title {
-      font-size: 1.35rem; font-weight: 800; color: #fff; margin-top: 0; margin-bottom: var(--space-lg);
+      font-size: 1.35rem; font-weight: 800; color: var(--color-text-primary); margin-top: 0; margin-bottom: var(--space-lg);
     }
     .top-products-list {
       display: flex; flex-direction: column; gap: var(--space-md);
     }
     .top-product-item {
       display: flex; align-items: center; justify-content: space-between;
-      padding-bottom: var(--space-sm); border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding-bottom: var(--space-sm); border-bottom: 1px solid var(--color-border);
       &:last-child { border-bottom: none; }
     }
     .product-info-block {
@@ -266,10 +268,10 @@ import { environment } from '../../environments/environment.development';
     .mini-prod-img {
       width: 40px; height: 40px; border-radius: var(--radius-sm); object-fit: cover;
     }
-    .prod-title-text { color: #fff; font-size: 0.95rem; display: block; }
+    .prod-title-text { color: var(--color-text-primary); font-size: 0.95rem; display: block; }
     .prod-price-text { font-size: 0.8rem; color: var(--color-text-secondary); }
     .sales-info-block { text-align: right; }
-    .sales-count-badge { font-weight: 800; color: #25d366; display: block; font-size: 0.95rem; }
+    .sales-count-badge { font-weight: 800; color: var(--color-accent); display: block; font-size: 0.95rem; }
     .sales-rev-text { font-size: 0.8rem; color: var(--color-text-secondary); }
     .empty-widget-state {
       padding: var(--space-xl); text-align: center; color: var(--color-text-secondary); font-size: 0.95rem;
@@ -283,11 +285,11 @@ import { environment } from '../../environments/environment.development';
       display: flex; align-items: center; justify-content: space-between;
       padding: 12px; border-radius: var(--radius-md);
     }
-    .alert-title-text { color: #fff; font-size: 0.95rem; display: block; }
+    .alert-title-text { color: var(--color-text-primary); font-size: 0.95rem; display: block; }
     .alert-subtitle-text { font-size: 0.8rem; font-weight: 700; }
     .alert-stock-val { font-weight: 800; font-size: 1rem; }
     .empty-widget-success {
-      padding: var(--space-xl); text-align: center; color: #25d366; font-weight: 700; font-size: 0.95rem;
+      padding: var(--space-xl); text-align: center; color: var(--color-accent); font-weight: 700; font-size: 0.95rem;
     }
 
     .subscription-card {
@@ -302,9 +304,9 @@ import { environment } from '../../environments/environment.development';
     }
     .sub-item { display: flex; flex-direction: column; gap: 4px; }
     .sub-label { font-size: 0.85rem; color: var(--color-text-secondary); font-weight: 600; text-transform: uppercase; }
-    .sub-value { font-size: 1.1rem; font-weight: 700; color: #fff; }
-    .badge { padding: 4px 12px; background: rgba(255,255,255,0.1); border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
-    .badge-success { background: rgba(37, 211, 102, 0.15); color: var(--color-accent); border: 1px solid rgba(37, 211, 102, 0.3); }
+    .sub-value { font-size: 1.1rem; font-weight: 700; color: var(--color-text-primary); }
+    .badge { padding: 4px 12px; background: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+    .badge-success { background: var(--color-accent-dim); color: var(--color-accent); border: 1px solid var(--color-accent-glow); }
 
     .quick-actions h2 { margin-bottom: var(--space-lg); font-size: 1.5rem; font-weight: 800; }
     .actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-lg); }

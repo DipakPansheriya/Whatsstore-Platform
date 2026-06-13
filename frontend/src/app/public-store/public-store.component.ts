@@ -8,7 +8,8 @@ import { WishlistService } from '../shared/services/wishlist.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { ThemeToggleComponent } from '../shared/components/theme-toggle.component';
-import { DirectionToggleComponent } from '../shared/components/direction-toggle.component';
+import { ScrollRevealDirective } from '../shared/directives/scroll-reveal.directive';
+
 
 interface BusinessProfile {
   _id: string;
@@ -48,7 +49,7 @@ interface ProductItem {
 @Component({
   selector: 'app-public-store',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, ThemeToggleComponent, DirectionToggleComponent],
+  imports: [CommonModule, RouterLink, FormsModule, ThemeToggleComponent, ScrollRevealDirective],
   template: `
     <div *ngIf="loading" class="loading-state">
       <span class="spinner">🏪</span> Loading storefront...
@@ -85,7 +86,7 @@ interface ProductItem {
           </nav>
           
           <div class="header-actions">
-            <app-direction-toggle></app-direction-toggle>
+
             <app-theme-toggle></app-theme-toggle>
             <!-- Cart Button with Hover Dropdown -->
             <div class="cart-dropdown-wrapper" (mouseenter)="showCartDropdown = true" (mouseleave)="showCartDropdown = false">
@@ -148,34 +149,13 @@ interface ProductItem {
           
           <div class="offers-container">
             @for (cp of publicCoupons; track cp._id) {
-              <div class="offer-ticket glass-card animate-fade-in-up">
-                <!-- Left Ticket Tab -->
-                <div class="offer-tab">
-                  <span class="discount-value">
-                    {{ cp.discountType === 'percentage' ? cp.discountValue + '%' : '₹' + cp.discountValue }}
-                  </span>
-                  <span class="discount-label">OFF</span>
-                </div>
-                
-                <!-- Ticket Divider line with Top and Bottom Circular indents -->
-                <div class="offer-divider">
-                  <div class="notch top-notch"></div>
-                  <div class="notch bottom-notch"></div>
-                </div>
-                
-                <!-- Right Ticket Content -->
-                <div class="offer-content">
-                  <div class="offer-header">
-                    <span class="coupon-code">{{ cp.code }}</span>
-                    <span class="ticket-icon">🎟️</span>
-                  </div>
-                  <p class="offer-description">Claim this offer by entering or selecting the code before checking out.</p>
-                  <div class="offer-footer">
-                    <span class="expiry-text">📅 Valid: {{ cp.expiryDate ? (cp.expiryDate | date:'mediumDate') : 'Limited Time' }}</span>
-                    <button (click)="copyCoupon(cp.code)" class="btn btn-sm copy-btn" [style.background]="copiedCouponCode === cp.code ? '#25d366' : 'rgba(255,255,255,0.05)'" [style.color]="copiedCouponCode === cp.code ? '#000' : '#fff'">
-                      {{ copiedCouponCode === cp.code ? '✓ Copied' : '📋 Copy' }}
-                    </button>
-                  </div>
+              <div class="offer-pill animate-fade-in-up" (click)="copyCoupon(cp.code)" title="Click to copy coupon code">
+                <div class="offer-pill-bg"></div>
+                <div class="offer-pill-content">
+                  <span class="offer-pill-discount">{{ cp.discountType === 'percentage' ? cp.discountValue + '%' : '₹' + cp.discountValue }} OFF</span>
+                  <span class="offer-pill-divider"></span>
+                  <span class="offer-pill-code">{{ cp.code }}</span>
+                  <span class="offer-pill-store">{{ copiedCouponCode === cp.code ? '✓ Copied' : (cp.expiryDate ? 'Valid: ' + (cp.expiryDate | date:'MMM d') : 'Never Expires') }}</span>
                 </div>
               </div>
             }
@@ -184,7 +164,7 @@ interface ProductItem {
       </section>
 
       <!-- Products Listing Section -->
-      <section class="products-section" id="products-section">
+      <section class="products-section" id="products-section" appScrollReveal>
         <div class="section-container">
           <h2 class="section-title">Our Collections</h2>
           
@@ -210,7 +190,7 @@ interface ProductItem {
           <!-- Products Card Grid -->
           <div *ngIf="filteredProducts.length > 0" class="products-grid">
             @for (prod of filteredProducts; track prod._id) {
-              <div class="product-card card">
+              <div class="product-card card" appScrollReveal>
                 <a [routerLink]="['/store', slug, 'product', prod._id]" (click)="trackProductClick(prod._id)" class="card-clickable-area">
                   <div class="image-box">
                     <img [src]="prod.images[0] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=300&auto=format&fit=crop'" 
@@ -245,7 +225,7 @@ interface ProductItem {
       </section>
 
       <!-- About Section -->
-      <section class="about-section">
+      <section class="about-section" appScrollReveal>
         <div class="section-container">
           <div class="about-grid">
             <div class="about-logo" *ngIf="business.logoUrl">
@@ -263,7 +243,7 @@ interface ProductItem {
       </section>
 
       <!-- CTA Footer Section -->
-      <section class="cta-section">
+      <section class="cta-section" appScrollReveal>
         <div class="section-container text-center">
           <h2>{{ business.layoutConfig?.ctaTitle || 'Have questions? Chat with us!' }}</h2>
           <p>We'll help answer size queries, delivery durations, or customizations instantly.</p>
@@ -683,11 +663,11 @@ interface ProductItem {
       margin-top: -10px;
       font-size: 0.95rem;
     }
-    .offers-container {
-      display: flex;
-      gap: var(--space-lg);
+    .offers-container { 
+      display: flex; 
+      gap: 12px; 
+      padding-bottom: 12px; 
       overflow-x: auto;
-      padding-bottom: var(--space-md);
       &::-webkit-scrollbar {
         height: 6px;
       }
@@ -700,139 +680,57 @@ interface ProductItem {
         border-radius: var(--radius-pill);
       }
     }
-    .offer-ticket {
-      min-width: 320px;
-      max-width: 360px;
-      display: flex;
-      border: 1px solid rgba(37, 211, 102, 0.20);
-      border-radius: var(--radius-lg);
-      background: var(--color-bg-card-glass);
-      backdrop-filter: blur(10px);
+    .offer-pill {
       position: relative;
-      overflow: visible;
-      box-sizing: border-box;
-      transition: all var(--transition-normal);
-      
+      display: flex;
+      align-items: center;
+      padding: 12px 22px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(37, 211, 102, 0.15) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+
       &:hover {
-        border-color: var(--color-accent);
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px var(--color-accent-glow);
+        border-color: rgba(139, 92, 246, 0.6);
+        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+        .offer-pill-bg { opacity: 1; }
       }
     }
-    .offer-tab {
-      width: 100px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, rgba(37, 211, 102, 0.15) 0%, rgba(37, 211, 102, 0.03) 100%);
-      border-top-left-radius: var(--radius-lg);
-      border-bottom-left-radius: var(--radius-lg);
-      padding: var(--space-md);
-      box-sizing: border-box;
-      
-      .discount-value {
-        font-size: 1.8rem;
-        font-weight: 950;
-        color: var(--color-accent);
-        text-shadow: 0 0 10px var(--color-accent-glow);
-        line-height: 1;
-        text-align: center;
-      }
-      .discount-label {
-        font-size: 0.75rem;
-        font-weight: 800;
-        color: var(--color-text-primary);
-        letter-spacing: 0.1em;
-        margin-top: 4px;
-        opacity: 0.8;
-      }
+    .offer-pill-bg {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(37, 211, 102, 0.25) 100%);
+      opacity: 0; transition: opacity 0.3s;
     }
-    .offer-divider {
+    .offer-pill-content {
       position: relative;
-      width: 2px;
-      border-left: 2px dashed rgba(37, 211, 102, 0.3);
-      margin: 10px 0;
-      
-      .notch {
-        position: absolute;
-        width: 16px;
-        height: 16px;
-        background: var(--color-bg);
-        border-radius: 50%;
-        left: -9px;
-        border: 1px solid rgba(37, 211, 102, 0.2);
-        box-sizing: border-box;
-        
-        &.top-notch {
-          top: -19px;
-        }
-        &.bottom-notch {
-          bottom: -19px;
-        }
-      }
-    }
-    .offer-content {
-      flex: 1;
-      padding: var(--space-md);
+      z-index: 1;
       display: flex;
-      flex-direction: column;
-      gap: var(--space-xs);
-      box-sizing: border-box;
-      justify-content: space-between;
-    }
-    .offer-header {
-      display: flex;
-      justify-content: space-between;
       align-items: center;
-      
-      .coupon-code {
-        font-size: 1.05rem;
-        font-weight: 900;
-        color: var(--color-text-primary);
-        letter-spacing: 0.05em;
-        background: var(--color-bg-surface);
-        padding: 4px 8px;
-        border-radius: var(--radius-sm);
-        border: 1px dashed var(--color-border-hover);
-      }
-      .ticket-icon {
-        font-size: 1.15rem;
-        opacity: 0.8;
-      }
+      gap: 8px;
     }
-    .offer-description {
-      font-size: 0.82rem;
+    .offer-pill-discount {
+      font-size: 1rem;
+      font-weight: 900;
+      color: #8b5cf6;
+      text-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+    }
+    .offer-pill-divider {
+      width: 1px; height: 16px; background: rgba(255,255,255,0.2);
+    }
+    .offer-pill-code {
+      font-size: 0.95rem;
+      font-weight: 850;
+      color: var(--color-text-primary);
+      letter-spacing: 0.05em;
+    }
+    .offer-pill-store {
+      font-size: 0.85rem;
       color: var(--color-text-secondary);
-      margin: 0;
-      line-height: 1.4;
-      min-height: 36px;
-      display: flex;
-      align-items: center;
-    }
-    .offer-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--space-sm);
-      margin-top: 4px;
-      
-      .expiry-text {
-        font-size: 0.72rem;
-        color: var(--color-text-muted);
-      }
-      .copy-btn {
-        font-size: 0.75rem;
-        font-weight: 700;
-        padding: 5px 12px;
-        border-radius: var(--radius-sm);
-        cursor: pointer;
-        border: 1px solid var(--color-border);
-        background: var(--color-bg-surface);
-        color: var(--color-text-secondary);
-        transition: all var(--transition-normal);
-        &:hover { opacity: 0.9; transform: translateY(-1px); }
-      }
+      font-weight: 700;
     }
     
     /* Product Section */
@@ -880,8 +778,14 @@ interface ProductItem {
     /* Grid system */
     .products-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: var(--space-xl);
+    }
+    @media (max-width: 1024px) {
+      .products-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-md); }
+    }
+    @media (max-width: 600px) {
+      .products-grid { grid-template-columns: repeat(1, 1fr); }
     }
     .product-card {
       display: flex;

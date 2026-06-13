@@ -246,7 +246,7 @@ export const searchMarketplace = async (req: Request, res: Response): Promise<vo
     const productsWithCoupons = await Promise.all(
       products.map(async (prod) => {
         const coupons = await Coupon.find({
-          business: prod.business._id,
+          business: prod.business?._id,
           visibility: 'PUBLIC',
           isActive: true,
           $or: [

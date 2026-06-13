@@ -6,12 +6,12 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { SubscriptionService } from './services/subscription.service';
 import { ThemeToggleComponent } from './components/theme-toggle.component';
-import { DirectionToggleComponent } from './components/direction-toggle.component';
+
 
 @Component({
   selector: 'app-dashboard-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe, CommonModule, ThemeToggleComponent, DirectionToggleComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe, CommonModule, ThemeToggleComponent],
   template: `
     <div class="dash-layout">
       <!-- Sidebar -->
@@ -56,8 +56,6 @@ import { DirectionToggleComponent } from './components/direction-toggle.componen
             </div>
           </div>
           <div class="navbar-right" *ngIf="auth.currentUser$ | async as user">
-            <!-- Direction Toggle -->
-            <app-direction-toggle></app-direction-toggle>
 
             <!-- Theme Toggle -->
             <app-theme-toggle></app-theme-toggle>

@@ -1,15 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MarketplaceService } from '../../shared/services/marketplace.service';
+import { ToastService } from '../../shared/services/toast.service';
+import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.directive';
+import { SkeletonComponent } from '../../shared/components/skeleton/skeleton.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-marketplace-product-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, ScrollRevealDirective, SkeletonComponent],
   template: `
     <div class="marketplace-wrapper animate-fade-in-up">
       <!-- Premium Glass Header -->
@@ -37,8 +40,21 @@ import { environment } from '../../../environments/environment.development';
           <a routerLink="/marketplace">⬅ Return to Marketplace</a>
         </div>
 
-        <div *ngIf="loading" class="loading-state">
-          <span class="spinner">⏳</span> Fetching product specifications...
+        <div *ngIf="loading" class="detail-grid">
+          <div class="gallery-card card p-0">
+            <app-skeleton height="400px" borderRadius="var(--radius-xl)"></app-skeleton>
+          </div>
+          <div class="info-card card">
+            <app-skeleton width="30%" height="24px" className="mb-4"></app-skeleton>
+            <app-skeleton width="80%" height="40px" className="mb-4"></app-skeleton>
+            <app-skeleton width="20%" height="30px" className="mb-6"></app-skeleton>
+            <app-skeleton width="100%" height="100px" className="mb-6"></app-skeleton>
+            <div class="meta-cards-row">
+               <app-skeleton width="100%" height="150px" borderRadius="var(--radius-lg)"></app-skeleton>
+               <app-skeleton width="100%" height="150px" borderRadius="var(--radius-lg)"></app-skeleton>
+            </div>
+            <app-skeleton width="100%" height="54px" className="mt-4"></app-skeleton>
+          </div>
         </div>
 
         <div *ngIf="!loading && notFound" class="empty-state card">
@@ -52,7 +68,7 @@ import { environment } from '../../../environments/environment.development';
           <!-- Left Column: Gallery -->
           <div class="gallery-card card">
             <div class="active-image">
-              <img [src]="activeImage || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'" [alt]="product.title">
+              <img [src]="activeImage || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600&auto=format&fit=crop'" [alt]="product.title" class="animate-fade-in-up">
             </div>
             
             <div class="thumbnails-grid" *ngIf="product.images?.length > 1">
@@ -90,6 +106,7 @@ import { environment } from '../../../environments/environment.development';
             <div class="meta-cards-row" [class.single]="!product.business || coupons.length === 0">
               <!-- Store Information Card -->
               <div class="store-info-card glass-card" *ngIf="product.business">
+                <h4 class="widget-title">🏪 Store Information</h4>
                 <div class="store-info-header">
                   <img class="mini-logo" [src]="product.business.logoUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=60&auto=format&fit=crop'" alt="Store Logo">
                   <div>
@@ -255,6 +272,19 @@ import { environment } from '../../../environments/environment.development';
     }
     .nav-badge { background: var(--color-danger); color: #fff; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
     .cart-badge { background: var(--color-accent); color: #000; box-shadow: 0 0 10px rgba(37, 211, 102, 0.25); }
+    .btn-accent-cart { 
+      background: var(--color-accent-dim); 
+      color: var(--color-accent); 
+      border: 1px solid var(--color-accent-glow); 
+      padding: 8px 18px; font-weight: 850; font-size: 0.85rem; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.25s ease; 
+      &:hover:not([disabled]) { 
+        background: var(--color-accent); 
+        color: #000; 
+        border-color: var(--color-accent);
+        box-shadow: 0 0 15px var(--color-accent-glow);
+      } 
+      &:disabled { opacity: 0.4; cursor: not-allowed; } 
+    }
     .cart-btn {
       border: 1px solid var(--color-border);
       background: var(--color-bg-surface);
@@ -377,6 +407,7 @@ import { environment } from '../../../environments/environment.development';
     .store-info-card, .available-offers-widget {
       padding: var(--space-lg); border: 1px dashed var(--color-border); border-radius: var(--radius-lg); background: var(--color-bg-surface); display: flex; flex-direction: column; gap: var(--space-md); box-sizing: border-box; height: 100%;
     }
+    .widget-title { font-size: 0.85rem; font-weight: 850; color: var(--color-accent); margin: 0; text-transform: uppercase; letter-spacing: 0.05em; }
     .store-info-header {
       display: flex; gap: 12px; align-items: center;
       .mini-logo { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--color-accent); box-shadow: 0 0 10px rgba(37, 211, 102, 0.2); }
@@ -384,7 +415,7 @@ import { environment } from '../../../environments/environment.development';
       .store-cat { font-size: 0.72rem; color: var(--color-accent); font-weight: 800; text-transform: uppercase; background: rgba(37,211,102,0.05); padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 4px; }
     }
     .store-address { font-size: 0.82rem; color: var(--color-text-secondary); margin: 0; flex: 1; }
-    .store-actions { display: flex; gap: var(--space-sm); width: 100%; .btn { font-size: 0.85rem; font-weight: 750; padding: 10px 18px; flex: 1; justify-content: center; } }
+    .store-actions { display: flex; gap: var(--space-sm); width: 100%; margin-top: auto; .btn { font-size: 0.85rem; font-weight: 750; padding: 10px 18px; flex: 1; justify-content: center; } }
  
     /* Purchase controls */
     .purchase-actions {
@@ -404,10 +435,7 @@ import { environment } from '../../../environments/environment.development';
     .sold-out-alert { font-weight: 800; color: var(--color-danger); text-align: center; padding: 12px; background: rgba(239,68,68,0.06); border-radius: var(--radius-sm); border: 1px solid rgba(239, 68, 68, 0.15); }
  
     /* Available Offers widget */
-    .available-offers-widget {
-      .widget-title { font-size: 0.85rem; font-weight: 850; color: var(--color-accent); margin: 0; text-transform: uppercase; letter-spacing: 0.05em; }
-    }
-    .mini-tickets-list { display: flex; flex-direction: column; gap: var(--space-sm); flex: 1; }
+    .mini-tickets-list { display: flex; flex-direction: column; gap: var(--space-sm); flex: 1; margin-top: auto; }
     .mini-ticket { 
       display: flex; border: 1px solid rgba(37, 211, 102, 0.15); border-radius: var(--radius-xl); background: var(--color-bg-card); position: relative; overflow: visible; box-sizing: border-box; 
       transition: all 0.2s;

@@ -110,11 +110,11 @@ import { environment } from '../../environments/environment.development';
   styles: [`
     .sa-plans { display: flex; flex-direction: column; gap: var(--space-xl); }
     .dash-header { display: flex; justify-content: space-between; align-items: flex-end; }
-    .dash-header h1 { font-size: 2rem; margin-bottom: var(--space-xs); background: linear-gradient(to right, var(--color-text-primary), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .dash-header h1 { font-size: 2rem; margin-bottom: var(--space-xs); background: linear-gradient(to right, var(--color-text-primary), #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .btn-primary { background: var(--color-accent); color: #000; border: none; padding: 10px 20px; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; transition: all 0.2s; }
     .btn-primary:hover:not([disabled]) { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); }
     .btn-primary[disabled] { opacity: 0.7; cursor: not-allowed; }
-    .form-card, .plans-list { padding: var(--space-xl); border-top: 1px solid rgba(139, 92, 246, 0.2); }
+    .form-card, .plans-list { padding: var(--space-xl); border-top: 1px solid var(--color-border); }
     .form-card h3, .plans-list h3 { margin-bottom: var(--space-lg); font-size: 1.25rem; }
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-md); margin-bottom: var(--space-md); }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
@@ -133,8 +133,8 @@ import { environment } from '../../environments/environment.development';
     .sa-table td { padding: 16px 12px; border-bottom: 1px solid var(--color-border); font-size: 0.95rem; }
     .sa-table tbody tr:hover { background: var(--color-bg-surface); }
     .badge { padding: 4px 10px; background: var(--color-bg-surface); border-radius: 20px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
-    .badge-success { background: rgba(37, 211, 102, 0.15); color: var(--color-accent); border: 1px solid rgba(37, 211, 102, 0.3); }
-    .badge-danger { background: rgba(239, 68, 68, 0.15); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+    .badge-success { background: rgba(37, 211, 102, 0.1); color: var(--color-accent); border: 1px solid rgba(37, 211, 102, 0.2); }
+    .badge-danger { background: rgba(239, 68, 68, 0.1); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.2); }
     .btn-icon { background: transparent; border: none; font-size: 1.1rem; cursor: pointer; padding: 6px; border-radius: 6px; transition: 0.2s; }
     .btn-icon:hover { background: var(--color-bg-surface); }
     .btn-icon.delete:hover { background: rgba(239, 68, 68, 0.2); }

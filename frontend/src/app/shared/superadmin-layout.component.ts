@@ -240,7 +240,7 @@ import { ThemeToggleComponent } from './components/theme-toggle.component';
       background: rgba(139, 92, 246, 0.1);
       border: 1px solid rgba(139, 92, 246, 0.2);
       border-radius: var(--radius-pill);
-      color: #a78bfa;
+      color: #8b5cf6;
       font-size: 0.85rem;
       font-weight: 700;
       letter-spacing: 0.02em;
