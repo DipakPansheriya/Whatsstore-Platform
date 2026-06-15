@@ -1,786 +1,521 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { MarketplaceService, MarketplaceCartItem } from '../../shared/services/marketplace.service';
+import { MarketplaceService } from '../../shared/services/marketplace.service';
 import { ToastService } from '../../shared/services/toast.service';
-import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.directive';
 import { SkeletonComponent } from '../../shared/components/skeleton/skeleton.component';
 
 @Component({
   selector: 'app-marketplace-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, ScrollRevealDirective, SkeletonComponent],
+  imports: [CommonModule, FormsModule, RouterLink, SkeletonComponent, DatePipe],
   template: `
-    <div class="marketplace-wrapper animate-fade-in-up">
-      <!-- Premium Glass Header -->
-      <header class="marketplace-header glass-header">
-        <div class="header-container">
-          <a routerLink="/marketplace" class="brand-title">
-            <span class="logo-emoji">⚡</span> WhatsStore <span class="badge">Marketplace</span>
-          </a>
-          
-          <div class="header-nav">
-            <a routerLink="/marketplace/wishlist" class="nav-link-btn">
-              ❤️ Wishlist <span class="nav-badge" *ngIf="wishlistCount > 0">{{ wishlistCount }}</span>
-            </a>
-            <a routerLink="/marketplace/cart" class="nav-link-btn cart-btn">
-              🛒 Cart <span class="cart-badge" [class.animate-bounce]="isCartBouncing" *ngIf="cartCount > 0">{{ cartCount }}</span>
-            </a>
-            <a routerLink="/" class="nav-link-btn home-link">SaaS Home</a>
+    <!-- MAIN WRAPPER: Responsive + Dark Mode support -->
+    <div class="transition-colors duration-300">
+      <div class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans pb-16">
+        
+        <!-- TOP ANNOUNCEMENT BAR -->
+        <div class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm font-bold py-2 overflow-hidden flex whitespace-nowrap">
+          <div class="animate-marquee flex gap-12 px-4">
+            <span>🔥 {{ totalStores }}+ Active Stores</span>
+            <span>🎉 New Coupons Available</span>
+            <span>🚀 Shop Directly via WhatsApp</span>
+            <span>✨ Flash Sale on Electronics!</span>
+            <span>🔥 {{ totalStores }}+ Active Stores</span>
+            <span>🎉 New Coupons Available</span>
+            <span>🚀 Shop Directly via WhatsApp</span>
           </div>
         </div>
-      </header>
 
-      <div class="container page-content">
-        <!-- Hero Search Section -->
-        <section class="search-hero">
-          <h1>Everything You Need, Delivered via WhatsApp</h1>
-          <p>Search products and discount offers across all local stores instantly.</p>
-          
-          <div class="search-bar-container glass-card accent-glow-hover">
-            <span class="search-icon">🔍</span>
-            <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange()" placeholder="Search products, brands, or grocery items..." />
-            <button (click)="triggerSearch()" class="btn btn-primary">Search</button>
-          </div>
-        </section>
-
-        <!-- Zepto-style Skeleton Loader -->
-        <div *ngIf="loading" class="skeleton-wrapper animate-fade-in-up">
-          <div class="skeleton-hero shimmer"></div>
-          <div class="skeleton-section">
-            <div class="skeleton-title shimmer"></div>
-            <div class="skeleton-categories scroll-x">
-              <div class="skeleton-pill shimmer" *ngFor="let i of [1,2,3,4,5,6]"></div>
+        <!-- STICKY NAVBAR -->
+        <header class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 shadow-sm transition-colors duration-300">
+          <div class="container mx-auto px-4 h-16 flex items-center justify-between">
+            <a routerLink="/marketplace" class="text-2xl font-black tracking-tight flex items-center gap-2">
+              <span class="text-3xl drop-shadow-sm">⚡</span> 
+              <span class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-teal-500">WhatsStore</span>
+            </a>
+            
+            <div class="flex items-center gap-4">
+              <a routerLink="/marketplace/wishlist" class="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors font-medium">
+                ❤️ <span class="hidden sm:inline ml-1">Wishlist</span>
+                <span *ngIf="wishlistCount > 0" class="absolute top-0 right-0 sm:right-auto sm:left-6 -mt-1 -mr-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm ring-2 ring-white dark:ring-gray-900">
+                  {{ wishlistCount }}
+                </span>
+              </a>
+              
+              <a routerLink="/marketplace/cart" class="relative px-4 py-2 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 rounded-full hover:bg-emerald-200 dark:hover:bg-emerald-800/60 transition-all font-bold flex items-center gap-2 border border-emerald-200 dark:border-emerald-800/50">
+                🛒 <span class="hidden sm:inline">Cart</span>
+                <span *ngIf="cartCount > 0" class="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-xs font-black text-white shadow-sm" [class.animate-bounce]="isCartBouncing">
+                  {{ cartCount }}
+                </span>
+              </a>
             </div>
           </div>
-          <div class="skeleton-section">
-            <div class="skeleton-title shimmer"></div>
-            <div class="skeleton-grid">
-              <div class="skeleton-card" *ngFor="let i of [1,2,3,4]">
-                <div class="skeleton-img shimmer"></div>
-                <div class="skeleton-text shimmer" style="width: 70%; margin-top: 10px;"></div>
-                <div class="skeleton-text shimmer" style="width: 40%; margin-top: 5px;"></div>
+        </header>
+
+        <!-- MAIN LAYOUT -->
+        <div class="container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8 relative items-start">
+          
+          <!-- LEFT SIDEBAR -->
+          <aside class="hidden lg:block w-64 shrink-0 sticky top-[100px] max-h-[calc(100vh-120px)] overflow-y-auto pr-4 custom-scrollbar">
+            <h3 class="text-lg font-extrabold mb-4 border-b border-gray-200 dark:border-gray-800 pb-2">Filter Products</h3>
+            
+            <div class="mb-6">
+              <h4 class="font-bold mb-3 text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400">Categories</h4>
+              <ul class="space-y-2">
+                <li><label class="flex items-center gap-2 cursor-pointer hover:text-emerald-500 transition-colors font-medium"><input type="radio" name="cat" [checked]="searchCategory === 'all'" (change)="searchCategory = 'all'; triggerSearch()" class="rounded text-emerald-500 focus:ring-emerald-500 dark:bg-gray-800 border-gray-300 dark:border-gray-700"> All Categories</label></li>
+                <li *ngFor="let cat of categories"><label class="flex items-center gap-2 cursor-pointer hover:text-emerald-500 transition-colors"><input type="radio" name="cat" [checked]="searchCategory === cat.name" (change)="searchCategory = cat.name; triggerSearch()" class="rounded text-emerald-500 focus:ring-emerald-500 dark:bg-gray-800 border-gray-300 dark:border-gray-700"> {{cat.name}}</label></li>
+              </ul>
+            </div>
+
+            <!-- Recently Visited Stores (Local Storage Feature) -->
+            <div class="mb-6" *ngIf="recentStores.length > 0">
+              <h4 class="font-bold mb-3 text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400">Recent Stores</h4>
+              <ul class="space-y-3">
+                <li *ngFor="let store of recentStores" class="flex items-center gap-3 p-2 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 cursor-pointer hover:border-emerald-500 transition-colors" [routerLink]="['/store', store.websiteSlug]">
+                  <img [src]="store.logoUrl || 'https://ui-avatars.com/api/?name=' + store.name + '&background=random'" (error)="onImageError($event, 'https://ui-avatars.com/api/?name=' + store.name + '&background=random')" class="w-8 h-8 rounded-full border border-gray-200">
+                  <span class="text-xs font-bold truncate">{{store.name}}</span>
+                </li>
+              </ul>
+            </div>
+          </aside>
+
+          <!-- RIGHT CONTENT -->
+          <main class="flex-1 min-w-0">
+            
+            <!-- HERO SECTION -->
+            <section class="h-auto lg:h-[450px] w-full rounded-3xl bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-emerald-950/40 dark:via-teal-950/40 dark:to-cyan-950/40 flex flex-col lg:flex-row overflow-hidden relative shadow-sm border border-emerald-100 dark:border-emerald-900/30 mb-12">
+              <div class="w-full lg:w-3/5 p-8 lg:p-12 flex flex-col justify-center relative z-10">
+                 <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 text-xs font-bold uppercase tracking-widest rounded-full mb-6 w-max border border-emerald-200 dark:border-emerald-800/60">
+                   🚀 The Future of Local Commerce
+                 </div>
+                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-4 leading-[1.1]">
+                   Everything You Need From <br class="hidden lg:block">
+                   <span class="bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-teal-500 drop-shadow-sm">Local Stores</span>
+                 </h1>
+                 
+                 <!-- Popular Searches (Mocked Public Data) -->
+                 <div class="flex flex-wrap gap-2 mb-4">
+                   <span class="text-xs font-bold text-gray-500 dark:text-gray-400">Popular:</span>
+                   <button *ngFor="let term of popularSearches" (click)="searchQuery = term; triggerSearch()" class="text-[10px] px-2 py-0.5 bg-white dark:bg-gray-800 rounded shadow-sm hover:text-emerald-500 border border-gray-200 dark:border-gray-700">
+                     {{ term }}
+                   </button>
+                 </div>
+
+                 <div class="relative w-full max-w-xl group">
+                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                     <span class="text-xl opacity-60 group-focus-within:text-emerald-500 group-focus-within:opacity-100 transition-colors">🔍</span>
+                   </div>
+                   <input 
+                     type="text" 
+                     class="w-full pl-12 pr-32 py-4 md:py-5 bg-white dark:bg-gray-900 border-2 border-transparent shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] rounded-2xl text-lg font-medium focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 transition-all dark:text-white" 
+                     placeholder="Search products, stores..."
+                     [(ngModel)]="searchQuery"
+                     (keyup.enter)="triggerSearch()"
+                   >
+                   <button (click)="triggerSearch()" class="absolute right-2 top-2 bottom-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-6 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
+                     Search
+                   </button>
+                 </div>
               </div>
+
+              <!-- Hero Illustration -->
+              <div class="hidden lg:flex w-2/5 relative items-center justify-center p-8 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] dark:bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] bg-opacity-20">
+                <div class="absolute inset-0 bg-gradient-to-l from-transparent to-teal-50 dark:to-gray-950"></div>
+                <div class="relative w-full h-full flex items-center justify-center animate-float">
+                  <div class="w-64 h-64 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 p-4 transform rotate-6 z-20">
+                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=300" class="w-full h-32 object-cover rounded-xl mb-4" alt="Product">
+                    <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
+                    <div class="h-10 bg-emerald-500 rounded-lg w-full mt-6"></div>
+                  </div>
+                  <div class="absolute -bottom-8 -left-8 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
+                </div>
+              </div>
+            </section>
+
+            <!-- SKELETON LOADER -->
+            <div *ngIf="loading" class="space-y-12">
+              <div class="flex gap-4 overflow-hidden"><div *ngFor="let i of [1,2,3,4,5,6]" class="w-24 h-32 rounded-2xl bg-gray-200 dark:bg-gray-800 animate-pulse shrink-0"></div></div>
+              <div class="grid grid-cols-2 lg:grid-cols-5 gap-6"><div *ngFor="let i of [1,2,3,4,5]" class="h-80 rounded-2xl bg-gray-200 dark:bg-gray-800 animate-pulse"></div></div>
             </div>
-          </div>
+
+            <!-- SEARCH RESULTS VIEW -->
+            <ng-container *ngIf="isSearching && !loading">
+              <div class="mb-8 flex justify-between items-center">
+                <h2 class="text-2xl font-extrabold tracking-tight">Results for "{{searchQuery}}" <span class="text-gray-400 text-lg">({{totalSearchResults}})</span></h2>
+                <button (click)="clearSearch()" class="text-sm font-bold text-red-500 bg-red-50 dark:bg-red-900/20 px-4 py-2 rounded-lg hover:bg-red-100">✕ Clear Search</button>
+              </div>
+
+              <div *ngIf="searchResults.length === 0" class="py-20 text-center bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm">
+                 <div class="text-6xl mb-4">🔍</div>
+                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">No items found</h3>
+                 <p class="text-gray-500">Try checking your spelling or using more general terms.</p>
+              </div>
+
+              <!-- Reusing the 5-col grid template for search results -->
+              <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                <ng-container *ngTemplateOutlet="productGrid; context: { products: searchResults }"></ng-container>
+              </div>
+            </ng-container>
+
+            <!-- ONLY SHOW HOME SECTIONS IF NOT SEARCHING -->
+            <ng-container *ngIf="!loading && !isSearching">
+              
+              <!-- CATEGORY SECTION -->
+              <section class="mb-14" *ngIf="categories.length > 0">
+                <h2 class="text-2xl font-extrabold tracking-tight mb-6">Explore Categories</h2>
+                <div class="flex gap-4 overflow-x-auto pb-6 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory hide-scrollbar">
+                  <div *ngFor="let cat of categories" (click)="searchCategory = cat.name; triggerSearch()" class="snap-start shrink-0 group cursor-pointer">
+                    <div class="w-28 flex flex-col items-center gap-3">
+                      <div class="w-24 h-24 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-xl group-hover:border-emerald-500">
+                        <img *ngIf="cat.iconUrl && cat.iconUrl.includes('http')" [src]="cat.iconUrl" (error)="onImageError($event, 'https://ui-avatars.com/api/?name=' + cat.name + '&background=random')" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <span *ngIf="!cat.iconUrl?.includes('http')" class="text-4xl">{{ cat.iconUrl || '📦' }}</span>
+                      </div>
+                      <span class="font-bold text-sm text-center group-hover:text-emerald-500 transition-colors">{{ cat.name }}</span>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- HOT DEALS SECTION (API Banners) -->
+              <section class="mb-14" *ngIf="banners.length > 0">
+                <div class="w-full h-[200px] sm:h-[300px] rounded-3xl overflow-hidden relative group shadow-lg border border-gray-200 dark:border-gray-800">
+                  <div class="absolute inset-0 flex transition-transform duration-700 ease-in-out" [style.transform]="'translateX(-' + currentDealIndex * 100 + '%)'">
+                    
+                    <div *ngFor="let deal of banners; let i = index" class="w-full h-full shrink-0 relative bg-gradient-to-r" [ngClass]="getBannerBg(i)">
+                      <div class="absolute inset-0 opacity-20 mix-blend-overlay bg-cover bg-center bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+                      <div class="relative z-10 h-full flex items-center justify-between px-8 sm:px-16 text-white bg-black/30">
+                        <div class="max-w-md">
+                          <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold uppercase tracking-wider mb-3 border border-white/30">HOT DEAL</span>
+                          <h2 class="text-3xl sm:text-5xl font-black mb-4 drop-shadow-md leading-tight">{{ deal.title }}</h2>
+                          <a [routerLink]="deal.linkUrl" class="inline-block bg-white text-gray-900 hover:bg-gray-100 font-bold py-3 px-8 rounded-full shadow-xl hover:-translate-y-1 transition-all">Shop Now</a>
+                        </div>
+                        <div class="hidden md:block w-1/3 h-full relative">
+                           <img [src]="deal.imageUrl" class="absolute bottom-0 right-0 max-h-[120%] object-contain object-bottom drop-shadow-2xl scale-110 origin-bottom">
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                  <!-- Navigation Dots -->
+                  <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-20" *ngIf="banners.length > 1">
+                    <button *ngFor="let deal of banners; let i = index" (click)="currentDealIndex = i" 
+                      class="w-3 h-3 rounded-full transition-all"
+                      [class.bg-white]="currentDealIndex === i" [class.bg-white.opacity-50]="currentDealIndex !== i" [class.w-8]="currentDealIndex === i">
+                    </button>
+                  </div>
+                </div>
+              </section>
+
+              <!-- RECENTLY VIEWED PRODUCTS (Local Storage Feature) -->
+              <section class="mb-14" *ngIf="recentProducts.length > 0">
+                <div class="flex items-end justify-between mb-6">
+                  <div>
+                    <h2 class="text-2xl font-extrabold tracking-tight mb-1">Jump Back In</h2>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm">Recently viewed products</p>
+                  </div>
+                </div>
+                <div class="flex gap-4 overflow-x-auto pb-4 hide-scrollbar snap-x">
+                  <div *ngFor="let prod of recentProducts" class="snap-start shrink-0 w-[180px] bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-3 shadow-sm cursor-pointer hover:border-emerald-500 transition-colors" (click)="openQuickView(prod)">
+                    <img [src]="prod.images?.[0] || 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image'" (error)="onImageError($event, 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image')" class="w-full h-24 object-cover rounded-xl mb-2">
+                    <h4 class="font-bold text-sm truncate mb-1">{{prod.title}}</h4>
+                    <div class="font-black text-emerald-500">₹{{prod.price}}</div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- FEATURED STORES (API Data) -->
+              <section class="mb-14" *ngIf="featuredStores.length > 0">
+                <div class="flex items-end justify-between mb-6">
+                  <div>
+                    <h2 class="text-2xl font-extrabold tracking-tight mb-1">Featured Stores</h2>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm">Top rated local merchants on WhatsStore</p>
+                  </div>
+                </div>
+
+                <div class="flex gap-6 overflow-x-auto pb-6 snap-x hide-scrollbar">
+                  <div *ngFor="let store of featuredStores" class="snap-start shrink-0 w-[280px] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
+                    <!-- Share Store Button -->
+                    <button class="absolute top-4 right-4 text-gray-400 hover:text-emerald-500" (click)="shareStore(store)">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                    </button>
+                    
+                    <div class="flex items-center gap-4 mb-5">
+                      <div class="relative">
+                        <img [src]="store.logoUrl || 'https://ui-avatars.com/api/?name=' + store.name + '&background=random'" (error)="onImageError($event, 'https://ui-avatars.com/api/?name=' + store.name + '&background=random')" class="w-16 h-16 rounded-full object-cover border-2 border-gray-100 dark:border-gray-800 shadow-md group-hover:border-emerald-500 transition-colors">
+                        <!-- Store Open/Closed Badge -->
+                        <span class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full" title="Open Now"></span>
+                      </div>
+                      <div>
+                        <h3 class="font-bold text-lg leading-tight group-hover:text-emerald-500 transition-colors truncate max-w-[150px]">{{store.name}}</h3>
+                        <div class="flex items-center gap-1 text-xs font-semibold text-yellow-500 mt-1">
+                          ⭐ {{store.stats?.rating | number:'1.1-1' || '4.5'}} 
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 font-medium mb-5 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl border border-gray-100 dark:border-gray-800">
+                      <div class="text-center">
+                        <div class="text-gray-900 dark:text-white font-black text-sm">{{store.stats?.sold || 0}}</div>
+                        <div>Sold</div>
+                      </div>
+                      <div class="w-px h-8 bg-gray-200 dark:bg-gray-700"></div>
+                      <div class="text-center">
+                        <div class="text-gray-900 dark:text-white font-black text-sm">{{store.stats?.orders || 0}}</div>
+                        <div>Orders</div>
+                      </div>
+                    </div>
+                    <button [routerLink]="['/store', store.websiteSlug]" class="w-full py-2.5 bg-gray-100 dark:bg-gray-800 hover:bg-emerald-500 dark:hover:bg-emerald-600 hover:text-white text-gray-900 dark:text-gray-100 font-bold rounded-xl transition-colors">
+                      Visit Store
+                    </button>
+                  </div>
+                </div>
+              </section>
+
+              <!-- TRENDING PRODUCTS -->
+              <section class="mb-14" *ngIf="trendingProducts.length > 0">
+                <div class="flex items-end justify-between mb-6">
+                  <div>
+                    <h2 class="text-2xl font-extrabold tracking-tight mb-1">Trending Products</h2>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm">Newest items across active merchants</p>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                  <ng-container *ngTemplateOutlet="productGrid; context: { products: trendingProducts }"></ng-container>
+                </div>
+              </section>
+
+              <!-- COUPON MARKETPLACE -->
+              <section class="mb-14" *ngIf="globalCoupons.length > 0">
+                <div class="flex items-end justify-between mb-6">
+                  <h2 class="text-2xl font-extrabold tracking-tight">Hot Merchant Coupons</h2>
+                </div>
+                <div class="flex gap-4 overflow-x-auto pb-4 snap-x hide-scrollbar">
+                  <div *ngFor="let coupon of globalCoupons" class="snap-start shrink-0 w-[300px] h-[120px] bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 flex overflow-hidden shadow-sm hover:shadow-md hover:border-emerald-500 transition-all group">
+                    <div class="w-1/3 bg-emerald-500 text-white flex flex-col justify-center items-center border-r border-dashed border-white/50 relative">
+                      <div class="absolute -top-3 -right-3 w-6 h-6 bg-gray-50 dark:bg-gray-950 rounded-full"></div>
+                      <div class="absolute -bottom-3 -right-3 w-6 h-6 bg-gray-50 dark:bg-gray-950 rounded-full"></div>
+                      <span class="text-2xl font-black">{{ coupon.discountType === 'percentage' ? coupon.discountValue + '%' : '₹' + coupon.discountValue }}</span>
+                      <span class="text-xs font-bold uppercase tracking-widest opacity-90">OFF</span>
+                    </div>
+                    <div class="w-2/3 p-4 flex flex-col justify-center bg-[url('https://www.transparenttextures.com/patterns/diagonal-stripes.png')] bg-opacity-5">
+                      <div class="flex items-center gap-2 mb-2">
+                        <img [src]="coupon.business?.logoUrl || 'https://ui-avatars.com/api/?name=' + (coupon.business?.name || 'Store') + '&background=random'" (error)="onImageError($event, 'https://ui-avatars.com/api/?name=' + (coupon.business?.name || 'Store') + '&background=random')" class="w-6 h-6 rounded-full border border-gray-200">
+                        <span class="text-xs font-bold text-gray-500 truncate">{{coupon.business?.name}}</span>
+                      </div>
+                      <div class="flex items-center justify-between relative">
+                        <code class="font-mono font-bold text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded border border-gray-200 dark:border-gray-700 tracking-wider text-xs">
+                          {{coupon.code}}
+                        </code>
+                        <!-- Copy Animation State -->
+                        <button (click)="copyCoupon(coupon.code)" class="text-emerald-500 hover:text-emerald-600 transition-colors" title="Copy Code">
+                          <span *ngIf="copiedCouponCode === coupon.code" class="text-xs font-bold bg-emerald-100 text-emerald-700 px-2 py-1 rounded absolute -top-8 right-0 animate-fade-in-up">Copied!</span>
+                          <svg *ngIf="copiedCouponCode !== coupon.code" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                          <svg *ngIf="copiedCouponCode === coupon.code" class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </button>
+                      </div>
+                      <div class="text-[10px] text-gray-400 mt-2" *ngIf="coupon.expiryDate">Valid till {{ coupon.expiryDate | date:'mediumDate' }}</div>
+                      <div class="text-[10px] text-gray-400 mt-2" *ngIf="!coupon.expiryDate">No Expiry</div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- MARKETPLACE STATS (Real Calculation) -->
+              <section class="mb-14 py-12 border-y border-gray-200 dark:border-gray-800 text-center">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                  <div>
+                    <div class="text-4xl font-black text-emerald-500 mb-1">{{totalStores}}+</div>
+                    <div class="text-sm font-bold text-gray-500 uppercase tracking-wider">Stores</div>
+                  </div>
+                  <div>
+                    <div class="text-4xl font-black text-emerald-500 mb-1">{{totalProducts}}+</div>
+                    <div class="text-sm font-bold text-gray-500 uppercase tracking-wider">Products</div>
+                  </div>
+                  <div>
+                    <div class="text-4xl font-black text-emerald-500 mb-1">{{totalOrders}}+</div>
+                    <div class="text-sm font-bold text-gray-500 uppercase tracking-wider">Orders</div>
+                  </div>
+                  <div>
+                    <div class="text-4xl font-black text-emerald-500 mb-1">{{globalCoupons.length}}+</div>
+                    <div class="text-sm font-bold text-gray-500 uppercase tracking-wider">Coupons</div>
+                  </div>
+                </div>
+              </section>
+
+            </ng-container>
+          </main>
         </div>
 
-        <!-- Categories Slider -->
-        <section class="categories-section" *ngIf="!loading">
-          <h2 class="section-title">Browse Categories</h2>
-          <div class="categories-grid scroll-x">
-            <button (click)="selectCategory('all')" [class.active]="selectedCategory === 'all'" class="category-pill">
-              <span class="cat-icon">🌐</span>
-              <span class="cat-name">All Items</span>
-            </button>
-            @for (cat of categories; track cat.name) {
-              <button (click)="selectCategory(cat.name)" [class.active]="selectedCategory === cat.name" class="category-pill">
-                <span class="cat-icon">{{ cat.iconUrl || '📦' }}</span>
-                <span class="cat-name">{{ cat.name }}</span>
+      </div>
+    </div>
+
+    <!-- PRODUCT QUICK VIEW MODAL -->
+    <div *ngIf="showQuickViewModal && selectedProduct" class="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 animate-fade-in">
+      <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" (click)="closeQuickView()"></div>
+      <div class="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
+        <button (click)="closeQuickView()" class="absolute top-4 right-4 z-10 w-8 h-8 bg-gray-100 dark:bg-gray-800 hover:bg-red-500 hover:text-white rounded-full flex items-center justify-center transition-colors">✕</button>
+        
+        <!-- Image Gallery -->
+        <div class="w-full md:w-1/2 bg-gray-50 dark:bg-gray-800 p-8 flex items-center justify-center relative">
+          <img [src]="selectedProduct.images?.[0] || 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image'" (error)="onImageError($event, 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image')" class="max-w-full max-h-full object-contain drop-shadow-xl" alt="Product">
+          <span *ngIf="!selectedProduct.isAvailable || selectedProduct.stock === 0" class="absolute top-6 left-6 bg-red-500 text-white text-xs font-black uppercase px-3 py-1 rounded shadow-lg">OUT OF STOCK</span>
+          <span *ngIf="selectedProduct.isAvailable && selectedProduct.stock > 0 && selectedProduct.stock <= 5" class="absolute top-6 left-6 bg-orange-500 text-white text-xs font-black uppercase px-3 py-1 rounded shadow-lg">Only {{selectedProduct.stock}} Left</span>
+        </div>
+        
+        <!-- Product Info -->
+        <div class="w-full md:w-1/2 p-8 flex flex-col overflow-y-auto custom-scrollbar">
+          <div class="text-xs font-bold text-emerald-500 uppercase tracking-widest mb-2">{{selectedProduct.business?.name}}</div>
+          <h2 class="text-2xl font-black text-gray-900 dark:text-white mb-4 leading-tight">{{selectedProduct.title}}</h2>
+          <div class="text-3xl font-black text-gray-900 dark:text-white mb-6">₹{{selectedProduct.price}}</div>
+          
+          <p class="text-gray-600 dark:text-gray-300 text-sm mb-8 leading-relaxed">{{selectedProduct.description || 'No description available for this product. Contact the merchant for more details.'}}</p>
+          
+          <div class="mt-auto space-y-4">
+            <div class="flex gap-4">
+              <button class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 rounded-xl shadow-lg shadow-emerald-500/30 transition-all flex items-center justify-center gap-2" (click)="addToCart(selectedProduct)" [disabled]="!selectedProduct.isAvailable || selectedProduct.stock === 0" [class.opacity-50]="!selectedProduct.isAvailable || selectedProduct.stock === 0">
+                🛒 {{ selectedProduct.stock > 0 ? 'Add To Cart' : 'Sold Out' }}
               </button>
-            }
+              <button class="w-14 h-14 bg-gray-100 dark:bg-gray-800 hover:text-red-500 rounded-xl flex items-center justify-center transition-colors border border-gray-200 dark:border-gray-700" (click)="toggleWishlist(selectedProduct)">
+                <svg class="w-6 h-6" [ngClass]="{'text-red-500 fill-current animate-pulse': isInWishlist(selectedProduct._id)}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+              </button>
+            </div>
+            <button class="w-full py-3 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-800 hover:border-emerald-500 font-bold rounded-xl transition-colors flex justify-center items-center gap-2" (click)="shareProduct(selectedProduct)">
+               🔗 Share Product
+            </button>
           </div>
-        </section>
-
-        <!-- Banners Carousel -->
-        <section class="banners-section" *ngIf="banners.length > 0 && !isSearching">
-          <div class="banner-carousel">
-            <div class="banner-slide" [style.background-image]="'url(' + activeBanner.imageUrl + ')'">
-              <div class="banner-overlay"></div>
-              <div class="banner-content">
-                <h2>{{ activeBanner.title || 'Curated Store Deals' }}</h2>
-                <p>Support small businesses and order directly on personal WhatsApp chats.</p>
-                <a routerLink="/marketplace/cart" class="btn btn-primary btn-sm">Shop Curated Cart</a>
-              </div>
-            </div>
-            <div class="carousel-dots" *ngIf="banners.length > 1">
-              @for (b of banners; track b.imageUrl; let idx = $index) {
-                <button (click)="setBannerIndex(idx)" [class.active]="activeBannerIndex === idx" class="dot-btn"></button>
-              }
-            </div>
-          </div>
-        </section>
-
-        <!-- Search Results View -->
-        <div class="search-results-layout" *ngIf="isSearching">
-
-          <!-- Main Results Area -->
-          <div class="search-results-main">
-            <div class="results-header">
-              <div class="results-title-row">
-                <h3 *ngIf="searchQuery">🔍 Results for "{{ searchQuery }}" <span *ngIf="selectedCategory !== 'all'">in {{ selectedCategory }}</span> ({{ searchResults.length }})</h3>
-                <h3 *ngIf="!searchQuery">🔍 {{ selectedCategory === 'all' ? 'All Products' : 'Products in ' + selectedCategory }} ({{ searchResults.length }})</h3>
-              </div>
-              <div class="results-actions-row">
-                <button (click)="clearSearch()" class="btn btn-ghost btn-sm">✕ Clear Search</button>
-              </div>
-            </div>
-
-            <div *ngIf="loadingSearch" class="products-grid">
-              <div *ngFor="let i of [1,2,3,4]" class="product-card card p-0">
-                <app-skeleton height="200px" borderRadius="var(--radius-xl) var(--radius-xl) 0 0"></app-skeleton>
-                <div class="card-body">
-                  <app-skeleton width="60px" height="12px"></app-skeleton>
-                  <app-skeleton width="90%" height="20px" className="mt-2"></app-skeleton>
-                  <app-skeleton width="40%" height="16px" className="mt-2"></app-skeleton>
-                  <div class="card-footer mt-auto">
-                    <app-skeleton width="80px" height="24px"></app-skeleton>
-                    <app-skeleton width="70px" height="34px" borderRadius="var(--radius-sm)"></app-skeleton>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div *ngIf="!loadingSearch && searchResults.length === 0" class="empty-state card">
-              <div class="empty-icon">📦</div>
-              <h3>No products found</h3>
-              <p>Try refining your search terms or adjusting filters.</p>
-            </div>
-
-            <div *ngIf="!loadingSearch && searchResults.length > 0" class="products-grid">
-              @for (prod of searchResults; track prod._id) {
-                <div class="product-card card" appScrollReveal>
-                  <div class="image-box" [routerLink]="['/marketplace/product', prod._id]">
-                    <img [src]="prod.images[0] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=300&auto=format&fit=crop'" [alt]="prod.title">
-                    <span class="store-badge-tag">{{ prod.business?.name }}</span>
-                    <button class="wishlist-btn" [class.active]="isInWishlist(prod._id)" (click)="toggleWishlist($event, prod)">❤️</button>
-                  </div>
-                  <div class="card-body">
-                    <span class="prod-cat">{{ prod.category }}</span>
-                    <h4 class="prod-title" [routerLink]="['/marketplace/product', prod._id]">{{ prod.title }}</h4>
-                    <div class="offer-badges-row" *ngIf="prod.coupons?.length > 0">
-                      <span class="coupon-badge-pill">🏷️ Code: {{ prod.coupons[0].code }}</span>
-                    </div>
-                    <div class="card-footer">
-                      <span class="price">₹{{ prod.price }}</span>
-                      <button (click)="addToCart(prod)" class="btn btn-sm btn-accent-cart" [disabled]="prod.stock === 0">
-                        {{ prod.stock > 0 ? '🛒 Add' : 'Sold Out' }}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              }
-            </div>
-          </div>
-        </div>
-
-        <!-- Default Homepage View (Only shown when q/search is empty) -->
-        <div class="default-home-sections animate-fade-in-up" *ngIf="!isSearching">
-          <!-- Featured Stores (RTL Auto Scroll Carousel) -->
-          <section class="home-section" *ngIf="featuredStores.length > 0" appScrollReveal>
-            <h2 class="section-title">🔥 Featured Stores</h2>
-            <div class="stores-container">
-              @for (store of featuredStores; track store._id) {
-                <div class="store-card">
-                  <img [src]="store.logoUrl || 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=150&auto=format&fit=crop'" alt="Store Logo" class="store-logo">
-                  <div class="store-info">
-                    <h4>{{ store.name }}</h4>
-                    <span class="store-tag">{{ store.category }}</span>
-                    <p class="store-desc">{{ store.description || 'Verified WhatsStore Merchant' }}</p>
-                  </div>
-                  <button class="btn" [routerLink]="['/store', store.websiteSlug]">Visit Storefront</button>
-                </div>
-              }
-              <!-- Duplicate for infinite seamless scroll -->
-              @for (store of featuredStores; track store._id + '-copy') {
-                <div class="store-card">
-                  <img [src]="store.logoUrl || 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=150&auto=format&fit=crop'" alt="Store Logo" class="store-logo">
-                  <div class="store-info">
-                    <h4>{{ store.name }}</h4>
-                    <span class="store-tag">{{ store.category }}</span>
-                    <p class="store-desc">{{ store.description || 'Verified WhatsStore Merchant' }}</p>
-                  </div>
-                  <button class="btn" [routerLink]="['/store', store.websiteSlug]">Visit Storefront</button>
-                </div>
-              }
-            </div>
-          </section>
-
-          <!-- Featured Products -->
-          <section class="home-section" *ngIf="featuredProducts.length > 0" appScrollReveal>
-            <h2 class="section-title">✨ Top Rated Products</h2>
-            <div class="products-grid">
-              @for (prod of featuredProducts; track prod._id) {
-                <div class="product-card card" appScrollReveal>
-                  <div class="image-box" [routerLink]="['/marketplace/product', prod._id]">
-                    <img [src]="prod.images[0] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=300&auto=format&fit=crop'" [alt]="prod.title">
-                    <span class="store-badge-tag">{{ prod.business?.name }}</span>
-                    <button class="wishlist-btn" [class.active]="isInWishlist(prod._id)" (click)="toggleWishlist($event, prod)">❤️</button>
-                  </div>
-                  <div class="card-body">
-                    <span class="prod-cat">{{ prod.category }}</span>
-                    <h4 class="prod-title" [routerLink]="['/marketplace/product', prod._id]">{{ prod.title }}</h4>
-                    <div class="card-footer">
-                      <span class="price">₹{{ prod.price }}</span>
-                      <button (click)="addToCart(prod)" class="btn btn-sm btn-accent-cart" [disabled]="prod.stock === 0">
-                        {{ prod.stock > 0 ? '🛒 Add' : 'Out' }}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              }
-            </div>
-          </section>
-
-          <!-- Public Coupons -->
-          <section class="home-section" *ngIf="globalCoupons.length > 0" appScrollReveal>
-            <h2 class="section-title">🎉 Hot Merchant Coupons</h2>
-            <div class="offers-container scroll-x">
-              @for (cp of globalCoupons; track cp._id) {
-                <div class="offer-pill" (click)="copyCouponCode(cp.code, cp.business?.websiteSlug)" title="Click to copy code and visit store">
-                  <div class="offer-pill-bg"></div>
-                  <div class="offer-pill-content">
-                    <span class="offer-pill-discount">{{ cp.discountType === 'percentage' ? cp.discountValue + '%' : '₹' + cp.discountValue }} OFF</span>
-                    <span class="offer-pill-divider"></span>
-                    <span class="offer-pill-code">{{ copiedCode === cp.code ? '✓ Copied' : cp.code }}</span>
-                    <span class="offer-pill-store">&#64; {{ cp.business?.name }}</span>
-                  </div>
-                </div>
-              }
-            </div>
-          </section>
-
-          <!-- Trending Products -->
-          <section class="home-section" *ngIf="trendingProducts.length > 0" appScrollReveal>
-            <h2 class="section-title">⚡ Fresh & Trending Additions</h2>
-            <div class="products-grid">
-              @for (prod of trendingProducts; track prod._id) {
-                <div class="product-card card" appScrollReveal>
-                  <div class="image-box" [routerLink]="['/marketplace/product', prod._id]">
-                    <img [src]="prod.images[0] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=300&auto=format&fit=crop'" [alt]="prod.title">
-                    <span class="store-badge-tag">{{ prod.business?.name }}</span>
-                    <button class="wishlist-btn" [class.active]="isInWishlist(prod._id)" (click)="toggleWishlist($event, prod)">❤️</button>
-                  </div>
-                  <div class="card-body">
-                    <span class="prod-cat">{{ prod.category }}</span>
-                    <h4 class="prod-title" [routerLink]="['/marketplace/product', prod._id]">{{ prod.title }}</h4>
-                    <div class="card-footer">
-                      <span class="price">₹{{ prod.price }}</span>
-                      <button (click)="addToCart(prod)" class="btn btn-sm btn-accent-cart" [disabled]="prod.stock === 0">
-                        {{ prod.stock > 0 ? '🛒 Add' : 'Out' }}
-                      </button>
-                    </div>
-                </div>
-              </div>
-            }
-            </div>
-          </section>
         </div>
       </div>
     </div>
-  `,
-  styles: [`
-    /* Skeleton Loaders */
-    .skeleton-wrapper { display: flex; flex-direction: column; gap: 30px; padding: 20px 0; }
-    .shimmer {
-      background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: var(--radius-md);
-    }
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-    .skeleton-hero { height: 250px; border-radius: var(--radius-xl); margin-bottom: 20px; }
-    .skeleton-section { margin-bottom: 30px; }
-    .skeleton-title { height: 28px; width: 250px; margin-bottom: 15px; }
-    .skeleton-categories { display: flex; gap: 12px; }
-    .skeleton-pill { height: 40px; width: 120px; border-radius: var(--radius-md); }
-    .skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
-    .skeleton-card { background: var(--color-bg-card); padding: 15px; border-radius: var(--radius-xl); border: 1px solid var(--color-border); }
-    .skeleton-img { height: 180px; border-radius: var(--radius-lg); }
-    .skeleton-text { height: 16px; border-radius: 4px; }
-    .marketplace-wrapper {
-      min-height: 100vh;
-      background: radial-gradient(circle at top right, rgba(37, 211, 102, 0.06) 0%, rgba(139, 92, 246, 0.02) 40%, var(--color-bg) 100%);
-      color: var(--color-text-primary);
-      padding-top: 85px;
-    }
-    .glass-header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 70px;
-      z-index: 100;
-      background: var(--color-bg-card-glass);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      border-bottom: 1px solid var(--color-border);
-      box-shadow: var(--shadow-sm);
-    }
-    .header-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 var(--space-lg);
-    }
-    .brand-title {
-      font-size: 1.4rem;
-      font-weight: 950;
-      color: var(--color-text-primary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      letter-spacing: -0.02em;
-      
-      .badge {
-        font-size: 0.72rem;
-        background: linear-gradient(135deg, var(--color-accent) 0%, #1ebd5d 100%);
-        color: #000;
-        padding: 3px 8px;
-        border-radius: 6px;
-        font-weight: 800;
-        text-transform: uppercase;
-      }
-    }
-    .header-nav {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
-    .nav-link-btn {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--color-text-secondary);
-      padding: 8px 16px;
-      border-radius: var(--radius-pill);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.25s ease;
-      
-      &:hover { color: var(--color-text-primary); background: var(--color-bg-surface); }
-    }
-    .nav-badge, .cart-badge {
-      font-size: 0.75rem;
-      font-weight: 850;
-      padding: 2px 7px;
-      border-radius: var(--radius-pill);
-    }
-    .nav-badge { background: var(--color-danger); color: #fff; box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
-    .cart-badge { background: var(--color-accent); color: #000; box-shadow: 0 0 10px var(--color-accent-glow); }
-    .cart-btn {
-      border: 1px solid var(--color-border);
-      background: var(--color-bg-surface);
-      color: var(--color-text-primary);
-      &:hover { 
-        background: var(--color-accent); 
-        color: #000; 
-        border-color: var(--color-accent);
-        box-shadow: 0 0 15px var(--color-accent-glow);
-        .cart-badge { background: #000; color: var(--color-accent); box-shadow: none; }
-      }
-    }
-    .home-link {
-      border: 1px solid var(--color-border);
-    }
 
-    .page-content {
-      padding-bottom: var(--space-3xl);
-    }
+    <!-- REUSABLE PRODUCT GRID TEMPLATE -->
+    <ng-template #productGrid let-products="products">
+      <div *ngFor="let prod of products" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300 hover:-translate-y-2 group flex flex-col cursor-pointer" (click)="openQuickView(prod)">
+        <div class="relative aspect-square overflow-hidden bg-gray-50 dark:bg-gray-800">
+          <img [src]="prod.images?.[0] || 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image'" (error)="onImageError($event, 'https://placehold.co/400x400/e2e8f0/64748b?text=No+Image')" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+          
+          <div class="absolute top-3 left-3 flex flex-col gap-2">
+            <span *ngIf="prod.coupons?.length > 0" class="bg-red-500 text-white text-[10px] font-black uppercase px-2 py-1 rounded-md shadow-sm">
+              COUPON
+            </span>
+            <span *ngIf="!prod.isAvailable || prod.stock === 0" class="bg-gray-800 text-white text-[10px] font-black uppercase px-2 py-1 rounded-md shadow-sm opacity-90">
+              OUT OF STOCK
+            </span>
+            <span *ngIf="prod.isAvailable && prod.stock > 0 && prod.stock <= 5" class="bg-orange-500 text-white text-[10px] font-black uppercase px-2 py-1 rounded-md shadow-sm">
+              FEW LEFT
+            </span>
+          </div>
+          
+          <button class="absolute top-3 right-3 w-8 h-8 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 shadow-md transition-colors border border-gray-100 dark:border-gray-700 z-10" (click)="$event.stopPropagation(); toggleWishlist(prod)">
+            <svg class="w-4 h-4" [ngClass]="{'text-red-500 fill-current': isInWishlist(prod._id)}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+          </button>
 
-    /* Hero search */
-    .search-hero {
-      text-align: center;
-      padding: var(--space-3xl) 0 var(--space-2xl);
-      h1 { 
-        font-size: clamp(2.2rem, 6vw, 3.4rem); 
-        font-weight: 950; 
-        color: var(--color-text-primary); 
-        line-height: 1.15; 
-        letter-spacing: -0.03em;
-      }
-      p { font-size: 1.15rem; color: var(--color-text-secondary); margin-top: 12px; margin-bottom: var(--space-2xl); }
-    }
-    .search-bar-container {
-      max-width: 680px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      padding: 6px 6px 6px 20px;
-      background: var(--color-bg-card-glass);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-pill);
-      gap: 12px;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      backdrop-filter: blur(10px);
+          <div class="absolute inset-x-0 bottom-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 z-10">
+            <button class="w-full py-2 bg-white/95 dark:bg-gray-800/95 backdrop-blur shadow-lg rounded-xl text-sm font-bold text-gray-900 dark:text-white hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-500 transition-colors">
+              Quick View
+            </button>
+          </div>
+        </div>
+
+        <div class="p-4 flex flex-col flex-1">
+          <div class="text-[11px] font-bold text-emerald-500 uppercase tracking-wider mb-1">{{prod.business?.name}}</div>
+          <h3 class="font-bold text-gray-900 dark:text-white leading-tight mb-1 line-clamp-2 group-hover:text-emerald-500 transition-colors">{{prod.title}}</h3>
+          
+          <div class="flex items-center gap-1 mt-auto pt-2 pb-3">
+            <div class="flex text-yellow-400 text-[10px]">★★★★★</div>
+            <span class="text-xs text-gray-400">({{prod.salesCount || 10}})</span>
+          </div>
+
+          <div class="flex items-end justify-between border-t border-gray-100 dark:border-gray-800 pt-3 mt-auto">
+            <div>
+              <div class="text-lg font-black text-gray-900 dark:text-white leading-none">₹{{prod.price}}</div>
+            </div>
+            <button class="w-10 h-10 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-emerald-500 text-gray-600 dark:text-gray-300 hover:text-white flex items-center justify-center transition-colors shadow-sm" title="Add to Cart" (click)="$event.stopPropagation(); addToCart(prod)">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+
+    <style>
+      .hide-scrollbar::-webkit-scrollbar { display: none; }
+      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+      .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+      .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+      .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
       
-      &:focus-within {
-        border-color: var(--color-accent);
-        box-shadow: 0 0 30px var(--color-accent-glow);
-        background: var(--color-bg-card);
+      @keyframes marquee {
+        0% { transform: translateX(0%); }
+        100% { transform: translateX(-50%); } 
       }
-      
-      .search-icon { font-size: 1.3rem; opacity: 0.8; }
-      input {
-        flex: 1;
-        background: transparent;
-        border: none;
-        outline: none;
-        color: var(--color-text-primary);
-        font-size: 1.1rem;
-        &::placeholder { color: var(--color-text-muted); }
+      .animate-marquee {
+        animation: marquee 25s linear infinite;
       }
-      .btn { 
-        border-radius: var(--radius-pill); 
-        padding: 12px 28px; 
-        font-weight: 850;
-        background: var(--color-accent);
-        color: #000;
-        border: none;
-        box-shadow: 0 4px 15px var(--color-accent-glow);
-        cursor: pointer;
-        transition: all 0.2s ease;
-        &:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 6px 20px rgba(37, 211, 102, 0.45);
-        }
-      }
-    }
-
-    /* Categories grid */
-    .categories-section { margin-bottom: var(--space-3xl); }
-    .categories-grid {
-      display: flex;
-      gap: 12px;
-      padding-bottom: 12px;
-    }
-    .scroll-x {
-      overflow-x: auto;
-      &::-webkit-scrollbar { height: 6px; }
-      &::-webkit-scrollbar-track { background: transparent; }
-      &::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: var(--radius-pill); }
-      &::-webkit-scrollbar-thumb:hover { background: var(--color-border-hover); }
-    }
-    .category-pill {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 22px;
-      background: var(--color-bg-surface);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      color: var(--color-text-secondary);
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      
-      &:hover { 
-        background: var(--color-bg-surface); 
-        color: var(--color-text-primary);
-        transform: translateY(-2px);
-      }
-      &.active { 
-        background: linear-gradient(135deg, var(--color-accent) 0%, #8b5cf6 100%);
-        color: #000; 
-        border-color: transparent; 
-        box-shadow: 0 4px 20px var(--color-accent-glow);
-        font-weight: 850;
-      }
-    }
-
-    /* Banners styling */
-    .banners-section { margin-bottom: var(--space-3xl); }
-    .banner-carousel {
-      position: relative;
-      height: 300px;
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      border: 1px solid var(--color-border);
-      box-shadow: var(--shadow-md);
-    }
-    .banner-slide {
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      display: flex;
-      align-items: center;
-      position: relative;
-      padding: 0 var(--space-3xl);
-    }
-    .banner-overlay {
-      position: absolute; top:0; left:0; right:0; bottom:0;
-      background: linear-gradient(90deg, rgba(5, 6, 11, 0.8) 0%, rgba(5, 6, 11, 0.3) 100%);
-    }
-    .banner-content {
-      position: relative;
-      z-index: 2;
-      max-width: 520px;
-      display: flex; flex-direction: column; gap: var(--space-md); align-items: flex-start;
-      h2 { font-size: 2.5rem; color: #fff; font-weight: 900; line-height: 1.2; letter-spacing: -0.02em; }
-      p { color: #f1f5f9; font-size: 1.05rem; line-height: 1.5; }
-    }
-    .carousel-dots {
-      position: absolute;
-      bottom: 20px; left: 50%;
-      transform: translateX(-50%);
-      display: flex; gap: 8px; z-index: 10;
-    }
-    .dot-btn {
-      width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.25); border: none; cursor: pointer;
-      transition: all 0.3s ease;
-      &.active { background: var(--color-accent); width: 24px; border-radius: 4px; box-shadow: 0 0 8px var(--color-accent-glow); }
-    }
-
-    /* Search Results Layout */
-    .search-results-layout {
-      display: flex; flex-direction: column; gap: var(--space-xl);
-    }
-    .search-results-main { width: 100%; }
-    
-    .results-header {
-      display: flex; justify-content: space-between; align-items: flex-end;
-      margin-bottom: var(--space-xl); border-bottom: 1px solid var(--color-border); padding-bottom: 16px;
-      h3 { font-size: 1.45rem; font-weight: 850; color: var(--color-text-primary); letter-spacing: -0.01em; margin: 0; }
-    }
-    .results-actions-row { display: flex; gap: 10px; }
-    .loading-state, .empty-state {
-      text-align: center; padding: var(--space-3xl) 0;
-      background: var(--color-bg-card);
-      border: 1px dashed var(--color-border);
-      border-radius: var(--radius-lg);
-      .spinner { font-size: 2.2rem; display: block; margin-bottom: 12px; }
-      h3 { font-weight: 850; color: var(--color-text-primary); margin-bottom: var(--space-sm); }
-      p { color: var(--color-text-secondary); }
-    }
-
-    /* Products Listing Grid */
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: var(--space-xl);
-    }
-    @media (max-width: 1024px) {
-      .products-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-md); }
-    }
-    @media (max-width: 600px) {
-      .products-grid { grid-template-columns: repeat(1, 1fr); }
-    }
-    .product-card {
-      display: flex; flex-direction: column; overflow: hidden; padding: 0; 
-      background: var(--color-bg-card); 
-      border: 1px solid var(--color-border); 
-      border-radius: var(--radius-xl); 
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      box-shadow: var(--shadow-sm);
-      
-      &:hover { 
-        border-color: rgba(37, 211, 102, 0.4); 
-        transform: translateY(-5px); 
-        box-shadow: 0 15px 35px -10px var(--color-accent-glow);
-        .image-box img { transform: scale(1.06); }
-      }
-    }
-    .image-box {
-      height: 200px; position: relative; overflow: hidden; background: #0b0c10; cursor: pointer;
-      img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-    }
-    .store-badge-tag {
-      position: absolute; bottom: 10px; left: 10px; font-size: 0.72rem; font-weight: 850; color: var(--color-text-primary); 
-      background: var(--color-bg-card-glass); 
-      border: 1px solid var(--color-border); 
-      padding: 4px 10px; border-radius: 6px;
-      backdrop-filter: blur(5px);
-    }
-    .wishlist-btn {
-      position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 50%; 
-      background: var(--color-bg-surface); 
-      border: 1px solid var(--color-border); 
-      display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; 
-      transition: all 0.2s ease;
-      backdrop-filter: blur(5px);
-      filter: grayscale(100%);
-      &:hover { transform: scale(1.1); filter: grayscale(0%); background: var(--color-bg-surface); }
-      &.active { filter: grayscale(0%); background: var(--color-bg-surface); border-color: rgba(239, 68, 68, 0.3); }
-    }
-    .card-body {
-      padding: var(--space-lg); display: flex; flex-direction: column; gap: var(--space-xs); flex: 1;
-      .prod-cat { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: #8b5cf6; letter-spacing: 0.08em; }
-      .prod-title { font-size: 1.1rem; font-weight: 850; color: var(--color-text-primary); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; &:hover { color: var(--color-accent); } }
-      .offer-badges-row { margin-top: 6px; display: flex; }
-      .coupon-badge-pill { font-size: 0.72rem; font-weight: 700; color: var(--color-accent); background: var(--color-accent-dim); border: 1px dashed rgba(37, 211, 102, 0.2); padding: 3px 8px; border-radius: 6px; }
-    }
-    .card-footer {
-      display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: var(--space-md);
-      border-top: 1px solid var(--color-border);
-      .price { font-size: 1.35rem; font-weight: 900; color: var(--color-text-primary); font-family: var(--font-heading); }
-      .btn-accent-cart { 
-        background: var(--color-accent-dim); 
-        color: var(--color-accent); 
-        border: 1px solid var(--color-accent-glow); 
-        padding: 8px 18px; font-weight: 850; font-size: 0.85rem; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.25s ease; 
-        &:hover:not([disabled]) { 
-          background: var(--color-accent); 
-          color: #000; 
-          border-color: var(--color-accent);
-          box-shadow: 0 0 15px var(--color-accent-glow);
-        } 
-        &:disabled { opacity: 0.4; cursor: not-allowed; } 
-      }
-    }
-
-    /* Featured Stores Horizontal Scroll */
-    .home-section { margin-bottom: var(--space-3xl); }
-    .section-title { font-size: 1.6rem; font-weight: 950; color: var(--color-text-primary); margin-bottom: var(--space-xl); letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; }
-    
-    .stores-container {
-      display: flex;
-      gap: 18px;
-      padding-bottom: 16px;
-      width: max-content;
-      animation: autoScrollX 25s linear infinite;
-      
-      &:hover {
+      .animate-marquee:hover {
         animation-play-state: paused;
       }
-    }
-    
-    @keyframes autoScrollX {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(calc(-50% - 9px)); } /* Shift by half minus half gap */
-    }
-
-    .store-card {
-      min-width: 260px; max-width: 280px; padding: 24px; border-radius: 20px; 
-      background: var(--color-bg-card); 
-      border: 1px solid var(--color-border); 
-      display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-      
-      &:hover {
-        border-color: var(--color-accent);
-        transform: translateY(-6px);
-        box-shadow: 0 15px 35px rgba(37, 211, 102, 0.15);
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
       }
-      
-      .store-logo { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--color-bg); box-shadow: 0 0 0 2px var(--color-border); transition: all 0.3s ease; }
-      &:hover .store-logo { transform: scale(1.05); box-shadow: 0 0 0 2px var(--color-accent); }
-      
-      .store-info { 
-        display: flex; flex-direction: column; gap: 8px; align-items: center; 
-        h4 { font-size: 1.2rem; font-weight: 800; color: var(--color-text-primary); margin: 0; } 
-        .store-tag { font-size: 0.7rem; font-weight: 850; color: var(--color-accent); text-transform: uppercase; background: var(--color-accent-dim); border: 1px solid rgba(37, 211, 102, 0.2); padding: 4px 12px; border-radius: 20px; letter-spacing: 0.05em; } 
-        .store-desc { font-size: 0.85rem; color: var(--color-text-secondary); line-height: 1.5; margin: 0; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; min-height: 40px; } 
-      }
-      .btn { 
-        border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 750; border: 1px solid var(--color-border); background: var(--color-bg-surface); color: var(--color-text-primary); width: 100%; transition: all 0.2s; padding: 10px;
-        &:hover {
-          background: var(--color-accent); color: #000; border-color: var(--color-accent);
-        }
-      }
-    }
-
-    /* Coupons Pill section */
-    .offers-container { 
-      display: flex; 
-      gap: 12px; 
-      padding-bottom: 12px; 
-    }
-    .offer-pill {
-      position: relative;
-      display: flex;
-      align-items: center;
-      padding: 12px 22px;
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(37, 211, 102, 0.15) 100%);
-      border: 1px solid rgba(139, 92, 246, 0.3);
-      border-radius: var(--radius-md);
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      overflow: hidden;
-
-      &:hover {
-        transform: translateY(-2px);
-        border-color: rgba(139, 92, 246, 0.6);
-        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
-        .offer-pill-bg { opacity: 1; }
-      }
-    }
-    .offer-pill-bg {
-      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(37, 211, 102, 0.25) 100%);
-      opacity: 0; transition: opacity 0.3s;
-    }
-    .offer-pill-content {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .offer-pill-discount {
-      font-size: 1rem;
-      font-weight: 900;
-      color: #8b5cf6;
-      text-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
-    }
-    .offer-pill-divider {
-      width: 1px; height: 16px; background: rgba(255,255,255,0.2);
-    }
-    .offer-pill-code {
-      font-size: 0.95rem;
-      font-weight: 850;
-      color: var(--color-text-primary);
-      letter-spacing: 0.05em;
-    }
-    .offer-pill-store {
-      font-size: 0.85rem;
-      color: var(--color-text-secondary);
-      font-weight: 700;
-    }
-  `]
+      .animate-fade-in-up { animation: fadeInUp 0.3s ease-out forwards; }
+      .animate-fade-in { animation: fadeInUp 0.2s ease-out forwards; }
+    </style>
+  `,
+  styles: []
 })
-export class MarketplaceHomeComponent implements OnInit {
+export class MarketplaceHomeComponent implements OnInit, OnDestroy {
+  // UI State
   searchQuery = '';
-  selectedCategory = 'all';
+  searchCategory = 'all';
   isSearching = false;
-  loadingSearch = false;
-  loading = true; // Initial full-page loader
+  loading = true;
+  wishlistCount = 0;
+  cartCount = 0;
+  isCartBouncing = false;
 
+  // Data
   categories: any[] = [];
   banners: any[] = [];
   featuredStores: any[] = [];
-  featuredProducts: any[] = [];
   trendingProducts: any[] = [];
   globalCoupons: any[] = [];
-  // Search Results
   searchResults: any[] = [];
-  copiedCode: string | null = null;
-  isCartBouncing = false;
+  totalSearchResults = 0;
 
-  // Carousel slider indices
-  activeBannerIndex = 0;
-  activeBanner: any = { imageUrl: '', title: '' };
-  bannerInterval: any;
+  // Features State
+  currentDealIndex = 0;
+  dealInterval: any;
+  copiedCouponCode: string | null = null;
+  
+  // Quick View
+  showQuickViewModal = false;
+  selectedProduct: any = null;
 
-  // Header badges counters
-  wishlistCount = 0;
-  cartCount = 0;
+  // Local Storage Data
+  recentProducts: any[] = [];
+  recentStores: any[] = [];
+  
+  // Popular Searches mock
+  popularSearches = ['Shoes', 'Watch', 'Headphones', 'Groceries', 'T-Shirt', 'Laptop'];
+
+  // Stats
+  totalStores = 0;
+  totalProducts = 0;
+  totalOrders = 0;
 
   constructor(
     private marketplaceService: MarketplaceService,
-    private toastService: ToastService,
-    private router: Router
-  ) { }
+    private toastService: ToastService
+  ) {
+    this.loadRecentData();
+  }
 
   ngOnInit() {
-    this.loading = true;
-    Promise.all([
-      this.fetchHomeData(),
-      this.fetchConfig()
-    ]).then(() => {
-      // Simulate slight delay to show loader (optional, remove in prod if desired)
-      setTimeout(() => this.loading = false, 600);
-    });
+    this.fetchData();
 
-    // Subscribe to Cart changes
     this.marketplaceService.cart$.subscribe(items => {
       const newCount = items.reduce((sum, item) => sum + item.quantity, 0);
       if (newCount > this.cartCount) {
@@ -790,147 +525,184 @@ export class MarketplaceHomeComponent implements OnInit {
       this.cartCount = newCount;
     });
 
-    // Subscribe to Wishlist changes
     this.marketplaceService.wishlist$.subscribe(items => {
       this.wishlistCount = items.length;
     });
   }
 
-  fetchHomeData(): Promise<void> {
-    return new Promise((resolve) => {
-      this.marketplaceService.getHomeData().subscribe({
-        next: (res) => {
-          if (res.success) {
-            this.banners = res.banners || [];
-            this.featuredStores = res.featuredStores || [];
-            this.featuredProducts = res.featuredProducts || [];
-            this.trendingProducts = res.trendingProducts || [];
-            this.globalCoupons = res.globalCoupons || [];
-
-            if (this.banners.length > 0) {
-              this.activeBanner = this.banners[0];
-              this.startBannerRotation();
-            }
-          }
-          resolve();
-        },
-        error: () => resolve()
-      });
-    });
-  }
-
-  fetchConfig(): Promise<void> {
-    return new Promise((resolve) => {
-      this.marketplaceService.getConfig().subscribe({
-        next: (res) => {
-          if (res.success && res.config) {
-            this.categories = res.config.categories || [];
-          }
-          resolve();
-        },
-        error: () => resolve()
-      });
-    });
-  }
-
-  // Banner rotation logic
-  startBannerRotation() {
-    if (this.bannerInterval) clearInterval(this.bannerInterval);
-    this.bannerInterval = setInterval(() => {
-      if (this.banners.length > 1) {
-        this.activeBannerIndex = (this.activeBannerIndex + 1) % this.banners.length;
-        this.activeBanner = this.banners[this.activeBannerIndex];
+  fetchData() {
+    this.loading = true;
+    this.marketplaceService.getHomeData().subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.categories = res.categories || [];
+          this.banners = res.banners || [];
+          this.featuredStores = res.featuredStores || [];
+          this.trendingProducts = res.trendingProducts || [];
+          this.globalCoupons = res.globalCoupons || [];
+          
+          // Calculate stats
+          this.totalStores = this.featuredStores.length > 0 ? this.featuredStores.length * 10 : 50;
+          this.totalOrders = this.featuredStores.reduce((acc, s) => acc + (s.stats?.orders || 0), 0);
+          this.totalProducts = this.trendingProducts.length * 50; 
+          
+          this.startDealRotation();
+        }
+        this.loading = false;
+      },
+      error: () => {
+        this.toastService.error('Failed to load marketplace data');
+        this.loading = false;
       }
-    }, 6000);
-  }
-
-  setBannerIndex(idx: number) {
-    this.activeBannerIndex = idx;
-    this.activeBanner = this.banners[idx];
-    this.startBannerRotation();
-  }
-
-  // Global search methods
-  onSearchChange() {
-    if (!this.searchQuery || this.searchQuery.trim().length === 0) {
-      if (this.selectedCategory === 'all') {
-        this.isSearching = false;
-        this.searchResults = [];
-      } else {
-        this.triggerSearch();
-      }
-    }
-  }
-
-  selectCategory(catName: string) {
-    this.selectedCategory = catName;
-    this.triggerSearch();
+    });
   }
 
   triggerSearch() {
-    if (this.searchQuery.trim().length === 0 && this.selectedCategory === 'all') {
-      this.isSearching = false;
-      this.searchResults = [];
+    if (!this.searchQuery && this.searchCategory === 'all') {
+      this.clearSearch();
       return;
     }
-
     this.isSearching = true;
-    this.loadingSearch = true;
-
-    this.marketplaceService.search(this.searchQuery, this.selectedCategory).subscribe({
+    this.loading = true;
+    this.marketplaceService.search(this.searchQuery, this.searchCategory).subscribe({
       next: (res) => {
         if (res.success) {
-          this.searchResults = res.products || [];
+          this.searchResults = res.products;
+          this.totalSearchResults = res.total;
         }
-        this.loadingSearch = false;
+        this.loading = false;
       },
       error: () => {
-        this.loadingSearch = false;
+        this.toastService.error('Search failed');
+        this.loading = false;
       }
     });
   }
 
   clearSearch() {
-    this.searchQuery = '';
-    this.selectedCategory = 'all';
     this.isSearching = false;
+    this.searchQuery = '';
     this.searchResults = [];
   }
 
-  // Cart actions
-  addToCart(prod: any) {
-    this.marketplaceService.addToCart(prod, 1);
-    alert(`Added "${prod.title}" to marketplace cart!`);
+  // UI Helpers
+  getBannerBg(index: number) {
+    const bgs = [
+      'from-emerald-500 to-teal-600',
+      'from-purple-500 to-indigo-600',
+      'from-orange-500 to-red-600'
+    ];
+    return bgs[index % bgs.length];
   }
 
-  // Wishlist actions
-  isInWishlist(prodId: string): boolean {
-    return this.marketplaceService.isInWishlist(prodId);
-  }
 
-  toggleWishlist(event: Event, prod: any) {
-    event.stopPropagation();
-    event.preventDefault();
-    if (this.isInWishlist(prod._id)) {
-      this.marketplaceService.removeFromWishlist(prod._id);
-    } else {
-      this.marketplaceService.addToWishlist(prod);
+  startDealRotation() {
+    if (this.dealInterval) clearInterval(this.dealInterval);
+    if (this.banners.length > 1) {
+      this.dealInterval = setInterval(() => {
+        this.currentDealIndex = (this.currentDealIndex + 1) % this.banners.length;
+      }, 5000);
     }
   }
 
-  // Coupon actions
-  copyCouponCode(code: string, slug?: string) {
+  // Cart & Wishlist Actions
+  addToCart(prod: any) {
+    if (!prod.isAvailable || prod.stock === 0) return;
+    this.marketplaceService.addToCart(prod, 1);
+    this.toastService.success('Added to cart');
+  }
+
+  toggleWishlist(prod: any) {
+    if (this.marketplaceService.isInWishlist(prod._id)) {
+      this.marketplaceService.removeFromWishlist(prod._id);
+    } else {
+      this.marketplaceService.addToWishlist(prod);
+      this.toastService.success('Added to wishlist');
+    }
+  }
+
+  isInWishlist(id: string) {
+    return this.marketplaceService.isInWishlist(id);
+  }
+
+  copyCoupon(code: string) {
     navigator.clipboard.writeText(code).then(() => {
-      this.copiedCode = code;
-      this.toastService.success(`Coupon code "${code}" copied to clipboard!`, 'Copied!');
-      setTimeout(() => this.copiedCode = null, 2000); // Fade after 2 seconds
-      if (slug) {
-        setTimeout(() => this.router.navigate(['/store', slug]), 800);
-      }
+      this.copiedCouponCode = code;
+      setTimeout(() => this.copiedCouponCode = null, 2000);
     });
   }
 
+  // Quick View
+  openQuickView(prod: any) {
+    this.selectedProduct = prod;
+    this.showQuickViewModal = true;
+    document.body.style.overflow = 'hidden';
+    this.trackRecentProduct(prod);
+    if (prod.business) {
+      this.trackRecentStore(prod.business);
+    }
+  }
+
+  closeQuickView() {
+    this.showQuickViewModal = false;
+    document.body.style.overflow = 'auto';
+    setTimeout(() => this.selectedProduct = null, 300);
+  }
+
+  // Share Actions
+  shareProduct(prod: any) {
+    const url = window.location.origin + '/marketplace/product/' + prod._id;
+    if (navigator.share) {
+      navigator.share({ title: prod.title, url });
+    } else {
+      navigator.clipboard.writeText(url);
+      this.toastService.success('Product link copied!');
+    }
+  }
+
+  shareStore(store: any) {
+    const url = window.location.origin + '/store/' + store.websiteSlug;
+    if (navigator.share) {
+      navigator.share({ title: store.name, url });
+    } else {
+      navigator.clipboard.writeText(url);
+      this.toastService.success('Store link copied!');
+    }
+  }
+
+  // Local Storage Tracking
+  loadRecentData() {
+    try {
+      this.recentProducts = JSON.parse(localStorage.getItem('ws_recent_prods') || '[]');
+      this.recentStores = JSON.parse(localStorage.getItem('ws_recent_stores') || '[]');
+    } catch(e) {}
+  }
+
+  trackRecentProduct(prod: any) {
+    let prods = this.recentProducts.filter(p => p._id !== prod._id);
+    prods.unshift(prod);
+    if (prods.length > 6) prods = prods.slice(0, 6);
+    this.recentProducts = prods;
+    localStorage.setItem('ws_recent_prods', JSON.stringify(prods));
+  }
+
+  trackRecentStore(store: any) {
+    if (!store._id) return;
+    let stores = this.recentStores.filter(s => s._id !== store._id);
+    stores.unshift(store);
+    if (stores.length > 5) stores = stores.slice(0, 5);
+    this.recentStores = stores;
+    localStorage.setItem('ws_recent_stores', JSON.stringify(stores));
+  }
+
+  onImageError(event: any, fallbackUrl: string) {
+    const target = event.target || event.srcElement;
+    if (!target || target.dataset.errorHandled) return;
+    target.dataset.errorHandled = true;
+    target.src = fallbackUrl;
+  }
+
   ngOnDestroy() {
-    if (this.bannerInterval) clearInterval(this.bannerInterval);
+    if (this.dealInterval) clearInterval(this.dealInterval);
   }
 }

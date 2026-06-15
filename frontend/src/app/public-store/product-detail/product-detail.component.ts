@@ -931,7 +931,7 @@ interface ReviewRecord {
     }
     .star-rating-selector { display: flex; gap: var(--space-xs); }
     .star-selector-btn {
-      background: transparent; border: none; font-size: 2rem; color: rgba(255,255,255,0.1); cursor: pointer; padding: 0;
+      background: transparent; border: none; font-size: 2rem; color: var(--color-border); cursor: pointer; padding: 0;
       &.active { color: #ffc857; text-shadow: 0 0 12px rgba(255, 200, 87, 0.5); }
     }
     .rating-label-desc { font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary); }
@@ -939,20 +939,20 @@ interface ReviewRecord {
     
     .reviews-list-wrapper { display: flex; flex-direction: column; gap: var(--space-md); }
     .empty-reviews {
-      padding: var(--space-2xl); text-align: center; border: 1px dashed rgba(255, 255, 255, 0.1);
-      border-radius: var(--radius-lg); background: rgba(17, 19, 25, 0.2);
+      padding: var(--space-2xl); text-align: center; border: 1px dashed var(--color-border);
+      border-radius: var(--radius-lg); background: var(--color-bg-surface);
       display: flex; flex-direction: column; align-items: center; gap: var(--space-sm);
-      .empty-stars { color: rgba(255,255,255,0.06); font-size: 1.8rem; }
-      h3 { font-size: 1.15rem; color: #fff; }
+      .empty-stars { color: var(--color-border); font-size: 1.8rem; }
+      h3 { font-size: 1.15rem; color: var(--color-text-primary); }
       p { font-size: 0.9rem; color: var(--color-text-secondary); max-width: 340px; }
     }
     
     .reviews-feed { display: flex; flex-direction: column; gap: var(--space-md); }
     .review-item-card {
-      background: rgba(17, 19, 25, 0.45); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: var(--radius-lg);
+      background: var(--color-bg-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg);
       padding: var(--space-lg); display: flex; flex-direction: column; gap: var(--space-md);
       transition: all var(--transition-normal);
-      &:hover { border-color: var(--color-accent); box-shadow: 0 8px 25px var(--color-accent-glow); }
+      &:hover { border-color: var(--color-accent); box-shadow: 0 8px 25px rgba(0,0,0,0.05); }
     }
     .review-card-top { display: flex; align-items: center; gap: var(--space-md); }
     .buyer-avatar {

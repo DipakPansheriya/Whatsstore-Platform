@@ -118,7 +118,7 @@ interface LayoutConfig {
           <div class="preview-sticky">
             <div class="preview-header">
               <span class="preview-tag">📱 Interactive Live Preview</span>
-              <span class="preview-url">whatsstore.com/store/{{ slug }}</span>
+              <span class="preview-url">whatsstore.web.app/store/{{ slug }}</span>
             </div>
             
             <!-- Simulated Mobile Device Frame -->
@@ -282,7 +282,7 @@ interface LayoutConfig {
       letter-spacing: 0.05em;
     }
     .form-group input,
-    .form-group select,
+    .form-group select, 
     .form-group textarea {
       padding: 12px;
       background: var(--color-bg-surface);
@@ -595,10 +595,10 @@ export class BuilderComponent implements OnInit {
   saving = false;
   successMsg = '';
   errorMsg = '';
-  
+
   slug = 'your-shop';
   storeName = 'Your Shop';
-  
+
   layout: LayoutConfig = {
     template: 'Shop',
     theme: 'Classic Green',
@@ -610,7 +610,7 @@ export class BuilderComponent implements OnInit {
     ctaTitle: 'Have questions? Chat with us!'
   };
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService) { }
 
   ngOnInit() {
     this.fetchBusiness();
@@ -639,7 +639,7 @@ export class BuilderComponent implements OnInit {
     this.saving = true;
     this.successMsg = '';
     this.errorMsg = '';
-    
+
     this.api.patch<any>('business/me', { layoutConfig: this.layout }).subscribe({
       next: (res) => {
         if (res.success) {

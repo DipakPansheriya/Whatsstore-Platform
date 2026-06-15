@@ -28,19 +28,9 @@ import { ThemeService } from '../shared/services/theme.service';
               <!-- Business Identity Section -->
               <h2 class="section-title">Shop Identity</h2>
               
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="set-name">Business / Store Name</label>
-                  <input id="set-name" type="text" name="name" [(ngModel)]="business.name" placeholder="e.g. Acme Bakers" required>
-                </div>
-                
-                <div class="form-group">
-                  <label for="set-slug">Store URL Slug</label>
-                  <div class="slug-input-preview">
-                    <span class="domain">siteflow.com/store/</span>
-                    <input id="set-slug" type="text" name="websiteSlug" [(ngModel)]="business.websiteSlug" placeholder="e.g. acme-bakers" required>
-                  </div>
-                </div>
+              <div class="form-group">
+                <label for="set-name">Business / Store Name</label>
+                <input id="set-name" type="text" name="name" [(ngModel)]="business.name" placeholder="e.g. Acme Bakers" required>
               </div>
 
               <!-- Share Storefront -->
